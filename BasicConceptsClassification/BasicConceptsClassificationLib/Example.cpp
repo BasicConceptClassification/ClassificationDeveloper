@@ -2,17 +2,20 @@
 #include "Example.h"
 
 
-Example::Example()
+namespace BasicConceptsClassificationLib
 {
-}
+	Example::Example()
+	{
+	}
 
 
-Example::~Example()
-{
-}
+	Example::~Example()
+	{
+	}
 
 
-int Example::foo( int bar )
-{
-	return bar + 1;
+	int Example::foo( int bar )
+	{
+		return bar + 1;
+	}
 }

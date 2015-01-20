@@ -11,3 +11,10 @@ Assembly System.Xml, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c5619
 	hash=None, flags=None
 Class BasicConceptsClassificationLib.Class1: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
     Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+Class BasicConceptsClassificationLib.Example: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
+    Void .ctor(): PrivateScope, Public, HideBySig, SpecialName, RTSpecialName
+  Interfaces:
+    System.IDisposable
+  Methods:
+    foo(Int32): PrivateScope, Public, Static, HideBySig
+    Dispose(): PrivateScope, Public, Final, Virtual, HideBySig

@@ -5,4 +5,6 @@
 
 #pragma once
 
+#include <cstdio>
+
 // TODO: reference additional headers your program requires here

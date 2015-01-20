@@ -1,11 +1,16 @@
 #pragma once
-ref class Example
+
+
+namespace BasicConceptsClassificationLib
 {
-public:
-	Example();
-	virtual ~Example();
+	public ref class Example
+	{
+	public:
+		Example();
+		virtual ~Example();
 
-	static int foo( int bar );
+		static int foo( int bar );
 
-};
+	};
+}
 

@@ -2,8 +2,6 @@
 
 #pragma once
 
-#include "Example.h"
-
 using namespace System;
 
 namespace BasicConceptsClassificationLib {
@@ -13,3 +11,5 @@ namespace BasicConceptsClassificationLib {
 		// TODO: Add your methods for this class here.
 	};
 }
+
+namespace BCCL = BasicConceptsClassificationLib;

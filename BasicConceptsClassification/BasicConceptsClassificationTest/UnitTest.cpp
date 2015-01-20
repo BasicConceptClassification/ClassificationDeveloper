@@ -55,7 +55,7 @@ namespace BasicConceptsClassificationTest
 		[TestMethod]
 		void TestMethod1()
 		{
-			
+			Assert::AreEqual( 1, BasicConceptsClassificationLib::Example::foo( 0 ) );
 		};
 	};
 }

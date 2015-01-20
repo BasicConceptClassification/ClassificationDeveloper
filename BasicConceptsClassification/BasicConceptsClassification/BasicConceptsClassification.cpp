@@ -1,11 +1,9 @@
-// BasicConceptsClassification.cpp : main project file.
-
 #include "stdafx.h"
 
-using namespace System;
+using namespace BasicConceptsClassificationLib;
 
-int main(array<System::String ^> ^args)
+int main(int argc, char *argv[])
 {
-    Console::WriteLine(L"Hello World");
+	printf( "Hello world! %d\n", Example::foo(0) );
     return 0;
 }
