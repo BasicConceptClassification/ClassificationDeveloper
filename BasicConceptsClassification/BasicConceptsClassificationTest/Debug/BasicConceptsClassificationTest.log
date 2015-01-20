@@ -1,0 +1,8 @@
+﻿  stdafx.cpp
+  AssemblyInfo.cpp
+  UnitTest.cpp
+  Generating Code...
+UnitTest.obj : error LNK2020: unresolved token (06000001) Example::.ctor
+UnitTest.obj : error LNK2020: unresolved token (06000002) Example::~Example
+UnitTest.obj : error LNK2020: unresolved token (06000003) Example::foo
+C:\Users\Yuey\Documents\dev\BasicConceptsClassification\Debug\DefaultTest.dll : fatal error LNK1120: 3 unresolved externals
