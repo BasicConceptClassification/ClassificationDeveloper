@@ -1,0 +1,35 @@
+﻿h1 {
+    text-align: center;
+}
+h2 {
+    text-align: center;
+}
+
+a:link, a:visited {
+    display: inline-block;
+    font-weight: bold;
+    color: #000000;
+    background-color: #ffffff;
+    width: 180px;
+    text-align: center;
+    padding: 4px;
+    text-decoration: none;
+}
+
+a:hover, a:active{
+    background-color: #808080
+}
+
+.centerLines {
+    text-align: center;
+}
+
+p.main {
+    text-align:justify;
+}
+
+.center-justified {
+    text-align:justify;
+    margin: auto;
+    width: 20cm;
+}
