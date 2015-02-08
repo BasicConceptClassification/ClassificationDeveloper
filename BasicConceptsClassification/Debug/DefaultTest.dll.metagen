@@ -18,4 +18,8 @@ Class BCCTest.UnitTest: AutoLayout, AnsiClass, Class, Public, BeforeFieldInit
   Methods:
     get_TestContext(): PrivateScope, Public, HideBySig, SpecialName
     set_TestContext(TestContext): PrivateScope, Public, HideBySig, SpecialName
+    MyClassInitialize(TestContext): PrivateScope, Public, Static, HideBySig
+    MyClassCleanup(): PrivateScope, Public, Static, HideBySig
+    MyTestInitialize(): PrivateScope, Public, HideBySig
+    MyTestCleanup(): PrivateScope, Public, HideBySig
     TestMethod1(): PrivateScope, Public, HideBySig
