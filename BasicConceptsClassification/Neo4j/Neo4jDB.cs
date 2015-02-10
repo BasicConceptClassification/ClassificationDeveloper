@@ -7,6 +7,5 @@ namespace Neo4j
 {
     class Neo4jDB
     {
-
     }
 }
