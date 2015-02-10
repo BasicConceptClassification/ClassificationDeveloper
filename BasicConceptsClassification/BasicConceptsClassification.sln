@@ -12,6 +12,9 @@ EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "BCCModel", "BCCModel\BCCModel.modelproj", "{BDABABCB-1EB4-4D74-94D5-9394E8CAFDCD}"
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo4j", "Neo4j\Neo4j.csproj", "{F376D2B3-FB3F-4938-8F1D-95195C9F29C6}"
+	ProjectSection(ProjectDependencies) = postProject
+		{CA160A4E-75E6-4018-9683-0967FB31BA1A} = {CA160A4E-75E6-4018-9683-0967FB31BA1A}
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
