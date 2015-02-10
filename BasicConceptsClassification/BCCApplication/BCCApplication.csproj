@@ -266,6 +266,7 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Classification.aspx.cs">
       <DependentUpon>Classification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Contact.aspx.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
