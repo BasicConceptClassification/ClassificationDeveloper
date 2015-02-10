@@ -217,3 +217,5 @@ pip-log.txt
 *.sdf
 BasicConceptsClassification/BasicConceptsClassification.sdf
 BasicConceptsClassification/BasicConceptsClassification.v12.suo
+*.sdf
+*.suo
