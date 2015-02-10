@@ -4,43 +4,36 @@
 
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head runat="server">
-    <title></title>
-    <asp:ContentPlaceHolder id="head" runat="server">
-    </asp:ContentPlaceHolder>
+    <title>Hello</title>
+    <link rel="stylesheet" href="Content/bootstrap.css" type="text/css"/>
+
 </head>
 <body>
-    <form id="form1" runat="server">
-    <div>
-            <div class="navbar navbar-inverse navbar-fixed-top">
-            <div class="container">
-                <div class="navbar-collapse collapse">
-                    <ul class="nav navbar-nav">
-                        <li><a runat="server" href="~/">Home</a></li>
-                        <li><a runat="server" href="~/Search">Search</a></li>
-                        <li><a runat="server" href="~/Classification">The Classification</a></li>
-                        <li><a runat="server" href="~/About">Help/About</a></li>
-                        <li><a runat="server" href="~/Contact">Contact Us</a></li>
-                    </ul>
-                    <asp:LoginView runat="server" ViewStateMode="Disabled">
-                        <AnonymousTemplate>
-                            <ul class="nav navbar-nav navbar-right">
-                                <li><a runat="server" href="~/Account/Register">Register</a></li>
-                                <li><a runat="server" href="~/Account/Login">Log in</a></li>
-                            </ul>
-                        </AnonymousTemplate>
-                    </asp:LoginView>
-                </div>
+        <nav class="navbar nav-default">
+            <div class="container-fluid"">
+                <ul class="nav navbar-nav">
+                    <li class="active"><a runat="server" href="~/HomePage.aspx" style="width:200px;text-align:center">Home</a></li>
+                    <li><a runat="server" href="~/Search.aspx" style="width:200px;text-align:center">Search</a></li>
+                    <li><a runat="server" href="~/Classification.aspx" style="width:200px;text-align:center">The Classification</a></li>
+                    <li><a runat="server" href="~/About.aspx" style="width:200px;text-align:center">Help/About</a></li>
+                    <li><a runat="server" href="~/Contact.aspx" style="width:200px;text-align:center">Contact Us</a></li>
+                </ul>
+                <asp:LoginView runat="server" ViewStateMode="Disabled">
+                    <AnonymousTemplate>
+                        <ul class="nav navbar-nav navbar-right">
+                            <li><a runat="server" href="~/Account/Register">Register</a></li>
+                            <li><a runat="server" href="~/Account/Login">Log in</a></li>
+                        </ul>
+                    </AnonymousTemplate>
+                    <LoggedInTemplate>
+
+                    </LoggedInTemplate>
+                </asp:LoginView>
             </div>
-        </div>
+        </nav>
         <div class="container body-content">
             <asp:ContentPlaceHolder ID="MainContent" runat="server">
             </asp:ContentPlaceHolder>
-            <hr />
-            <footer>
-                <p>&copy; <%: DateTime.Now.Year %> - BasicConceptsClassification</p>
-            </footer>
         </div>
-    </div>
-    </form>
 </body>
 </html>
