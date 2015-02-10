@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCCApplication", "BCCApplic
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BCCTest", "BCCTest\BCCTest.vcxproj", "{9757CB21-B840-49A6-B057-9F322E543DD6}"
 EndProject
+Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Neo4j", "Neo4j\Neo4j.vcxproj", "{0CE0FD89-BAB4-48B7-9136-16680481DBB1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -49,6 +51,16 @@ Global
 		{9757CB21-B840-49A6-B057-9F322E543DD6}.Release|Mixed Platforms.Build.0 = Release|Win32
 		{9757CB21-B840-49A6-B057-9F322E543DD6}.Release|Win32.ActiveCfg = Release|Win32
 		{9757CB21-B840-49A6-B057-9F322E543DD6}.Release|Win32.Build.0 = Release|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Debug|Any CPU.ActiveCfg = Debug|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Debug|Mixed Platforms.Build.0 = Debug|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Debug|Win32.ActiveCfg = Debug|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Debug|Win32.Build.0 = Debug|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Release|Any CPU.ActiveCfg = Release|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Release|Mixed Platforms.ActiveCfg = Release|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Release|Mixed Platforms.Build.0 = Release|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Release|Win32.ActiveCfg = Release|Win32
+		{0CE0FD89-BAB4-48B7-9136-16680481DBB1}.Release|Win32.Build.0 = Release|Win32
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
