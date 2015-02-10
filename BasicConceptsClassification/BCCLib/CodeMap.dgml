@@ -1,40 +1,46 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <DirectedGraph DataVirtualized="True" Layout="Sugiyama" ZoomLevel="-1" xmlns="http://schemas.microsoft.com/vs/2009/dgml">
   <Nodes>
-    <Node Id="(@1 @3 @10 Member=.ctor)" Category="CodeSchema_Method" Bounds="-120.229915052201,105.507320971039,63.0733333333334,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="Term" UseManualLocation="True" />
-    <Node Id="(@1 @3 @10 Member=rawTerm)" Category="CodeSchema_Property" Bounds="-27.1565817188681,105.507320971039,104.475728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="rawTerm" UseManualLocation="True" />
-    <Node Id="(@1 @3 @10 Member=subterms)" Category="CodeSchema_Property" Bounds="-120.229915052201,161.467320971039,107.332394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="subterms" UseManualLocation="True" />
-    <Node Id="@11" Category="CodeSchema_Class" Bounds="-74.0465900550813,106.583880478942,88.0733333333333,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Collapsed" Label="Term" UseManualLocation="True" />
-    <Node Id="@2" Category="CodeSchema_Assembly" Bounds="-130.001107656025,-161.533795359559,385.350629496732,333.230613400181" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="1" Group="Expanded" Label="BCCLib.dll" UseManualLocation="True" />
-    <Node Id="@4" Category="CodeSchema_Namespace" Bounds="-110.001107656025,-121.533695359559,345.296749033607,273.137084368816" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="6" Group="Expanded" Label="BCCLib" UseManualLocation="True" />
-    <Node Id="@5" Category="CodeSchema_Class" Bounds="-2.6794582356342,-14.7805066828082,119.543131797311,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Classifiable" />
-    <Node Id="@6" Category="CodeSchema_Class" Bounds="10.7103494816565,-81.5344829636388,172.429375370645,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ClassifiableCollection" />
-    <Node Id="@7" Category="CodeSchema_Class" Bounds="76.5618602804638,40.2195334312165,107.649893610645,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Classifier" />
-    <Node Id="@8" Category="CodeSchema_Class" Bounds="-90.0044567507797,40.2195334312165,136.566328943978,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ConceptString" />
-    <Node Id="@9" Category="CodeSchema_Class" Bounds="121.882021761289,97.3972500080927,93.409323039488,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="GLAM" />
+    <Node Id="(@1 @3 @11 Member=.ctor)" Category="CodeSchema_Method" Bounds="-120.229915052201,105.507320971039,63.0733333333334,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="Term" UseManualLocation="True" />
+    <Node Id="(@1 @3 @11 Member=rawTerm)" Category="CodeSchema_Property" Bounds="-27.1565817188681,105.507320971039,104.475728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="rawTerm" UseManualLocation="True" />
+    <Node Id="(@1 @3 @11 Member=subterms)" Category="CodeSchema_Property" Bounds="-120.229915052201,161.467320971039,107.332394787382,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="subterms" UseManualLocation="True" />
+    <Node Id="(@1 @3 @5 Member=.ctor)" Category="CodeSchema_Method" Bounds="-36.5233253820103,-63.9707189593333,94.5433333333333,25.96" CodeSchemaProperty_IsConstructor="True" CodeSchemaProperty_IsPublic="True" CodeSchemaProperty_IsSpecialName="True" DelayedCrossGroupLinksState="Fetched" Label="Classifiable" />
+    <Node Id="@10" Category="CodeSchema_Class" Bounds="117.390125698536,129.183279241381,93.409323039488,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="GLAM" />
+    <Node Id="@12" Category="CodeSchema_Class" Bounds="-75.4565124830638,129.831064946829,88.0733333333333,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Collapsed" Label="Term" UseManualLocation="True" />
+    <Node Id="@13" Category="CodeSchema_Property" Bounds="-36.5233253820103,-8.01071895933327,115.365728120715,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="conceptStr" />
+    <Node Id="@14" Category="CodeSchema_Property" Bounds="88.020007951323,-63.9707189593333,91.3923947873815,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="owner" />
+    <Node Id="@2" Category="CodeSchema_Assembly" Bounds="-121.50476088185,-238.970718959333,372.304209619873,433.876410862387" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="1" Group="Expanded" Label="BCCLib.dll" UseManualLocation="True" />
+    <Node Id="@4" Category="CodeSchema_Namespace" Bounds="-101.50476088185,-198.970718959333,332.304209619873,373.876410862387" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="6" Group="Expanded" Label="BCCLib" UseManualLocation="True" />
+    <Node Id="@6" Category="CodeSchema_Class" Bounds="-56.5233253820103,-103.970718959333,255.935728120715,140.96" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="Fetched" DelayedCrossGroupLinksState="Fetched" FetchedChildrenCount="3" Group="Expanded" Label="Classifiable" UseManualLocation="True" />
+    <Node Id="@7" Category="CodeSchema_Class" Bounds="-14.7360763991999,-158.970718959333,172.429375370645,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ClassifiableCollection" />
+    <Node Id="@8" Category="CodeSchema_Class" Bounds="85.0344792283137,66.9036206886485,107.649893610645,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="Classifier" />
+    <Node Id="@9" Category="CodeSchema_Class" Bounds="-81.5319493956641,66.9036206886486,136.566328943978,25" CodeSchemaProperty_IsPublic="True" DelayedChildNodesState="NotFetched" DelayedCrossGroupLinksState="Fetched" Group="Collapsed" Label="ConceptString" />
   </Nodes>
   <Links>
-    <Link Source="@11" Target="(@1 @3 @10 Member=.ctor)" Category="Contains" FetchingParent="@11" />
-    <Link Source="@11" Target="(@1 @3 @10 Member=rawTerm)" Category="Contains" FetchingParent="@11" />
-    <Link Source="@11" Target="(@1 @3 @10 Member=subterms)" Category="Contains" FetchingParent="@11" />
+    <Link Source="@12" Target="(@1 @3 @11 Member=.ctor)" Category="Contains" FetchingParent="@12" />
+    <Link Source="@12" Target="(@1 @3 @11 Member=rawTerm)" Category="Contains" FetchingParent="@12" />
+    <Link Source="@12" Target="(@1 @3 @11 Member=subterms)" Category="Contains" FetchingParent="@12" />
+    <Link Source="@13" Target="@9" Category="References" IsSourceVirtualized="True" Weight="4">
+      <Category Ref="CodeSchema_ReturnTypeLink" />
+    </Link>
+    <Link Source="@14" Target="@8" Category="References" IsSourceVirtualized="True" Weight="4">
+      <Category Ref="CodeSchema_ReturnTypeLink" />
+    </Link>
     <Link Source="@2" Target="@4" Category="Contains" FetchingParent="@2" />
-    <Link Source="@4" Target="@11" Category="Contains" FetchingParent="@4" />
-    <Link Source="@4" Target="@5" Category="Contains" FetchingParent="@4" />
+    <Link Source="@4" Target="@10" Category="Contains" FetchingParent="@4" />
+    <Link Source="@4" Target="@12" Category="Contains" FetchingParent="@4" />
     <Link Source="@4" Target="@6" Category="Contains" FetchingParent="@4" />
     <Link Source="@4" Target="@7" Category="Contains" FetchingParent="@4" />
     <Link Source="@4" Target="@8" Category="Contains" FetchingParent="@4" />
     <Link Source="@4" Target="@9" Category="Contains" FetchingParent="@4" />
-    <Link Source="@5" Target="@7" Category="References" Bounds="73.7532664299819,10.2203809212718,32.7803276433245,24.598217205736" IsSourceVirtualized="True" Weight="4">
+    <Link Source="@6" Target="(@1 @3 @5 Member=.ctor)" Category="Contains" FetchingParent="@6" />
+    <Link Source="@6" Target="@13" Category="Contains" FetchingParent="@6" />
+    <Link Source="@6" Target="@14" Category="Contains" FetchingParent="@6" />
+    <Link Source="@7" Target="@6" Category="References" Bounds="71.4685083265329,-133.970718959333,0.00633319859464621,21.0000004092796" IsSourceVirtualized="True" Weight="4" />
+    <Link Source="@8" Target="@10" Category="References" Bounds="143.953054773251,91.9892810406667,11.69459281646,28.8530828202259" IsSourceVirtualized="True" Weight="5">
       <Category Ref="CodeSchema_ReturnTypeLink" />
     </Link>
-    <Link Source="@5" Target="@8" Category="References" Bounds="3.57464483905407,10.2203809212718,35.6086215139319,24.8495271115067" IsSourceVirtualized="True" Weight="4">
-      <Category Ref="CodeSchema_ReturnTypeLink" />
-    </Link>
-    <Link Source="@6" Target="@5" Category="References" Bounds="69.1661178763012,-56.5335953595587,20.3034664558293,34.0253638642345" IsSourceVirtualized="True" Weight="4" />
-    <Link Source="@7" Target="@9" Category="References" Bounds="138.740188034451,65.2204210350007,16.4956877535084,24.6938957124308" IsSourceVirtualized="True" Weight="5">
-      <Category Ref="CodeSchema_ReturnTypeLink" />
-    </Link>
-    <Link Source="@8" Target="@11" Category="References" Bounds="-27.3301146650511,65.2204210350007,4.05088985243609,32.4337334596235" IsSourceVirtualized="True" Weight="7" />
+    <Link Source="@9" Target="@12" Category="References" Bounds="-25.3066474221568,91.9892810406667,8.46858878841764,29.2709707172589" IsSourceVirtualized="True" Weight="7" />
   </Links>
   <Categories>
     <Category Id="CodeSchema_Assembly" Label="Assembly" BasedOn="File" CanBeDataDriven="True" DefaultAction="Microsoft.Contains" Icon="CodeSchema_Assembly" NavigationActionLabel="Assemblies" />
@@ -93,13 +99,16 @@
     <Alias n="2" Id="(@1)" />
     <Alias n="3" Id="Namespace=BCCLib" />
     <Alias n="4" Id="(@1 @3)" />
-    <Alias n="5" Id="(@1 @3 Type=Classifiable)" />
-    <Alias n="6" Id="(@1 @3 Type=ClassifiableCollection)" />
-    <Alias n="7" Id="(@1 @3 Type=Classifier)" />
-    <Alias n="8" Id="(@1 @3 Type=ConceptString)" />
-    <Alias n="9" Id="(@1 @3 Type=GLAM)" />
-    <Alias n="10" Id="Type=Term" />
-    <Alias n="11" Id="(@1 @3 @10)" />
+    <Alias n="5" Id="Type=Classifiable" />
+    <Alias n="6" Id="(@1 @3 @5)" />
+    <Alias n="7" Id="(@1 @3 Type=ClassifiableCollection)" />
+    <Alias n="8" Id="(@1 @3 Type=Classifier)" />
+    <Alias n="9" Id="(@1 @3 Type=ConceptString)" />
+    <Alias n="10" Id="(@1 @3 Type=GLAM)" />
+    <Alias n="11" Id="Type=Term" />
+    <Alias n="12" Id="(@1 @3 @11)" />
+    <Alias n="13" Id="(@1 @3 @5 Member=conceptStr)" />
+    <Alias n="14" Id="(@1 @3 @5 Member=owner)" />
   </IdentifierAliases>
   <Styles>
     <Style TargetType="Node" GroupLabel="Results" ValueLabel="True">
