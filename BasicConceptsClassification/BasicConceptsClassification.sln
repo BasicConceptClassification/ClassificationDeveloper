@@ -5,8 +5,6 @@ VisualStudioVersion = 12.0.31101.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCCApplication", "BCCApplication\BCCApplication.csproj", "{3D74584D-12ED-4BAB-AE4F-22EA2A765FD1}"
 EndProject
-Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "BCCTest", "BCCTest\BCCTest.vcxproj", "{9757CB21-B840-49A6-B057-9F322E543DD6}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "BCCLib", "BCCLib\BCCLib.csproj", "{CA160A4E-75E6-4018-9683-0967FB31BA1A}"
 EndProject
 Project("{F088123C-0E9E-452A-89E6-6BA2F21D5CAC}") = "BCCModel", "BCCModel\BCCModel.modelproj", "{BDABABCB-1EB4-4D74-94D5-9394E8CAFDCD}"
@@ -15,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo4j", "Neo4j\Neo4j.csproj
 	ProjectSection(ProjectDependencies) = postProject
 		{CA160A4E-75E6-4018-9683-0967FB31BA1A} = {CA160A4E-75E6-4018-9683-0967FB31BA1A}
 	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Neo4jTest", "Neo4jTest\Neo4jTest.csproj", "{95E41C5A-5765-48A2-82D1-A1B58678452C}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -36,16 +36,6 @@ Global
 		{3D74584D-12ED-4BAB-AE4F-22EA2A765FD1}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{3D74584D-12ED-4BAB-AE4F-22EA2A765FD1}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{3D74584D-12ED-4BAB-AE4F-22EA2A765FD1}.Release|Win32.ActiveCfg = Release|Any CPU
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Debug|Any CPU.ActiveCfg = Debug|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Debug|Mixed Platforms.ActiveCfg = Debug|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Debug|Mixed Platforms.Build.0 = Debug|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Debug|Win32.ActiveCfg = Debug|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Debug|Win32.Build.0 = Debug|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Release|Any CPU.ActiveCfg = Release|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Release|Mixed Platforms.ActiveCfg = Release|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Release|Mixed Platforms.Build.0 = Release|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Release|Win32.ActiveCfg = Release|Win32
-		{9757CB21-B840-49A6-B057-9F322E543DD6}.Release|Win32.Build.0 = Release|Win32
 		{CA160A4E-75E6-4018-9683-0967FB31BA1A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{CA160A4E-75E6-4018-9683-0967FB31BA1A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{CA160A4E-75E6-4018-9683-0967FB31BA1A}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -76,6 +66,16 @@ Global
 		{F376D2B3-FB3F-4938-8F1D-95195C9F29C6}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
 		{F376D2B3-FB3F-4938-8F1D-95195C9F29C6}.Release|Mixed Platforms.Build.0 = Release|Any CPU
 		{F376D2B3-FB3F-4938-8F1D-95195C9F29C6}.Release|Win32.ActiveCfg = Release|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Debug|Win32.ActiveCfg = Debug|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Release|Mixed Platforms.ActiveCfg = Release|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Release|Mixed Platforms.Build.0 = Release|Any CPU
+		{95E41C5A-5765-48A2-82D1-A1B58678452C}.Release|Win32.ActiveCfg = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
