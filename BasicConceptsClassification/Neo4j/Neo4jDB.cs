@@ -23,6 +23,13 @@ namespace Neo4j
 
         public ClassifiableCollection query(ConceptString cstring)
         {
+            var query = client.Cypher
+                .Match("(c:Classifiable)")
+                .Return(c => c.As<Classifiable>())
+                .Results;
+
+            // TODO: extract List<Classifiable> from query result
+
             return null;
         }
     }
