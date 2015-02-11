@@ -12,11 +12,14 @@ namespace Neo4j
     class Neo4jDB
     {
         protected Uri dbLocation = new Uri("http://localhost:7474/db/data");
+        protected GraphClient client;
 
         public void open()
         {
-            
+            client = new GraphClient(dbLocation);
+            client.Connect();
         }
+
 
         public ClassifiableCollection query(ConceptString cstring)
         {
