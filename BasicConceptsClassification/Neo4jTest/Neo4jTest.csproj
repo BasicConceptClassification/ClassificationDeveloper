@@ -56,6 +56,16 @@
     <Compile Include="Neo4jDBTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\BCCLib\BCCLib.csproj">
+      <Project>{ca160a4e-75e6-4018-9683-0967fb31ba1a}</Project>
+      <Name>BCCLib</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Neo4j\Neo4j.csproj">
+      <Project>{f376d2b3-fb3f-4938-8f1d-95195c9f29c6}</Project>
+      <Name>Neo4j</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Choose>
     <When Condition="'$(VisualStudioVersion)' == '10.0' And '$(IsCodedUITest)' == 'True'">
       <ItemGroup>

@@ -7,9 +7,11 @@ using BCCLib;
 using Neo4jClient;
 using Neo4jClient.Cypher;
 
+using System.Diagnostics;
+
 namespace Neo4j
 {
-    class Neo4jDB
+    public class Neo4jDB
     {
         protected Uri dbLocation = new Uri("http://localhost:7474/db/data");
         protected GraphClient client;
@@ -20,17 +22,19 @@ namespace Neo4j
             client.Connect();
         }
 
-
-        public ClassifiableCollection query(ConceptString cstring)
+        public ClassifiableCollection getClassifiablesByConceptString(ConceptString cstring)
         {
+            this.open();
+
             var query = client.Cypher
                 .Match("(c:Classifiable)")
                 .Return(c => c.As<Classifiable>())
                 .Results;
 
-            // TODO: extract List<Classifiable> from query result
-
-            return null;
+            return new ClassifiableCollection
+            {
+                data = query.Cast<Classifiable>().ToList(),
+            };
         }
     }
 }

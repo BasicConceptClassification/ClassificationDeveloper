@@ -7,6 +7,18 @@ namespace BCCLib
 {
     public class Classifiable
     {
+        public string name
+        {
+            get;
+            set;
+        }
+
+        public string url
+        {
+            get;
+            set;
+        }
+
         public ConceptString conceptStr
         {
             get;
