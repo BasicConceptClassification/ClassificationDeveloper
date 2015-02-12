@@ -125,7 +125,6 @@
     <Content Include="Account\RegisterExternalLogin.aspx" />
     <Content Include="Classification.aspx" />
     <Content Include="Contact.aspx" />
-    <Content Include="Content\bootstrap.css" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\ExpandList.css" />
     <Content Include="Content\themes\base\images\ui-bg_flat_0_aaaaaa_40x100.png" />
