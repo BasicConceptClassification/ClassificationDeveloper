@@ -27,8 +27,10 @@ namespace Neo4jTest
 
             // TODO: Fix these test Asserts
             // Should rely on test data once that's set up
+            Assert.AreEqual(results.data.Count, 5);
             Assert.AreEqual(results.data[0].name, "Adze Head");
             Assert.AreEqual(results.data[0].url, "www");
+            Assert.AreEqual(results.data[0].tmpConceptStr, "someconcept");
         }
     }
 }

@@ -27,14 +27,32 @@ namespace Neo4j
             this.open();
 
             var query = client.Cypher
-                .Match("(c:Classifiable)")
-                .Return(c => c.As<Classifiable>())
+                .Match("(c:Classifiable)-[CLASSIFIED_TERMS]->(cs:ConceptString)")
+                .Return((c, cs) => new
+                {
+                    c = c.As<Classifiable>(),
+                    conceptString = Return.As<string>("cs.name"),
+                })
                 .Results;
 
-            return new ClassifiableCollection
-            {
-                data = query.Cast<Classifiable>().ToList(),
+            var finalResult = new ClassifiableCollection { 
+                data = new List<Classifiable>(),
             };
+            
+            foreach (var results in query)
+            {
+                
+                Classifiable dummy = new Classifiable
+                {
+                    name = query.ElementAt(0).c.name,
+                    url = query.ElementAt(0).c.url,
+                    tmpConceptStr = query.ElementAt(0).conceptString,
+                };
+
+                finalResult.data.Add(dummy);
+            }
+
+            return finalResult;
         }
     }
 }

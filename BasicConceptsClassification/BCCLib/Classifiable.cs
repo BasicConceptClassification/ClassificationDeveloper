@@ -18,7 +18,11 @@ namespace BCCLib
             get;
             set;
         }
-
+        public string tmpConceptStr
+        {
+            get;
+            set;
+        }
         public ConceptString conceptStr
         {
             get;
