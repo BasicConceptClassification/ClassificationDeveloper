@@ -1,34 +1,16 @@
-﻿<%@ Page Title="About" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="About.aspx.cs" Inherits="BCCApplication.About" %>
+﻿<%@ Page Title="About" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="About.aspx.cs" Inherits="About" %>
 
-<asp:Content runat="server" ID="BodyContent" ContentPlaceHolderID="MainContent">
-    <hgroup class="title">
-        <h1><%: Title %>.</h1>
-        <h2>Your app description page.</h2>
-    </hgroup>
-
-    <article>
-        <p>        
-            Use this area to provide additional information.
-        </p>
-
-        <p>        
-            Use this area to provide additional information.
-        </p>
-
-        <p>        
-            Use this area to provide additional information.
-        </p>
-    </article>
-
-    <aside>
-        <h3>Aside Title</h3>
-        <p>        
-            Use this area to provide additional information.
-        </p>
-        <ul>
-            <li><a runat="server" href="~/">Home</a></li>
-            <li><a runat="server" href="~/About">About</a></li>
-            <li><a runat="server" href="~/Contact">Contact</a></li>
-        </ul>
-    </aside>
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <div>
+        <center><h1>About</h1></center>
+        <p>Galleries, Libraries, Archives and Museums (GLAMs) around the world have databases that are ineffective to search
+            through due to isolated systems and a non-uniform vocabulary. <b><i>Basic Concepts Classification</i></b> hopes
+            to address both these problems with an easy to learn platform for classification and searching of the collections
+            of GLAMs around the world.</p>
+        <p>With this system, curators from different institutions will be able to add items to a centralized database, and all
+            users will be able to search through this database.</p>
+        <br />
+        <center><h1>Help</h1></center>
+        <p>How to use this site...</p>
+    </div>
 </asp:Content>

@@ -214,3 +214,10 @@ pip-log.txt
 
 #Mr Developer
 .mr.developer.cfg
+*.sdf
+BasicConceptsClassification/BasicConceptsClassification.sdf
+BasicConceptsClassification/BasicConceptsClassification.v12.suo
+*.sdf
+*.suo
+BasicConceptsClassification/BasicConceptsClassification.sdf
+BasicConceptsClassification/BasicConceptsClassification.v12.suo
