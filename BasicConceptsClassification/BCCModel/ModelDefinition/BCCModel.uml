@@ -1,5 +1,5 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner"
+<modelStoreModel xmlns:dm0="http://schemas.microsoft.com/VisualStudio/2008/DslTools/Core" xmlns:dm1="http://schemas.microsoft.com/dsltools/Kernel" xmlns:dm2="http://schemas.microsoft.com/dsltools/Component" xmlns:dm3="http://schemas.microsoft.com/dsltools/UseCase" xmlns:dm4="http://schemas.microsoft.com/dsltools/Activity" xmlns:dm5="http://schemas.microsoft.com/dsltools/Interaction" xmlns:dm6="http://schemas.microsoft.com/dsltools/UmlModelLibrary" xmlns:dm7="http://schemas.microsoft.com/dsltools/UmlDiagrams" xmlns:dm8="http://schemas.microsoft.com/dsltools/LogicalClassDesigner" xmlns:dm9="http://schemas.microsoft.com/VisualStudio/TeamArchitect/ComponentDesigner"
   dslVersion="1.0.0.0"
   Id="c006f3df-a72a-47d3-9890-e69f11ff77fc"
   name="BCCModel" xmlns="http://schemas.microsoft.com/dsltools/ModelStore">
@@ -322,6 +322,14 @@
         Id="39bb0c5b-8c1a-4383-9ef8-fc00be6c09f2"
         LastKnownName="Package1"
         LastKnownLocation="Package_1245.uml" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="b20867f9-89ab-4290-8865-18250b8bed36"
+        name="Component1"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false" />
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType

@@ -8,8 +8,7 @@
 
     <article>
         <p>        
-            Use this area to provide additional information.
-        </p>
+            Holy moley I&#39;m editing in a WYSIWYG EDITOR FUCK YES!</p>
 
         <p>        
             Use this area to provide additional information.

@@ -32,6 +32,13 @@
     <Content Include="ModelDefinition\Package_1245.uml">
       <SubType>Content</SubType>
     </Content>
+    <Content Include="UMLComponentDiagram1.componentdiagram">
+      <SubType>Content</SubType>
+    </Content>
+    <Content Include="UMLComponentDiagram1.componentdiagram.layout">
+      <SubType>Content</SubType>
+      <DependentUpon>UMLComponentDiagram1.componentdiagram</DependentUpon>
+    </Content>
     <Folder Include="ModelDefinition\" />
     <Content Include="ModelDefinition\BCCModel.uml">
       <SubType>Content</SubType>
