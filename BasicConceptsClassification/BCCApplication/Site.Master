@@ -19,7 +19,7 @@
     <header>
         <div class="content-wrapper">
             <div class="float-left">
-                <p class="site-title"><a runat="server" href="~/">your logo herenat="server" href="~/">your logo here</a></p>
+                <p class="site-title"><a runat="server" href="~/">Basic Concepts Classification</a></p>
             </div>
             <div class="float-right">
                 <section id="login">
