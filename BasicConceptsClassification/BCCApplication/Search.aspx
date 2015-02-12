@@ -20,6 +20,7 @@
             <a id="expandList">Expand All</a>
             <a id="collapseList">Collapse All</a>
         </div>
+        <a href="SearchResults.aspx" target="_self">Go to temp search results</a>
         <ul id="expList">
             <li>Biological Entities
                     <ul>

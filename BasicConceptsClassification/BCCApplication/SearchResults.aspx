@@ -1,16 +1,19 @@
-﻿<%@ Page Language="C#" AutoEventWireup="true" CodeBehind="SearchResults.aspx.cs" Inherits="BCCApplication.SearchResults" %>
+﻿<%@ Page Title="Search" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="SearchResults.aspx.cs" Inherits="SearchResults" %>
 
-<!DOCTYPE html>
 
-<html xmlns="http://www.w3.org/1999/xhtml">
-<head runat="server">
-    <title></title>
-</head>
-<body>
-    <form id="form1" runat="server">
+<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-    
+        <center><h1>Search Results</h1></center>
+        <br />
+        <center>
+            <form action="SearchResults.aspx" method="get">
+                Search Results:
+                <input type="search" name="BCCSearch" value ="[term1] [term2]"/>
+                <button type="submit" onclick="">Search</button>
+            </form>
+        </center>
     </div>
-    </form>
-</body>
-</html>
+    <div>
+
+    </div>
+</asp:Content>
