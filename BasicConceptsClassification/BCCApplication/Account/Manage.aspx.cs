@@ -7,10 +7,8 @@ using System.Web.UI.WebControls;
 using Microsoft.AspNet.Membership.OpenAuth;
 
 namespace BCCApplication.Account
-public partial class Account_Manage : System.Web.UI.Page
 {
     public partial class Manage : System.Web.UI.Page
-    protected void Page_Load(object sender, EventArgs e)
     {
         protected string SuccessMessage
         {
