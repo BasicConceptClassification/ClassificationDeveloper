@@ -1,7 +1,8 @@
-﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="BCCApplication.SiteMaster" %>
+﻿<<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="BCCApplication.SiteMaster" %>
 
 <!DOCTYPE html>
 <html lang="en">
+
 <head runat="server">
     <meta charset="utf-8" />
     <title><%: Page.Title %> - My ASP.NET Application</title>
@@ -12,6 +13,12 @@
     </asp:PlaceHolder>
     <meta name="viewport" content="width=device-width" />
     <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
+
+        <link rel="stylesheet" href="Content/ExpandList.css" type="text/css" media="screen, projection">
+        <script type="text/javascript" src="Scripts/jquery-1.4.2.min.js">
+        </script>
+        <script type="text/javascript" src="Scripts/scripts.js">
+        </script>
 </head>
 <body>
     <form runat="server">

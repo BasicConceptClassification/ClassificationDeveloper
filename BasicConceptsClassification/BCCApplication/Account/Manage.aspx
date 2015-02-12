@@ -1,16 +1,15 @@
 ﻿<%@ Page Title="Manage Account" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Manage.aspx.cs" Inherits="BCCApplication.Account.Manage" %>
+
 <%@ Register Src="~/Account/OpenAuthProviders.ascx" TagPrefix="uc" TagName="OpenAuthProviders" %>
 <%@ Import Namespace="Microsoft.AspNet.Membership.OpenAuth" %>
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
     <hgroup class="title">
         <h1><%: Title %>.</h1>
     </hgroup>
-
     <section id="passwordForm">
         <asp:PlaceHolder runat="server" ID="successMessage" Visible="false" ViewStateMode="Disabled">
             <p class="message-success"><%: SuccessMessage %></p>
         </asp:PlaceHolder>
-
         <p>You're logged in as <strong><%: User.Identity.Name %></strong>.</p>
 
         <asp:PlaceHolder runat="server" ID="setPassword" Visible="false">
@@ -27,10 +26,10 @@
                         <asp:RequiredFieldValidator runat="server" ControlToValidate="password"
                             CssClass="field-validation-error" ErrorMessage="The password field is required."
                             Display="Dynamic" ValidationGroup="SetPassword" />
-                        
+
                         <asp:Label runat="server" ID="newPasswordMessage" CssClass="field-validation-error"
                             AssociatedControlID="password" />
-                        
+
                     </li>
                     <li>
                         <asp:Label runat="server" AssociatedControlID="confirmPassword">Confirm password</asp:Label>
@@ -90,14 +89,21 @@
     </section>
 
     <section id="externalLoginsForm">
-        
+
         <asp:ListView runat="server" ID="externalLoginsList" ViewStateMode="Disabled"
             DataKeyNames="ProviderName,ProviderUserId" OnItemDeleting="externalLoginsList_ItemDeleting">
-        
+
             <LayoutTemplate>
                 <h3>Registered external logins</h3>
                 <table>
-                    <thead><tr><th>Service</th><th>User Name</th><th>Last Used</th><th>&nbsp;</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Service</th>
+                            <th>User Name</th>
+                            <th>Last Used</th>
+                            <th>&nbsp;</th>
+                        </tr>
+                    </thead>
                     <tbody>
                         <tr runat="server" id="itemPlaceholder"></tr>
                     </tbody>
@@ -105,16 +111,16 @@
             </LayoutTemplate>
             <ItemTemplate>
                 <tr>
-                    
+
                     <td><%# HttpUtility.HtmlEncode(Item<OpenAuthAccountData>().ProviderDisplayName) %></td>
                     <td><%# HttpUtility.HtmlEncode(Item<OpenAuthAccountData>().ProviderUserName) %></td>
                     <td><%# HttpUtility.HtmlEncode(ConvertToDisplayDateTime(Item<OpenAuthAccountData>().LastUsedUtc)) %></td>
                     <td>
-                        <asp:Button runat="server" Text="Remove" CommandName="Delete" CausesValidation="false" 
+                        <asp:Button runat="server" Text="Remove" CommandName="Delete" CausesValidation="false"
                             ToolTip='<%# "Remove this " + Item<OpenAuthAccountData>().ProviderDisplayName + " login from your account" %>'
                             Visible="<%# CanRemoveExternalLogins %>" />
                     </td>
-                    
+
                 </tr>
             </ItemTemplate>
         </asp:ListView>
