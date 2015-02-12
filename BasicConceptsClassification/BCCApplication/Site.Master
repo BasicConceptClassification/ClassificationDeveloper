@@ -1,18 +1,6 @@
-﻿<<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="BCCApplication.SiteMaster" %>
+﻿<%@ Master Language="C#" AutoEventWireup="true" CodeBehind="Site.master.cs" Inherits="BCCApplication.SiteMaster" %>
 
-<!DOCTYPE html>
-<html lang="en">
-
-<head runat="server">
-    <meta charset="utf-8" />
-    <title><%: Page.Title %> - My ASP.NET Application</title>
-    <link href="~/Content/Site.css" rel="stylesheet" /> 
-    <link href="favicon.ico" rel="shortcut icon" type="image/x-icon" />
-    <asp:PlaceHolder runat="server">        
-        <script src="<%: ResolveUrl("~/Scripts/modernizr-2.6.2.js") %>"></script>
-    </asp:PlaceHolder>
-    <meta name="viewport" content="width=device-width" />
-    <asp:ContentPlaceHolder runat="server" ID="HeadContent" />
+<!DOCTYPE html><html lang="en"><head runat="server"><meta charset="utf-8" /><title><%: Page.Title %> - My ASP.NET Application</title><link href="~/Content/Site.css" rel="stylesheet" /><link href="favicon.ico" rel="shortcut icon" type="image/x-icon" /><meta name="viewport" content="width=device-width" /><asp:ContentPlaceHolder runat="server" ID="HeadContent" />
 
         <link rel="stylesheet" href="Content/ExpandList.css" type="text/css" media="screen, projection">
         <script type="text/javascript" src="Scripts/jquery-1.4.2.min.js">
@@ -31,7 +19,7 @@
     <header>
         <div class="content-wrapper">
             <div class="float-left">
-                <p class="site-title"><a runat="server" href="~/">your logo here</a></p>
+                <p class="site-title"><a runat="server" href="~/">your logo herenat="server" href="~/">your logo here</a></p>
             </div>
             <div class="float-right">
                 <section id="login">
