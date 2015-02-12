@@ -1,0 +1,11 @@
+// STEP 1 - with unique constraint on name of a classifier 
+CREATE CONSTRAINT ON (c:Classifier) ASSERT c.name IS UNIQUE;
+
+// STEP 2 - remember to change the file
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM "file:c:/Users/Bronte/Desktop/DummyData/sampleClassifiers.csv"
+AS line
+MERGE (c:Classifier {name:line.Username})
+ON CREATE SET c.name = line.Username, 
+              c.email = line.Email, 
+			  c.password = line.Password 

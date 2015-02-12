@@ -1,0 +1,23 @@
+// Importing Classification
+// Thanks to: 
+// http://jexp.de/blog/2014/06/load-csv-into-neo4j-quickly-and-successfully/
+// for help with loading, finding the path and placing constraints
+
+// STEP 1: Place unique constraint since each term name must be unique
+CREATE CONSTRAINT ON (t:Term) ASSERT t.name IS UNIQUE;
+
+// STEP 2: Load the parents, if unique rule is exploited, just merge 
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM "file:c:/path/to/sampleTerms.csv"
+AS line
+MERGE (term:Term {name:line.Parent})
+ON CREATE SET term.name = line.Parent
+
+// STEP 3: Find parents, merge new children (since they are terms too)
+// and then make connections between them.
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM "file:c:/path/to/sampleTerms.csv"
+AS line
+MATCH (p:Term {name:line.Parent})
+MERGE (c:Term {name:line.Child})
+CREATE (c)-[:PART_OF]->(p)
