@@ -11,28 +11,112 @@
             <a id="collapseList">Collapse All</a>
         </div>
         <ul id="expList">
-            <li>Biological Entities
-                    <ul>
-                        <li>Biological Chemicals
-                        </li>
-                        <li>Biological Systems
-                        </li>
-                        <li>Cells
-                            <ul>
-                                <li>
-                                    <a href="http://www.yahoo.com" target="_blank">Eukaryotes</a>
-                                </li>
-                                <li>
-                                    <a href="http://www.yahoo.com" target="_blank">Prokaryotes</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>Complex Biological Compunds
-                        </li>
-                    </ul>
+            <li>artiface
+                <ul>
+                    <li>from
+                        <ul>
+                            <li>antler
+                                <ul>
+                                    <li>
+                                        <b>Antler Artifact</b><br />
+                                        Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>blade
+                <ul>
+                    <li>of
+                        <ul>
+                            <li>tool
+                                <ul>
+                                    <li>for
+                                        <ul>
+                                            <li>carving
+                                                <ul>
+                                                    <li>wood
+                                                        <ul>
+                                                            <li>
+                                                                <b>Adze Blade</b> <br />
+                                                                Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>clay
+                <ul>
+                    <li>for
+                        <ul>
+                            <li>building
+                                <ul>
+                                    <li>
+                                        <b>Adobe</b> <br />
+                                        Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>head
+                <ul>
+                    <li>of
+                        <ul>
+                            <li>tool
+                                <ul>
+                                    <li>for
+                                        <ul>
+                                            <li>carving
+                                                <ul>
+                                                    <li>wood
+                                                        <ul>
+                                                            <li>
+                                                                <b>Adze Head</b> <br />
+                                                                Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
+                                                            </li>
+                                                        </ul>
+                                                    </li>
+                                                </ul>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
+            </li>
+            <li>tool
+                <ul>
+                    <li>for
+                        <ul>
+                            <li>smoothing
+                                <ul>
+                                    <li>
+                                        <b>Abrader</b> <br />
+                                        Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </li>
+                </ul>
             </li>
         </ul>
-    </div>
+        </div>
     <div>
         <h3><a href="mailto:admin@example.com?subject=Term Suggestion">Suggest new term?</a></h3>
     </div>
