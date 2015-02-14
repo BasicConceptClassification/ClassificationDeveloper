@@ -1,0 +1,335 @@
+Abrader  (tool)(for)(smoothing)
+Adobe (clay)(for)(building)
+Adze Blade (blade)(of)(tool)(for)(carving)(wood) [there are similar tools like mattock going under quite different names]
+Adze Head (head?)(of)(tool)(for)(carving)(wood)
+Antler Artifact  (artifact)(from)(antler)
+Apache Tear (round)(nodules)(obsidian)
+Apron [might signal by name, or (clothing)(to protect)(clothing)
+Armor Slat  [It take a while to find out what this is. They are wooden slats tied together as armor by native Americans. Similar armor may have been used in other parts of the world?] (flat)(wood)(for)(armor)   armor is (protection)(for)(war)   [There were other kinds of native American armor: some used wooden rods tied together – this similarity will be captured by a synthetic approach; many used hides, sometimes hardened with other substances, sometimes padded with cotton – again a synthetic approach captures similarity and difference.]
+Arrow  (long)(round)(pointed)(projectile)(weapon) where (projectile) is (object)(propelled) [note that ‘bow’ is harder to describe.]  [A good place to talk about how we have to make decisions about when to stop breaking into more basic. It could well be that ‘bow’ and ‘arrow’ are best treated as basic, but defined in terms of other basic concepts]
+Arrow Foreshaft  (front)(long)(part of)(arrow)
+Arrow Shaft  (long)(part of)(arrow)
+Atlatl  (weapon)(for)(throwing)(spear)   [Note that a spear is really a big arrow. But they are fired in different ways]
+Atlatl Foreshaft
+Atlatl Shaft
+Awl  (long)(pointed)(spike) Note that there are different types of awl, which can be defined by use: (making)(holes)(in)(wood)   or (scratching/carving)(wood)  or  (making)(holes)(in)(leather)
+Axe  (tool)(for)(cutting)(wood)  [Note that it can cut other things; also be used for carving; also as a weapon]  [Better perhaps define by form: (sharp)(blade)(with)(long)(handle) Note that the big difference between adze and axe is whether blade is that the head of an adze is perpendicular to the shaft.
+ 
+Bag  [I think this is basic: (flexible)(container)(for)(carrying)] [then distinguish by material.]
+Bag Handle  (part of)(bag)((for)(carrying)
+Bag, Apron
+Bag, Awl
+Bag, Pipe
+Ball
+Band (flat)(thin)(strip)(for)(collecting?)
+Basket (container)(for)(carrying)(made of)(strips)(intertwined)
+Basket, Burden
+Basketry Fragment
+Basketry Fragment, Cord
+Basketry Fragment, Sherd
+Baton (short)(stick)   (for)(directing)(music)  (as)(symbol)(power) etc. [Note that baton on its own tells us little]
+Batten (long)(flat)(strip)(wood or metal)(for)(fastening)
+Bead (small)(round)(with)(hole)  [likely merits its own designation]
+Beaker (wide)(glass)(with)(pouring)(lip)
+Beam (long)(squared)(wood or metal)(support)(roof or floor)
+Beamer (bone)(implement)(for)(cutting or scraping) Mississippian
+Bell
+Belt
+Biface
+Blade
+Blank
+Blank, Disk
+Blanket
+Blouse
+Blubber Hook Prong
+Blubber Scraper
+Bola
+Bola Weight
+Bone Artifact
+Bottle
+Bottle, Water Bow
+Bow
+Bowl
+Bowl, Effigy
+Bowl, Rattle
+Bowl, Seed
+Bowl, Sherd
+Box
+Bracelet
+Brush
+Buckle
+Building Material
+Bull Roarer
+Bundle
+Bundle, Cord
+Burin
+Button
+Cane
+Cane Cigarette
+Canteen
+Canteen, Effigy
+Cauldron
+Censer
+Censer, Effigy
+Chisel
+Chopper
+Cigarette
+Clasp
+Clay Artifact
+Cleaver
+Club
+Colander
+Comb
+Concretion
+Container
+Coprolite
+Cord
+Cord/Bead
+Cordage
+Core
+Core, Chopper
+Core, Hammerstone
+Core Fragment
+Core/Microblade
+Core Tool
+Corn Husk Knot
+Corn Leaf Knot
+Cover
+Cover, Pot
+Cradle
+Cradle Board
+Cradle Board Belt
+Cradle Board Frame
+Crystal
+Cup
+Cylinder
+Dart, Atlatl
+Debitage
+Die
+Digging Stick
+Dipper
+Dipper Handle
+Dipper Sherd
+Discoid
+Discoid/Hammerstone
+Dish
+Disk
+Drill
+Endblade
+Effigy, Animal
+Effigy, Bird
+Effigy Jar, Horned Lizard
+Faunal Material
+Fetish
+Figurine
+Fire Drill
+Fire Drill Shaft
+Flake
+Flake, Retouched
+Flake Tool
+Flake, Utilized
+Flake, Waste
+Flaker
+Flesher
+Float
+Floral Material
+Flute
+Gaming Piece
+Gouge
+Gourd
+Gourd Jar
+Graver
+Grinding Slab
+Guard, Wrist
+Hairpin
+Hammerstone
+Handle
+Harpoon Foreshaft
+Harpoon Head
+Harpoon Part
+Harpoon Point
+Heddle Stick
+Hoe
+Hook
+Hoop
+Human Remains
+Ivory Artifact
+Jar
+Jar Base
+Jar, Cord
+Jar, Effigy
+Jar, Gourd
+Jar, Sherd
+Jar, Seed
+Jar, Seed, Bird Effigy
+Kiaha
+Kiaha Helping-stick
+Kilt
+Knife
+Knife Handle
+Knife, Tabular
+Knot
+Labret
+Ladder
+Ladle
+Ladle Rattle Handle
+Ladle, Effigy
+Lamp
+Leather Artifact
+Leister
+Lid
+Lime Container
+Line Weight
+Lintel
+Loom Anchor
+Loop
+Mano
+Mat
+Mat Fragment
+Mat/Basketry Fragment
+Mat/Cord
+Mattock Blade   [like adze but blunter blade]
+Maul
+Medal
+Medicine Box
+Medicine Stone
+Metate
+Microblade
+Moccasin
+Mug
+Nail
+Necklace
+Necklace/Bracelet
+Needle
+Needle Case
+Net
+Net Float
+Net, Burden
+Ojos de Dios
+Pad
+Paddle
+Palette
+Patch
+Pebble
+Pebble Tool
+Peg
+Pendant
+Pestle
+Pick
+Pick, Ice
+Pigment
+Pipe
+Pitcher
+Pitcher, Effigy
+Plank
+Plaque
+Plate
+Plate, Jar Base
+Plate, Legged
+Plate, Tripod
+Point, Bird
+Poncho
+Pot, Bird
+Pot Rest
+Pot Ring
+Pouch and Contents
+Prayer Feather
+Prayer Plume
+Prayer Stick
+Preform
+Projectile Point
+Punch
+Quid
+Quiver
+Rabbit Stick
+Rasp
+Rattle
+Raw Material
+Ring
+Ring Vessel
+Robe
+Robe/Belt
+Robe/Textile Fragment
+Rod
+Rope
+Rope/Cord
+Rope/Cord/Yarn
+Sample
+Sandal
+Sandal Last
+Sandal/Cord
+Saucer
+Scalp Lock
+NPS Museum Handbook, Part II (2000) E:13
+Scat
+Scoop
+Scoop, Effigy
+Scraper
+Scraper, End
+Scraper, Side
+Seed Beater
+Shaft
+Shaft Smoother
+Shawl
+Shell
+Sherd Artifact
+Sherd Disc
+Sherd
+Sherd, Worked
+Shirt
+Shovel Blade
+Sinew Twister
+Sinker
+Slab
+Sled Runner
+Sling
+Snare
+Snare Stick
+Snowshoe
+Sock
+Soil
+Spall
+Spear Point
+Spindle
+Spindle Stick
+Spindle Whorl
+Split Twig Figurine
+Spoon
+Stone Artifact
+Stone, Polishing
+Stopper
+Strainer
+Strip
+Tablita
+Textile
+Textile Artifact/Plaster Cast
+Thread
+Throwing Stick
+Tinkler
+Toggle
+Tooth Artifact
+Tooth Fragment
+Torch
+Tray
+Tube
+Tumbler
+Tump Strap
+Ulu Blade
+Ulu Handle
+Unidentified Artifact
+Vase
+Vegetal Artifact
+Vegetal Material
+Vessel
+Vessel, Effigy
+Weaving Stick
+Whetstone
+Whistle
+Wig/Cord
+Winged Object
+Wood Artifact
+Wristlet
+Yarn
+Yarn/Cord
+Yucca Knot
+Yucca Knot/Raw Material
