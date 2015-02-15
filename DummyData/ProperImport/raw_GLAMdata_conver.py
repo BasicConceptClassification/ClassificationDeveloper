@@ -59,7 +59,7 @@ for line in input_file:
 	output_line += "," 
 
 
-	output_line += "\"National Gallery (US)\",\"99999\"\n"
+	output_line += "\"https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service\",\"99999\"\n"
 
 	output_file.write(output_line)
 

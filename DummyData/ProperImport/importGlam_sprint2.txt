@@ -1,0 +1,27 @@
+// Use glam_output_hilights_combined.csv
+
+// ******* New import Commands for Neo4j ******* //
+CREATE CONSTRAINT ON (c:Classifiable) ASSERT c.id IS UNIQUE;
+
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 
+"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/ProperImport/glam_output_hilights_combined.csv"
+AS line
+MERGE (c:Classifiable {id:line.ItemId})
+ON CREATE SET c.id=line.ItemId, c.name = line.ItemName, c.url=line.Glam;
+
+// will do for now... 
+// need to not "add" nulls and only connect the ones that do have one
+// Right now, will connect to a NULL string
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 
+"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/ProperImport/glam_output_hilights_combined.csv"
+AS line
+MATCH (c:Classifiable {id:line.ItemId})
+MERGE (cs:ConceptString {text:line.ConceptString});
+
+
+
+// ******* Optional Queries ******* //
+// Query to get non-classifieds
+MATCH (a)-[:`HAS_CONSTR`]->(b{text:""}) RETURN a,b LIMIT 25
