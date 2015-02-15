@@ -34,6 +34,7 @@ import re
 DEBUG = False
 LIMIT = False
 i = 0
+items_found = 0
 limit = 200
 
 # Need input and output filenames provided
@@ -54,20 +55,26 @@ output_file.write("\"TermSubProperty\"\n")
 found_glam = False
 output_line = ""
 
+
+object_types = {}
+current_type = ""
+type_count = 0
+
 for line in owl_file:
 	# indicating start and end of a GLAM object
 	if "<!--" in line:
 		found_glam = True
 		output_line = ""
-	elif "</owl:" in line:
+	elif (found_glam) and ("</owl:" in line):
 		found_glam = False
+		output_line += "\n"
 		output_file.write(output_line)
-
+		items_found += 1
 		if DEBUG:
 			print(output_line)
 
 	# If the Id line...
-	if ("<owl:" in line ) and ("rdf:about" in line):
+	if (found_glam) and ("<owl:" in line ) and ("rdf:about" in line):
 		match = re.search('about=(.+?)>', line)
 		if match:
 			output_line = output_line + match.group(1) + ","
@@ -79,24 +86,44 @@ for line in owl_file:
 		match = re.search('<owl:(.+?) rdf:about', line)
 		if match:
 			output_line = output_line + match.group(1) + ","
+			
+			if match.group(1) != current_type:
+
+				object_types[current_type] = type_count
+				type_count = 0
+				current_type = match.group(1)
+			
+			else:
+				type_count += 1
 		else:
 			print("rdf:about - Missing this type:")
 			print(line)
 			sys.exit()
 	
 	# If the label line...
-	if "<rdfs:label" in line:
+	if (found_glam) and ("<rdfs:label" in line):
 		match = re.search('<rdfs:label>(.+?)</rdfs:label>', line)
 		if match:
-			output_line = output_line + "\"" + match.group(1) + "\"" + ","
+			output_line = output_line + "\"" + match.group(1) + "\""
 
 	# If the subpropertyId line...
-	if ("<rdfs:" in line) and ("rdf:resource=" in line):
+	if (found_glam) and ("<rdfs:" in line) and ("rdf:resource=" in line):
 		match = re.search('rdf:resource=(.+?)/>', line)
 		if match:
-			output_line += match.group(1) + "\n"
+			output_line += "," + match.group(1)
 
 	if LIMIT:
 		if i > limit:
 			break
-		i += 1
+	i += 1
+
+object_types[current_type] = type_count
+
+print("Total items: {0}\n".format(items_found))
+
+actual_items = 0
+for key in object_types.keys():
+	print("Type: {0}\tCount: {1}\n".format(key, object_types[key]))
+	actual_items += object_types[key]
+
+print("Total items actually found: {0}\n".format(actual_items))

@@ -1,0 +1,54 @@
+// Importing the Classification/Controlled Vocabulary
+// Thanks to: 
+// http://jexp.de/blog/2014/06/load-csv-into-neo4j-quickly-and-successfully/
+// for help with loading, finding the path and placing constraints
+
+// ******* Before Using! ******* //
+// WHAT THE SCRIPT WILL DO:
+// Will update the database constraints.
+// Load Terms and connect them
+//
+// WHAT YOU NEED TO DO:
+// Make sure the filepaths match to where your file actually is
+// Locally: slashes and case sensitivity for drives must match 
+// examples below
+//
+// Current issue: There are some terms with multiple parents. They are currently
+// connected to just the first one that was listed.
+
+// STEP 0: If you've added the old terms before, do this step
+// Otherwise, you can skip it. If it FAILS, it's OKAY.
+DROP CONSTRAINT ON (t:Term) ASSERT t.name IS UNIQUE;
+
+// STEP 0.1: If each Term has a unique Id
+// If it FAILS, it's FINE. You won't have to run this step again.
+CREATE CONSTRAINT ON (t:Term) ASSERT t.id IS UNIQUE;
+
+// STEP 1: Delete Previous Terms.
+// WIll take some time if you have already connected the terms
+MATCH (n:Term)
+OPTIONAL MATCH (n)-[r]-()
+DELETE n,r
+
+// STEP 2: Create the root term
+CREATE (t: Term {name:"ROOT TERM", id:"http://www.w3.org/2002/07/owl#Thing", type:"Root"});
+
+// STEP 3: This will take a little more time than usual. Creates about 2500 nodes!
+// Creates almost all the terms. 
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 
+"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importBCC/BCC_Sprint2.csv"
+AS line
+MERGE (term: Term {id:line.TermId})
+ON CREATE SET term.name = line.TermLabel, term.id = line.TermId, term.type=line.TermType;
+
+// STEP 4: THIS WILL TAKE SOME TIME! Depending on your computer, 
+// might take a few minutes to 10 minutes or even more... 
+// Connects the parent and children nodes.
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 
+"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importBCC/BCC_Sprint2.csv"
+AS line
+MATCH (c {id:line.TermId})
+MATCH (p {id:line.TermSubProperty})
+CREATE (c)-[:SUBTERM_OF]->(p);
