@@ -7,11 +7,11 @@
 // Genetic Predisposition, Health and population, Individual differences, Mathematical Concepts,
 // Molecules and Elements, Non-human Environment, Politics, Properties, Qualities, Rocks,
 // Social Structure, Technology and Science, Waves and Particles
-MATCH (b)-->(a {name:"ROOT TERM"}) WITH a, b
-ORDER BY b.name
+MATCH (b)-->(a {rawTerm:"ROOT TERM"}) WITH a, b
+ORDER BY b.rawTerm
 RETURN a,b LIMIT 25
 
 // WARNING - LOTS OF NODES!
 // Get 2 depth of the Root, "ROOT TERM"
 // NOTE: Change the LIMIT number to change the MAX number of nodes that can appear.
-MATCH (c)-->(b)-->(a {name:"ROOT TERM"}) RETURN a,b,c LIMIT 50
+MATCH (c)-->(b)-->(a {rawTerm:"ROOT TERM"}) RETURN a,b,c LIMIT 50

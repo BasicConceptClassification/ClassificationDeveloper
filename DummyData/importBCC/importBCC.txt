@@ -31,7 +31,7 @@ OPTIONAL MATCH (n)-[r]-()
 DELETE n,r
 
 // STEP 2: Create the root term
-CREATE (t: Term {name:"ROOT TERM", id:"http://www.w3.org/2002/07/owl#Thing", type:"Root"});
+CREATE (t: Term {rawTerm:"ROOT TERM", id:"http://www.w3.org/2002/07/owl#Thing", type:"Root"});
 
 // STEP 3: This will take a little more time than usual. Creates about 2500 nodes!
 // Creates almost all the terms. 
@@ -40,7 +40,7 @@ LOAD CSV WITH HEADERS FROM
 "file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importBCC/BCC_Sprint2.csv"
 AS line
 MERGE (term: Term {id:line.TermId})
-ON CREATE SET term.name = line.TermLabel, term.id = line.TermId, term.type=line.TermType;
+ON CREATE SET term.rawTerm = line.TermLabel, term.id = line.TermId, term.type=line.TermType;
 
 // STEP 4: THIS WILL TAKE SOME TIME! Depending on your computer, 
 // might take a few minutes to 10 minutes or even more... 

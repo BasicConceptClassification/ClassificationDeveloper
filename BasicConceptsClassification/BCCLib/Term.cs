@@ -13,7 +13,7 @@ namespace BCCLib
             set;
         }
 
-        public List<Term> subterms
+        public List<Term> subTerms
         {
             get;
             set;
