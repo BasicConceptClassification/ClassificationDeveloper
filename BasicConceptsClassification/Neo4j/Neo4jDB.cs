@@ -16,13 +16,21 @@ namespace Neo4j
         protected Uri dbLocation = new Uri("http://localhost:7474/db/data");
         protected GraphClient client;
 
+        /// <summary>
+        /// Open the connection to the database.
+        /// </summary>
         public void open()
         {
             client = new GraphClient(dbLocation);
             client.Connect();
         }
 
-        public ClassifiableCollection getClassifiablesByConceptString(ConceptString cstring)
+        /// <summary>
+        /// Queries the database to return Classifiables based on a ConceptString.
+        /// </summary>
+        /// <param name="cstring">A ConceptString to search by.</param>
+        /// <returns>Returns a ClassifiableCollection</returns>
+        public ClassifiableCollection getClassifiablesByConStr(ConceptString cstring)
         {
             this.open();
 
@@ -55,44 +63,76 @@ namespace Neo4j
             return finalResult;
         }
 
-        public Term getOneBccDepthAtTerm(Term term)
+        /// <summary>
+        /// Queries the database for a Term based on a raw term.
+        /// </summary>
+        /// <param name="rTerm">The raw term to search by.</param>
+        /// <returns>Returns a Term with its rawTerm and empty subTerm list 
+        /// if it exists, null otherwise.</returns>
+        public Term getTermByRaw(string rTerm)
         {
             this.open();
-            
-            // Query:
-            // MATCH (b)-->(a {name:"ROOT TERM"}) WITH a, b
-            // ORDER BY b.name
-            // RETURN a, b
-            var query = client.Cypher
-                .Match("(b:Term)-->(a:Term { rawTerm:{termStr} })")
-                .WithParam("termStr", term.rawTerm)
-                .With("a,b")
-                .OrderBy("b.rawTerm")
-                .Return((a, b) => new
-                {
-                    raw = Return.As<string>("a.rawTerm"),
-                    sub = Return.As<string>("b.rawTerm"),
-                })
-                .Results;
 
-            // set up raw term
-            var finalResult = new Term
+            if (client != null)
             {
-                rawTerm = query.ElementAt(0).raw,
-                subTerms = new List<Term>(),
-            };
+                // Query:
+                // MATCH (t:Term {rawTerm:{raw}})
+                // RETURN t
+                var query = client.Cypher
+                    .Match("( t:Term {rawTerm:{raw}} )")
+                    .WithParam("raw", rTerm)
+                    .Return((t) => new {
+                        trm = t.As<Term>(),
+                    })
+                    .Results.ToList();
 
-            // Construct sub terms
-            foreach (var result in query) {
-                Term dummyTerm = new Term
+                if (query.Count != 0)
                 {
-                    rawTerm = result.sub,
-                    subTerms = new List<Term>(),
-                };
-
-                finalResult.subTerms.Add( dummyTerm );
+                    return query[0].trm;
+                }
             }
-            return finalResult;
+            return null;
+        }
+
+        /// <summary>
+        /// Queries the database for the children of the provided Term.
+        /// </summary>
+        /// <param name="term">The Term to find the children of</param>
+        /// <returns>A List of the children in alphabetical order by rawTerm 
+        /// if they exist. Otherwise, returns an empty List of Terms.</returns>
+        public List<Term> getChildrenOfTerm(Term term)
+        {
+            this.open();
+
+            List<Term> children = new List<Term>();
+
+            if (client != null)
+            {
+                // Query:
+                // MATCH (:Term{rawTerm:{rawT}})<-[:SUBTERM_OF]-(a:Term) 
+                // WITH a 
+                // ORDER BY a.rawTerm 
+                // RETURN a
+                var query = client.Cypher
+                    .Match("(:Term{rawTerm:{rawT}})<-[:SUBTERM_OF]-(a:Term) ")
+                    .WithParam("rawT", term.rawTerm)
+                    .With("a")
+                    .OrderBy("a.rawTerm")
+                    .Return((a) => new
+                     {
+                         sub = Return.As<Term>("a"),
+                     })
+                    .Results.ToList();
+
+                if (query.Count != 0)
+                {
+                    foreach (var q in query) 
+                    {
+                        children.Add(q.sub);
+                    }
+                }
+            }
+            return children;
         }
     }
 }

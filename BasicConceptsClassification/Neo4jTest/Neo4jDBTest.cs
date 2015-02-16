@@ -22,10 +22,10 @@ namespace Neo4jTest
         [TestMethod]
         public void TestCSQuery()
         {
-            var Neo4jTestConnection = new Neo4jDB();
+            var TestConnection = new Neo4jDB();
 
             ClassifiableCollection results = 
-                Neo4jTestConnection.getClassifiablesByConceptString(new BCCLib.ConceptString());
+                TestConnection.getClassifiablesByConStr(new BCCLib.ConceptString());
 
             // TODO: Fix these test Asserts
             // Should rely on test data once that's set up
@@ -35,15 +35,22 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void getRootBccOneDepth()
+        public void TestGetTermByRaw()
         {
             var TestConnection = new Neo4jDB();
 
-            // We want to start at the root term, so here it is
-            Term rootTerm = new Term{
-                rawTerm = "ROOT TERM",
-                subTerms = new List<Term>(),
-            };
+            string rawT = "Art";
+            Term term1 = TestConnection.getTermByRaw(rawT);
+
+            Assert.AreEqual(rawT,term1.rawTerm);
+        }
+
+        [TestMethod]
+        public void TestGetChildrenOfTerm()
+        {
+            var TestConnection = new Neo4jDB();
+
+            string rootRaw = "ROOT TERM";
 
             // These are the rawTerms that are one depth away from the root.
             List<string> rootSubTerms = new List<string>
@@ -69,16 +76,48 @@ namespace Neo4jTest
                 "Waves and Particles",
             };
 
-            Term BccRootOneDepth = TestConnection.getOneBccDepthAtTerm(rootTerm);
+            Term rootTerm = TestConnection.getTermByRaw(rootRaw);
+
+            rootTerm.subTerms = TestConnection.getChildrenOfTerm(rootTerm);
 
             // Make sure they're the same length
-            Assert.AreEqual(rootSubTerms.Count, BccRootOneDepth.subTerms.Count);
-            
-            for (int i = 0; i < rootSubTerms.Count; i++ )
+            Assert.AreEqual(rootSubTerms.Count, rootTerm.subTerms.Count);
+
+            for (int i = 0; i < rootSubTerms.Count; i++)
             {
-                Assert.AreEqual(rootSubTerms.ElementAt(i), 
-                    BccRootOneDepth.subTerms.ElementAt(i).rawTerm);
+                Assert.AreEqual(rootSubTerms.ElementAt(i),
+                    rootTerm.subTerms.ElementAt(i).rawTerm);
+                // Should the children's subTerm list actually be Null?
+                Assert.IsNull(rootTerm.subTerms.ElementAt(1).subTerms);
             }
+        }
+
+        [TestMethod]
+        public void TestGetChildrenOfTermWithNoChildren()
+        {
+            var TestConnection = new Neo4jDB();
+            string rawT = "Biology";
+
+            Term Biology = TestConnection.getTermByRaw(rawT);
+            Assert.IsNotNull(Biology);
+
+            Biology.subTerms = TestConnection.getChildrenOfTerm(Biology);
+            Assert.AreEqual(0,Biology.subTerms.Count);
+        }
+
+        [TestMethod]
+        public void SearchForNonTerm()
+        {
+            var TestConnection = new Neo4jDB();
+
+            Term term = new Term
+            {
+                rawTerm = "I am NOT a Term",
+                subTerms = new List<Term>(),
+            };
+
+            Term resTerm = TestConnection.getTermByRaw(term.rawTerm);
+            Assert.IsNull(resTerm);
         }
     }
 }
