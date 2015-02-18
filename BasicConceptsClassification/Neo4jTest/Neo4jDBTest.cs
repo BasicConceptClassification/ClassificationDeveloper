@@ -43,6 +43,7 @@ namespace Neo4jTest
             Term term1 = TestConnection.getTermByRaw(rawT);
 
             Assert.AreEqual(rawT,term1.rawTerm);
+            Assert.IsNotNull(term1.subTerms);
         }
 
         [TestMethod]
@@ -118,6 +119,49 @@ namespace Neo4jTest
 
             Term resTerm = TestConnection.getTermByRaw(term.rawTerm);
             Assert.IsNull(resTerm);
+        }
+
+        [TestMethod]
+        public void TestGetBccFromTerm()
+        {
+            var TestConnection = new Neo4jDB();
+
+            string rawT = "Natural Sciences";
+            List<string> subT = new List<string>
+            {
+                "Biology",
+                "Chemistry",
+                "Computer science",
+                "Geology",
+                "Physics",
+            };
+
+            Term term = TestConnection.getTermByRaw(rawT);
+
+            Term testRoot = TestConnection.getBccFromTerm(term);
+
+            Assert.AreEqual(rawT, testRoot.rawTerm);
+            Assert.AreEqual(subT.Count, testRoot.subTerms.Count);
+
+            // TODO: sort both lists alphabetiically, make asserts cleaner.
+            // Expected results, not in a particular order.
+            // Natural Sciences - Biology, 
+            //                  - Chemistry
+            //                  - Physics
+            //                      - Atstronomy
+            //                  - Computer Science
+            //                  - Geology
+            Assert.AreEqual(subT[0], testRoot.subTerms[0].rawTerm);
+            Assert.AreEqual(0, testRoot.subTerms[0].subTerms.Count);
+            Assert.AreEqual(subT[1], testRoot.subTerms[3].rawTerm);
+            Assert.AreEqual(0, testRoot.subTerms[3].subTerms.Count);
+            Assert.AreEqual(subT[2], testRoot.subTerms[2].rawTerm);
+            Assert.AreEqual(0, testRoot.subTerms[2].subTerms.Count);
+            Assert.AreEqual(subT[3], testRoot.subTerms[1].rawTerm);
+            Assert.AreEqual(0, testRoot.subTerms[1].subTerms.Count);
+            Assert.AreEqual(subT[4], testRoot.subTerms[4].rawTerm);
+            Assert.AreEqual("astronomy", testRoot.subTerms[4].subTerms[0].rawTerm);
+            Assert.AreEqual(0, testRoot.subTerms[4].subTerms[0].subTerms.Count);
         }
     }
 }

@@ -43,13 +43,14 @@ namespace Neo4j
                 })
                 .Results;
 
-            var finalResult = new ClassifiableCollection { 
+            var finalResult = new ClassifiableCollection
+            {
                 data = new List<Classifiable>(),
             };
-      
+
             // Build up Classifiables
             foreach (var result in query)
-            {    
+            {
                 Classifiable dummy = new Classifiable
                 {
                     name = result.c.name,
@@ -81,13 +82,15 @@ namespace Neo4j
                 var query = client.Cypher
                     .Match("( t:Term {rawTerm:{raw}} )")
                     .WithParam("raw", rTerm)
-                    .Return((t) => new {
+                    .Return((t) => new
+                    {
                         trm = t.As<Term>(),
                     })
                     .Results.ToList();
 
                 if (query.Count != 0)
                 {
+                    query[0].trm.subTerms = getChildrenOfTerm(query[0].trm);
                     return query[0].trm;
                 }
             }
@@ -126,7 +129,7 @@ namespace Neo4j
 
                 if (query.Count != 0)
                 {
-                    foreach (var q in query) 
+                    foreach (var q in query)
                     {
                         children.Add(q.sub);
                     }
@@ -134,5 +137,62 @@ namespace Neo4j
             }
             return children;
         }
+
+
+        public Term getTermWithDepth(Term parentTerm, int depth)
+        {
+            // Query: 
+            // match p=(b:Term{rawTerm:{parentTerm}})<-[r:SUBTERM_OF*{depth}]-(a:Term) 
+            // return relationships(p);
+            // I think it's relationships that will help keep track of all this?
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the entire tree from the specified specified Term downwards.
+        /// </summary>
+        /// <param name="rootTerm">The term that will act as the root.</param>
+        /// <returns>A new(?) root term term with all of its children
+        /// as deep as it can go.</returns>
+        public Term getBccFromTerm(Term rootTerm)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                // Query:
+                // MATCH p=(pT:Term {rawTerm:{rawT}})<-[:SUBTERM_OF*]-(cT:Term)"
+                // WHERE not ( cT<-[:SUBTERM_OF]-() )
+                // return nodes(p)
+                // TODO: would like to have at each depth for everything to
+                // be sorted alphabetically.
+                var query = client.Cypher
+                    .Match("p=(pT:Term {rawTerm:{rawT}})<-[:SUBTERM_OF*]-(cT:Term)")
+                    .WithParam("rawT", rootTerm.rawTerm)
+                    .Where("not ( cT<-[:SUBTERM_OF]-() )")
+                    .Return(() => Return.As<List<Term>>("nodes(p)"))
+                    .Results.ToList();
+
+                if (query.Count != 0)
+                {
+                    Term resTree = new Term
+                    {
+                        id = query.ElementAt(0).ElementAt(0).id,
+                        rawTerm = query.ElementAt(0).ElementAt(0).rawTerm,
+                        subTerms = new List<Term>()
+                    };
+
+                    foreach (List<Term> path in query) 
+                    {
+                        path.RemoveAt(0);
+                        resTree.connectTermsFromList(path);
+                    }
+                    return resTree;
+                }
+            }
+            return null;
+        }
+
     }
+
 }
