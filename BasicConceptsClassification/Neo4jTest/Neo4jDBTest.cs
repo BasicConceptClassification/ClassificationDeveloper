@@ -175,7 +175,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void TestgetBccFromTermWIthDepth()
+        public void TestGetBccFromTermWIthDepth()
         {
             var TestConnection = new Neo4jDB();
 
