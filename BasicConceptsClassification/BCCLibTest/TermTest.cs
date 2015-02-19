@@ -34,6 +34,7 @@ namespace BCCLibTest
             Assert.AreEqual(subT, t.subTerms[index]);
         }
 
+        [TestMethod]
         public void TestHasSubTerm_NotFound()
         {
             Term t = new Term
@@ -64,6 +65,7 @@ namespace BCCLibTest
             Assert.AreEqual(-1, index);
         }
 
+        [TestMethod]
         public void TestHasSubTerm_NoSubTerms()
         {
             Term t = new Term
@@ -85,6 +87,7 @@ namespace BCCLibTest
             Assert.AreEqual(-1, index);
         }
 
+        [TestMethod]
         public void TestConnectTermsFromList() 
         {
             Term t = new Term
@@ -118,10 +121,24 @@ namespace BCCLibTest
             // Expect the following structure:
             // t.subTerms has subT, subT.subTerms has subT2 
             Assert.AreEqual(1, t.subTerms.Count);
-            Assert.AreEqual(subT, t.subTerms[0]);
+            Assert.AreEqual(subT.rawTerm, t.subTerms[0].rawTerm);
             Assert.AreEqual(1, t.subTerms[0].subTerms.Count);
-            Assert.AreEqual(subT2, t.subTerms[0].subTerms[0]);
+            Assert.AreEqual(subT2.rawTerm, t.subTerms[0].subTerms[0].rawTerm);
             Assert.AreEqual(0, t.subTerms[0].subTerms[0].subTerms.Count);
+        }
+    
+        [TestMethod]
+        public void TestToString()
+        {
+            Term t = new Term
+            {
+                id = "id01",
+                rawTerm = "Raw",
+                subTerms = new List<Term>(),
+            };
+
+            string raw = t.ToString();
+            Assert.AreEqual("(Raw)", raw);
         }
     }
 }

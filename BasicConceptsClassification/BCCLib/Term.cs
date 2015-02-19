@@ -11,13 +11,14 @@ namespace BCCLib
     /// </summary>
     public class Term
     {
-        // Terms currently have an "id" which was their Protege IRI. (Think URL.)
-        // Should switch to GUIDs eventually?
+        /// <summary>Terms currently have an "id" which was their Protege IRI. 
+        /// (Think URL.) Should switch to GUIDs eventually?</summary> 
         public string id
         {
             get;
             set;
         }
+ 
         /// <summary>
         /// The string content of the Term.
         /// </summary>
@@ -37,6 +38,15 @@ namespace BCCLib
         }
 
         /// <summary>
+        /// ToString() format: (rawTerm)
+        /// </summary>
+        /// <returns>Parenthesis of rawTerm.</returns>
+        public override string ToString()
+        {
+            return "(" + rawTerm.ToString() + ")";
+        }
+
+        /// <summary>
         /// Checks if the Term has the subTerm t. Compares by rawTerm. 
         /// Returns index in the subTerms.
         /// </summary>
@@ -50,7 +60,7 @@ namespace BCCLib
         /// <summary>
         /// Creates all terms along the list of terms provided, order from immediate
         /// subTerm to furthest subterm. The current term should NOT be included in 
-        /// the list of terms.
+        /// the list of terms. The list of terms passed in is NOT modified.
         /// </summary>
         /// <param name="tList">List of terms starting with the Term's immediate subterm
         /// that need to be added to the Term's subTerms.</param>
