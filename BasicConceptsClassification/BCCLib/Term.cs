@@ -37,6 +37,17 @@ namespace BCCLib
         }
 
         /// <summary>
+        /// Checks if the Term has the subTerm t. Compares by rawTerm. 
+        /// Returns index in the subTerms.
+        /// </summary>
+        /// <param name="t">Term to compare by.</param>
+        /// <returns>Index of the subTerm in the subTerm List, -1 if does not exist.</returns>
+        public int hasSubTerm(Term t)
+        {
+            return subTerms.FindIndex(0, subTerms.Count, a => a.rawTerm == t.rawTerm);
+        }
+
+        /// <summary>
         /// Creates all terms along the list of terms provided, order from immediate
         /// subTerm to furthest subterm. The current term should NOT be included in 
         /// the list of terms.
@@ -83,17 +94,6 @@ namespace BCCLib
                 this.subTerms.Add(newChild);
                 this.subTerms[this.subTerms.Count - 1].connectTermsFromList(trmList);
             }
-        }
-
-        /// <summary>
-        /// Checks if the Term has the subTerm t. Compares by rawTerm. 
-        /// Returns index in the subTerms.
-        /// </summary>
-        /// <param name="t">Term to compare by.</param>
-        /// <returns>Index of the subTerm in the subTerm List, -1 if does not exist.</returns>
-        public int hasSubTerm(Term t)
-        {
-            return subTerms.FindIndex(0, subTerms.Count, a => a.rawTerm == t.rawTerm);
         }
     }
 }
