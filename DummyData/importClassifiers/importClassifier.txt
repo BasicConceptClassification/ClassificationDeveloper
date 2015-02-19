@@ -15,7 +15,7 @@ DELETE n,r;
 // STEP 2: Add Classifiers
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 
-"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importClassifiers/sampleClassifiers.csv"
+"https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importClassifiers/sampleClassifiers.csv"
 AS line
 MERGE (c:Classifier {id:line.Uid})
 ON CREATE SET c.id = line.Uid,

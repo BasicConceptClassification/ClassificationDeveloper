@@ -4,8 +4,11 @@
 // Will delete ALL your old data
 // Load Classifiables, their Concept Strings and connect them
 //
-// WHAT YOU NEED TO DO:
+// WHAT YOU (may) NEED TO DO:
 // Make sure the filepaths match to where your file actually is
+// Right now they're defaulted using what we have on our repo. So if that 
+// does not work, then you will need to the path so you load it from your
+// machine.
 // Locally: slashes and case sensitivity for drives must match 
 // examples below
 
@@ -27,7 +30,7 @@ DELETE n,r;
 // Load Classifiables
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 
-"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importClassifiables/classifiables_hilights_combined.csv"
+"https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importClassifiables/classifiables_hilights_combined.csv"
 AS line
 MERGE (c:Classifiable {id:line.ItemId})
 ON CREATE SET c.id=line.ItemId, c.name = line.ItemName, c.url=line.Glam;
@@ -39,7 +42,7 @@ ON CREATE SET c.id=line.ItemId, c.name = line.ItemName, c.url=line.Glam;
 // to find
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 
-"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importClassifiables/classifiables_hilights_combined.csv"
+"https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importClassifiables/classifiables_hilights_combined.csv"
 AS line
 MATCH (c:Classifiable {id:line.ItemId})
 MERGE (cs:ConceptString {terms:line.ConceptString})

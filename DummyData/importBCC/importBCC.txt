@@ -8,8 +8,11 @@
 // Will update the database constraints.
 // Load Terms and connect them
 //
-// WHAT YOU NEED TO DO:
+// WHAT YOU (may) NEED TO DO:
 // Make sure the filepaths match to where your file actually is
+// Right now they're defaulted using what we have on our repo. So if that 
+// does not work, then you will need to the path so you load it from your
+// machine.
 // Locally: slashes and case sensitivity for drives must match 
 // examples below
 //
@@ -37,7 +40,7 @@ CREATE (t: Term {rawTerm:"ROOT TERM", id:"http://www.w3.org/2002/07/owl#Thing", 
 // Creates almost all the terms. 
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 
-"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importBCC/BCC_Sprint2.csv"
+"https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importBCC/BCC_Sprint2.csv"
 AS line
 MERGE (term: Term {id:line.TermId})
 ON CREATE SET term.rawTerm = line.TermLabel, term.id = line.TermId, term.type=line.TermType;
@@ -47,7 +50,7 @@ ON CREATE SET term.rawTerm = line.TermLabel, term.id = line.TermId, term.type=li
 // Connects the parent and children nodes.
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 
-"file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importBCC/BCC_Sprint2.csv"
+"https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importBCC/BCC_Sprint2.csv"
 AS line
 MATCH (c {id:line.TermId})
 MATCH (p {id:line.TermSubProperty})
