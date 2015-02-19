@@ -86,10 +86,8 @@ namespace Neo4jTest
 
             for (int i = 0; i < rootSubTerms.Count; i++)
             {
-                Assert.AreEqual(rootSubTerms.ElementAt(i),
-                    rootTerm.subTerms.ElementAt(i).rawTerm);
-                // Should the children's subTerm list actually be Null?
-                Assert.IsNull(rootTerm.subTerms.ElementAt(1).subTerms);
+                Assert.AreEqual(rootSubTerms.ElementAt(i), rootTerm.subTerms.ElementAt(i).rawTerm);
+                Assert.AreEqual(0, rootTerm.subTerms.ElementAt(1).subTerms.Count);
             }
         }
 
@@ -107,7 +105,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void SearchForNonTerm()
+        public void TestSearchForNonTerm()
         {
             var TestConnection = new Neo4jDB();
 
@@ -119,6 +117,18 @@ namespace Neo4jTest
 
             Term resTerm = TestConnection.getTermByRaw(term.rawTerm);
             Assert.IsNull(resTerm);
+
+            List<Term> resTerm2 = TestConnection.getChildrenOfTerm(term);
+            Assert.AreEqual(0, resTerm2.Count);
+
+            Term resTerm3 = TestConnection.getBccFromTermWithDepth(term, 0);
+            Assert.IsNull(resTerm3);
+
+            Term resTerm4 = TestConnection.getBccFromTermWithDepth(term, 2);
+            Assert.IsNull(resTerm4);
+
+            Term resTerm5 = TestConnection.getBccFromTerm(term);
+            Assert.IsNull(resTerm5);
         }
 
         [TestMethod]
@@ -138,7 +148,7 @@ namespace Neo4jTest
 
             Term term = TestConnection.getTermByRaw(rawT);
 
-            Term testRoot = TestConnection.getBccFromTerm(term);
+            Term testRoot = TestConnection.getBccFromTermWithDepth(term, -1);
 
             Assert.AreEqual(rawT, testRoot.rawTerm);
             Assert.AreEqual(subT.Count, testRoot.subTerms.Count);
@@ -163,5 +173,28 @@ namespace Neo4jTest
             Assert.AreEqual("astronomy", testRoot.subTerms[4].subTerms[0].rawTerm);
             Assert.AreEqual(0, testRoot.subTerms[4].subTerms[0].subTerms.Count);
         }
+
+        [TestMethod]
+        public void TestgetBccFromTermWIthDepth()
+        {
+            var TestConnection = new Neo4jDB();
+
+            string rawT = "Waves and Particles";
+
+            Term term = TestConnection.getTermByRaw(rawT);
+
+            Term testRoot = TestConnection.getBccFromTermWithDepth(term, 2);
+
+            // "Waves and Particles" has subTerms, and each of those subTerms
+            // also has subTerms. Makes it a bit easier to test that we only get 
+            // a depth of 2 for results when the subTerm results are (currently) 
+            // not organized alphabetically. 
+            Assert.AreEqual(rawT, testRoot.rawTerm);
+            Assert.AreEqual(6, testRoot.subTerms.Count);
+            Assert.AreNotEqual(0, testRoot.subTerms[0].subTerms.Count);
+            Assert.AreEqual(0, testRoot.subTerms[0].subTerms[0].subTerms.Count);
+        }
+
+
     }
 }

@@ -7,8 +7,6 @@ using BCCLib;
 using Neo4jClient;
 using Neo4jClient.Cypher;
 
-using System.Diagnostics;
-
 namespace Neo4j
 {
     public class Neo4jDB
@@ -98,9 +96,10 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Queries the database for the children of the provided Term.
+        /// Queries the database for the sub terms for the provided Term.
+        /// Each sub term found will have an empty subTerm List of Terms.
         /// </summary>
-        /// <param name="term">The Term to find the children of</param>
+        /// <param name="term">The Term to find the children of.</param>
         /// <returns>A List of the children in alphabetical order by rawTerm 
         /// if they exist. Otherwise, returns an empty List of Terms.</returns>
         public List<Term> getChildrenOfTerm(Term term)
@@ -131,21 +130,12 @@ namespace Neo4j
                 {
                     foreach (var q in query)
                     {
+                        q.sub.subTerms = new List<Term>();
                         children.Add(q.sub);
                     }
                 }
             }
             return children;
-        }
-
-
-        public Term getTermWithDepth(Term parentTerm, int depth)
-        {
-            // Query: 
-            // match p=(b:Term{rawTerm:{parentTerm}})<-[r:SUBTERM_OF*{depth}]-(a:Term) 
-            // return relationships(p);
-            // I think it's relationships that will help keep track of all this?
-            return null;
         }
 
         /// <summary>
@@ -163,9 +153,11 @@ namespace Neo4j
                 // Query:
                 // MATCH p=(pT:Term {rawTerm:{rawT}})<-[:SUBTERM_OF*]-(cT:Term)"
                 // WHERE not ( cT<-[:SUBTERM_OF]-() )
-                // return nodes(p)
+                // RETURN nodes(p)
+                // Thanks to: http://wes.skeweredrook.com/cypher-longest-path/
                 // TODO: would like to have at each depth for everything to
                 // be sorted alphabetically.
+                // And as long as there isn't any CYCLES, this should be fine...
                 var query = client.Cypher
                     .Match("p=(pT:Term {rawTerm:{rawT}})<-[:SUBTERM_OF*]-(cT:Term)")
                     .WithParam("rawT", rootTerm.rawTerm)
@@ -182,7 +174,74 @@ namespace Neo4j
                         subTerms = new List<Term>()
                     };
 
-                    foreach (List<Term> path in query) 
+                    foreach (List<Term> path in query)
+                    {
+                        path.RemoveAt(0);
+                        resTree.connectTermsFromList(path);
+                    }
+                    return resTree;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets the Classification from the requested term down to the requested
+        /// depth. If the intention is to get the entire tree, it is MUCH better
+        /// to use the other one, which this will call by default if a bizarre
+        /// depth is given.
+        /// <para>A depth of 0 will just return the Term itself.</para>
+        /// <param name="rootTerm">The term that will act as the root.</param>
+        /// <param name="depth">How much depth the sub terms of the root term
+        /// will have.</param>
+        /// <returns>A new(?) Term as the root with all of its sub terms 
+        /// going as deep as the specified depth.</returns>
+        public Term getBccFromTermWithDepth(Term rootTerm, int depth)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                // Don't really want to build it this way, but for now?
+                string matchStr = "p=(pT:Term {rawTerm: {rawT} })<-[:SUBTERM_OF*";
+                if (depth >= 0)
+                {
+                    matchStr += "0.." + depth.ToString();
+                }
+                // If this method is called with some non-sensical integer, 
+                // it's just going to call getBccFromTErm and you're getting 
+                // all the sub terms.
+                else 
+                {
+                    return this.getBccFromTerm(rootTerm);
+                }
+                matchStr += "]-(cT:Term)";
+
+                // Query I would like::
+                // MATCH p=(pT:Term {rawTerm:{rawT}})<-[:SUBTERM_OF*{depth}]-(cT:Term)"
+                // WHERE not ( cT<-[:SUBTERM_OF]-() )
+                // RETURN nodes(p)
+                // But only using WithParams() and not string formatting.
+                // "[:SUBTERM*{depth}]" to be "[:SUBTERM_OF*0..{depth}]"
+                // Unfortunately this gives repeated paths: (a)->(b), (a)->(b)->(c).
+                // Haven't figured out how to get a similar result to the 
+                // getBccFromTerm() method below which only gets the longest path.
+                var queryRes = client.Cypher
+                    .Match(matchStr)
+                    .WithParam("rawT", rootTerm.rawTerm)
+                    .Return(() => Return.As<List<Term>>("nodes(p)"))
+                    .Results.ToList();
+
+                if (queryRes.Count != 0)
+                {
+                    Term resTree = new Term
+                    {
+                        id = queryRes.ElementAt(0).ElementAt(0).id,
+                        rawTerm = queryRes.ElementAt(0).ElementAt(0).rawTerm,
+                        subTerms = new List<Term>()
+                    };
+
+                    foreach (List<Term> path in queryRes) 
                     {
                         path.RemoveAt(0);
                         resTree.connectTermsFromList(path);
@@ -194,5 +253,4 @@ namespace Neo4j
         }
 
     }
-
 }
