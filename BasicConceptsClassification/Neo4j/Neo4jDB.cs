@@ -64,6 +64,8 @@ namespace Neo4j
 
         /// <summary>
         /// Queries the database for a Term based on a raw term.
+        /// <para>Do not use to get the root term pf the BCC. 
+        /// Use getRootTerm() instead.</para>
         /// </summary>
         /// <param name="rTerm">The raw term to search by.</param>
         /// <returns>Returns a Term with its rawTerm and empty subTerm list 
@@ -96,6 +98,43 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Queries the database for a Term based on lower, the lower
+        /// case version of a Term's raw term.
+        /// <para>Do not use to get the root term pf the BCC. 
+        /// Use getRootTerm() instead.</para>
+        /// </summary>
+        /// <param name="rTerm">The lower case form of a raw term 
+        /// to search by.</param>
+        /// <returns>Returns a Term with its rawTerm and empty subTerm list 
+        /// if it exists, null otherwise.</returns>
+        public Term getTermByLower(string lower)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                // Query:
+                // MATCH (t:Term {rawTerm:{raw}})
+                // RETURN t
+                var query = client.Cypher
+                    .Match("( t:Term {lower:{lower}} )")
+                    .WithParam("lower", lower)
+                    .Return((t) => new
+                    {
+                        trm = t.As<Term>(),
+                    })
+                    .Results.ToList();
+
+                if (query.Count != 0)
+                {
+                    query[0].trm.subTerms = getChildrenOfTerm(query[0].trm);
+                    return query[0].trm;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Queries the database for the sub terms for the provided Term.
         /// Each sub term found will have an empty subTerm List of Terms.
         /// </summary>
@@ -111,12 +150,12 @@ namespace Neo4j
             if (client != null)
             {
                 // Query:
-                // MATCH (:Term{rawTerm:{rawT}})<-[:SUBTERM_OF]-(a:Term) 
+                // MATCH ({rawTerm:{rawT}})<-[:SUBTERM_OF]-(a:Term) 
                 // WITH a 
                 // ORDER BY a.rawTerm 
                 // RETURN a
                 var query = client.Cypher
-                    .Match("(:Term{rawTerm:{rawT}})<-[:SUBTERM_OF]-(a:Term) ")
+                    .Match("({rawTerm:{rawT}})<-[:SUBTERM_OF]-(a:Term) ")
                     .WithParam("rawT", term.rawTerm)
                     .With("a")
                     .OrderBy("a.rawTerm")
@@ -151,7 +190,7 @@ namespace Neo4j
             if (client != null)
             {
                 // Query:
-                // MATCH p=(pT:Term {rawTerm:{rawT}})<-[:SUBTERM_OF*]-(cT:Term)"
+                // MATCH p=(pT {rawTerm:{rawT}})<-[:SUBTERM_OF*]-(cT:Term)"
                 // WHERE not ( cT<-[:SUBTERM_OF]-() )
                 // RETURN nodes(p)
                 // Thanks to: http://wes.skeweredrook.com/cypher-longest-path/
@@ -159,7 +198,7 @@ namespace Neo4j
                 // be sorted alphabetically.
                 // And as long as there isn't any CYCLES, this should be fine...
                 var query = client.Cypher
-                    .Match("p=(pT:Term {rawTerm:{rawT}})<-[:SUBTERM_OF*]-(cT:Term)")
+                    .Match("p=(pT {rawTerm:{rawT}})<-[:SUBTERM_OF*]-(cT:Term)")
                     .WithParam("rawT", rootTerm.rawTerm)
                     .Where("not ( cT<-[:SUBTERM_OF]-() )")
                     .Return(() => Return.As<List<Term>>("nodes(p)"))
@@ -167,13 +206,17 @@ namespace Neo4j
 
                 if (query.Count != 0)
                 {
+                    // Recreate the root term
                     Term resTree = new Term
                     {
                         id = query.ElementAt(0).ElementAt(0).id,
                         rawTerm = query.ElementAt(0).ElementAt(0).rawTerm,
+                        lower = query.ElementAt(0).ElementAt(0).lower,
                         subTerms = new List<Term>()
                     };
 
+                    // Connect the subterms from a list. Remove first since
+                    // it's the root term.
                     foreach (List<Term> path in query)
                     {
                         path.RemoveAt(0);
@@ -203,7 +246,7 @@ namespace Neo4j
             if (client != null)
             {
                 // Don't really want to build it this way, but for now?
-                string matchStr = "p=(pT:Term {rawTerm: {rawT} })<-[:SUBTERM_OF*";
+                string matchStr = "p=(pT {rawTerm: {rawT} })<-[:SUBTERM_OF*";
                 if (depth >= 0)
                 {
                     matchStr += "0.." + depth.ToString();
@@ -218,7 +261,7 @@ namespace Neo4j
                 matchStr += "]-(cT:Term)";
 
                 // Query I would like::
-                // MATCH p=(pT:Term {rawTerm:{rawT}})<-[:SUBTERM_OF*{depth}]-(cT:Term)"
+                // MATCH p=(pT {rawTerm:{rawT}})<-[:SUBTERM_OF*{depth}]-(cT:Term)"
                 // WHERE not ( cT<-[:SUBTERM_OF]-() )
                 // RETURN nodes(p)
                 // But only using WithParams() and not string formatting.
@@ -234,13 +277,17 @@ namespace Neo4j
 
                 if (queryRes.Count != 0)
                 {
+                    // Recreate the root term
                     Term resTree = new Term
                     {
                         id = queryRes.ElementAt(0).ElementAt(0).id,
                         rawTerm = queryRes.ElementAt(0).ElementAt(0).rawTerm,
+                        lower = queryRes.ElementAt(0).ElementAt(0).lower,
                         subTerms = new List<Term>()
                     };
 
+                    // Connect the subterms from a list. Remove first since
+                    // it's the root term.
                     foreach (List<Term> path in queryRes) 
                     {
                         path.RemoveAt(0);
@@ -252,5 +299,48 @@ namespace Neo4j
             return null;
         }
 
+        /// <summary>
+        /// Get the root term of the BCC.
+        /// </summary>
+        /// <returns>The Term that is the root of the BCC.</returns>
+        public Term getRootTerm()
+        {
+            this.open();
+
+            if (client != null)
+            {
+                // Query:
+                // MATCH (top:BccRoot)
+                // RETURN top
+                var query = client.Cypher
+                    .Match("(top:BccRoot)")
+                    .Return(() => Return.As<Term>("top"))
+                    .Results.ToList();
+
+                if (query != null)
+                {
+                    query.ElementAt(0).subTerms = new List<Term>();
+                    return query.ElementAt(0);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Get the BCC from the root to the specified depth.
+        /// </summary>
+        /// <param name="depth">Depth of the subTerms of the root.</param>
+        /// <returns>The BCC Root Term with the specified subTerm 
+        /// depth. Returns null if there was issues.</returns>
+        public Term getBccFromRootWithDepth(int depth)
+        {
+            Term tmpRoot = getRootTerm();
+
+            if (tmpRoot != null)
+            {
+                return getBccFromTermWithDepth(tmpRoot, depth);
+            }
+            return tmpRoot;
+        }
     }
 }

@@ -43,6 +43,22 @@ namespace Neo4jTest
             Term term1 = TestConnection.getTermByRaw(rawT);
 
             Assert.AreEqual(rawT,term1.rawTerm);
+            Assert.AreEqual("art", term1.lower);
+            Assert.IsNotNull(term1.id);
+            Assert.IsNotNull(term1.subTerms);
+        }
+
+        [TestMethod]
+        public void TestGetTermByLower()
+        {
+            var TestConnection = new Neo4jDB();
+
+            string lower = "art";
+            Term term1 = TestConnection.getTermByLower(lower);
+
+            Assert.AreEqual(lower, term1.lower);
+            Assert.AreEqual("Art", term1.rawTerm);
+            Assert.IsNotNull(term1.id);
             Assert.IsNotNull(term1.subTerms);
         }
 
@@ -175,7 +191,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void TestGetBccFromTermWIthDepth()
+        public void TestGetBccFromTermWithDepth()
         {
             var TestConnection = new Neo4jDB();
 
@@ -194,7 +210,50 @@ namespace Neo4jTest
             Assert.AreNotEqual(0, testRoot.subTerms[0].subTerms.Count);
             Assert.AreEqual(0, testRoot.subTerms[0].subTerms[0].subTerms.Count);
         }
+    
+        [TestMethod]
+        public void TestGetRootTerm()
+        {
+            var TestConnection = new Neo4jDB();
 
+            Term rootTerm = TestConnection.getRootTerm();
 
+            Assert.IsNotNull(rootTerm);
+            Assert.AreEqual("bccRoot", rootTerm.id);
+            Assert.AreEqual("bccroot", rootTerm.lower);
+            Assert.AreEqual("BccRoot", rootTerm.rawTerm);
+            Assert.IsNotNull(rootTerm.subTerms);
+            Assert.AreEqual(0, rootTerm.subTerms.Count);
+        }
+
+        [TestMethod]
+        public void TestGetBccFromRootWithDepth()
+        {
+            Term term1 = new Term
+            {
+                rawTerm = "ROOT TERM",
+            };
+
+            Term term2 = new Term
+            {
+                rawTerm = "TOP OBJECT PROPERTY",
+            };
+
+            Term term3 = new Term
+            {
+                rawTerm = "Not a Real Term",
+            };
+
+            var TestConnection = new Neo4jDB();
+
+            Term bccRoot = TestConnection.getBccFromRootWithDepth(1);
+
+            Assert.IsNotNull(bccRoot);
+            Assert.AreEqual("bccroot", bccRoot.lower);
+            Assert.IsNotNull(bccRoot.subTerms.Count);
+            Assert.IsNotNull(bccRoot.hasSubTerm(term1));
+            Assert.IsNotNull(bccRoot.hasSubTerm(term2));
+            Assert.IsNotNull(bccRoot.hasSubTerm(term3));
+        }
     }
 }

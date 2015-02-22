@@ -29,6 +29,15 @@ namespace BCCLib
         }
 
         /// <summary>
+        /// The lower case version of rawTerm.
+        /// </summary>
+        public String lower
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// A list of sub Terms (children) of the Term.
         /// </summary>
         public List<Term> subTerms
