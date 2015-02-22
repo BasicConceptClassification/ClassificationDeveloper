@@ -13,8 +13,9 @@
 // Right now they're defaulted using what we have on our repo. So if that 
 // does not work, then you will need to the path so you load it from your
 // machine.
-// Locally: slashes and case sensitivity for drives must match 
-// examples below
+// Locally: slashes and case sensitivity for drives should be like the following 
+// example:
+// "file:c:/Users/Bronte/Source/Repos/ClassyDev/DummyData/importBCC/BCC_Sprint2.csv"
 //
 // Current issue: There are some terms with multiple parents. They are currently
 // connected to just the first one that was listed.
@@ -33,10 +34,7 @@ MATCH (n:Term)
 OPTIONAL MATCH (n)-[r]-()
 DELETE n,r
 
-// STEP 2: Create the root term
-CREATE (t: Term {rawTerm:"ROOT TERM", id:"http://www.w3.org/2002/07/owl#Thing", type:"Root"});
-
-// STEP 3: This will take a little more time than usual. Creates about 2500 nodes!
+// STEP 2: This will take a little more time than usual. Creates about 2500 nodes!
 // Creates almost all the terms. 
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 
@@ -45,13 +43,13 @@ AS line
 MERGE (term: Term {id:line.TermId})
 ON CREATE SET term.rawTerm = line.TermLabel, term.id = line.TermId, term.type=line.TermType;
 
-// STEP 4: THIS WILL TAKE SOME TIME! Depending on your computer, 
-// might take a few minutes to 10 minutes or even more... 
+// STEP 3: THIS WILL TAKE SOME TIME! Depending on your computer, 
+// might take a few minutes 
 // Connects the parent and children nodes.
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 
 "https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importBCC/BCC_Sprint2.csv"
 AS line
-MATCH (c {id:line.TermId})
 MATCH (p {id:line.TermSubProperty})
+MATCH (c {id:line.TermId})
 CREATE (c)-[:SUBTERM_OF]->(p);
