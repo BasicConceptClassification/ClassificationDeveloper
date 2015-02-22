@@ -36,12 +36,13 @@ DELETE n,r
 
 // STEP 2: This will take a little more time than usual. Creates about 2500 nodes!
 // Creates almost all the terms. 
+// LOWER to make merging by name easier for classifiables
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 
 "https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importBCC/BCC_Sprint2.csv"
 AS line
 MERGE (term: Term {id:line.TermId})
-ON CREATE SET term.rawTerm = line.TermLabel, term.id = line.TermId, term.type=line.TermType;
+ON CREATE SET term.rawTerm = line.TermLabel, term.id = line.TermId, term.lower = LOWER(line.TermLabel);
 
 // STEP 3: THIS WILL TAKE SOME TIME! Depending on your computer, 
 // might take a few minutes 
@@ -53,3 +54,11 @@ AS line
 MATCH (p {id:line.TermSubProperty})
 MATCH (c {id:line.TermId})
 CREATE (c)-[:SUBTERM_OF]->(p);
+
+// Step 4: Create the actual root of the BCC
+CREATE (t:BccRoot {rawTerm:"BccRoot", id:"bccRoot", lower:"bccroot"});
+
+// Step 5: Then connect all those Terms without a parent to the BccRoot
+MATCH (t:Term), (top:BccRoot {id:"bccRoot"})
+WHERE NOT (t)-[:SUBTERM_OF]->()
+MERGE (t)-[:SUBTERM_OF]->(top);
