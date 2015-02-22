@@ -45,5 +45,5 @@ LOAD CSV WITH HEADERS FROM
 "https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importClassifiables/classifiables_hilights_combined.csv"
 AS line
 MATCH (c:Classifiable {id:line.ItemId})
-MERGE (cs:ConceptString {terms:TRIM(line.ConceptString}))
+MERGE (cs:ConceptString {terms: TRIM(line.ConceptString) })
 CREATE (c)-[:HAS_CONSTR]->(cs);

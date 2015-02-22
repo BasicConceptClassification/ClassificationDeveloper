@@ -23,6 +23,7 @@ MATCH (cs)-[:`HAS_TERM`]->(t{lower:"wood"}) RETURN cs, t LIMIT 25;
 MATCH (cs)-[:`HAS_TERM`]->(t{lower:"for"}) RETURN cs, t LIMIT 25;
 
 // Get the terms of the very root of the bcc
+// EXPECTED: 13 terms, 12 relationships
 MATCH (t)-[:SUBTERM_OF]->(top:BccRoot {id:"bccRoot"}) RETURN t, top
 
 // Check for any terms with no parent.
