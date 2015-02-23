@@ -251,7 +251,6 @@ namespace Neo4jTest
             Assert.AreEqual(rawT, testRoot.rawTerm);
             Assert.AreEqual(subT.Count, testRoot.subTerms.Count);
 
-            // TODO: sort both lists alphabetiically, make asserts cleaner.
             // Expected results, not in a particular order.
             // Natural Sciences - Biology, 
             //                  - Chemistry
@@ -259,17 +258,20 @@ namespace Neo4jTest
             //                      - Atstronomy
             //                  - Computer Science
             //                  - Geology
-            Assert.AreEqual(subT[0], testRoot.subTerms[0].rawTerm);
-            Assert.AreEqual(0, testRoot.subTerms[0].subTerms.Count);
-            Assert.AreEqual(subT[1], testRoot.subTerms[3].rawTerm);
-            Assert.AreEqual(0, testRoot.subTerms[3].subTerms.Count);
-            Assert.AreEqual(subT[2], testRoot.subTerms[2].rawTerm);
-            Assert.AreEqual(0, testRoot.subTerms[2].subTerms.Count);
-            Assert.AreEqual(subT[3], testRoot.subTerms[1].rawTerm);
-            Assert.AreEqual(0, testRoot.subTerms[1].subTerms.Count);
-            Assert.AreEqual(subT[4], testRoot.subTerms[4].rawTerm);
-            Assert.AreEqual("astronomy", testRoot.subTerms[4].subTerms[0].rawTerm);
-            Assert.AreEqual(0, testRoot.subTerms[4].subTerms[0].subTerms.Count);
+            foreach (string rT in subT)
+            {
+                Term tmp = new Term 
+                {
+                    rawTerm = rT,
+                };
+                int index = testRoot.hasSubTerm(tmp);
+                Assert.AreNotEqual(-1, index);
+
+                if (rawT == "Physics") 
+                {
+                    Assert.AreEqual("astronomy", testRoot.subTerms[index].subTerms[0].rawTerm);
+                }
+            }
         }
 
         [TestMethod]
