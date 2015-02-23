@@ -52,7 +52,7 @@ namespace BCCLib
         /// <returns>Parenthesis of rawTerm.</returns>
         public override string ToString()
         {
-            return "(" + rawTerm.ToString() + ")";
+            return "(" + rawTerm + ")";
         }
 
         /// <summary>

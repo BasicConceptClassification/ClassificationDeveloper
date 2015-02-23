@@ -6,6 +6,8 @@ using BCCLib;
 using System.Collections.Generic;
 using System.Linq;
 
+using System.Diagnostics;
+
 namespace Neo4jTest
 {
     [TestClass]
@@ -20,18 +22,46 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void TestGetClassifiableById()
+        {
+            var TestConn = new Neo4jDB();
+
+            int id = 2;
+            
+            Classifiable classy = TestConn.getClassifiableById(id);
+
+            Assert.IsNotNull(classy);
+            Assert.AreEqual(id.ToString(), classy.id);
+            Assert.AreEqual("Adze Blade", classy.name);
+            Assert.AreEqual(6, classy.conceptStr.terms.Count);
+            Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", classy.conceptStr.ToString());
+        }
+
+        [TestMethod]
+        public void TestGetClassifiableById_NotClassified()
+        {
+            Assert.IsNotNull(null);
+        }
+
+        [TestMethod]
+        public void TestGetClassiableByName() 
+        {
+            Assert.IsNotNull(null);
+        }
+
+        [TestMethod]
         public void TestCSQuery()
         {
             var TestConnection = new Neo4jDB();
 
             ClassifiableCollection results = 
-                TestConnection.getClassifiablesByConStr(new BCCLib.ConceptString());
+                TestConnection.getClassifiablesByConStr(new ConceptString());
 
             // TODO: Fix these test Asserts
             // Should rely on test data once that's set up
+            Assert.IsNotNull(results);
             Assert.AreEqual(results.data[0].name, "Abrader");
-            Assert.AreEqual(results.data[0].url, "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
-            Assert.IsNull(results.data[0].tmpConceptStr, "");
+            Assert.AreEqual("(tool)(for)(smoothing)", results.data[0].tmpConceptStr);
         }
 
         [TestMethod]

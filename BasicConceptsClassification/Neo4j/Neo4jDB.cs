@@ -6,6 +6,8 @@ using System.Text;
 using BCCLib;
 using Neo4jClient;
 using Neo4jClient.Cypher;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 
 namespace Neo4j
 {
@@ -24,6 +26,88 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Gets a Classifiables by id
+        /// </summary>
+        /// <param name="id">The id of the Classifiable</param>
+        /// <returns>A Classifiable with the given id.</returns>
+        public Classifiable getClassifiableById(int id) 
+        {
+            this.open();
+            if (client != null)
+            {
+                string searchId = id.ToString();
+
+                // Query:
+                // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
+                // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
+                // RETURN 	c, 
+		        //          cs,
+		        //          COLLECT ([t.rawTerm, t.id]) as ts
+                var query = client.Cypher
+                    .Match("(c:Classifiable{id:{id}})-[:HAS_CONSTR]->(cs)")
+                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
+                    .WithParam("id", searchId)
+                    .Return((c, t) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                        terms = Return.As<IEnumerable<string>>("COLLECT([t.id, t.rawTerm, t.lower])"),
+                    }).Results.SingleOrDefault();
+
+                if (query != null) {
+                    // TODO: reorder terms to match concept string
+                    ConceptString resConStr = new ConceptString
+                    {
+                        terms = new List<Term>(),
+                    };
+
+                    // Thanks muchy to the example:
+                    // https://github.com/neo4j-contrib/developer-resources/blob/gh-pages/language-guides/dotnet/neo4jclient/Neo4jDotNetDemo/Controllers/MovieController.cs
+                    foreach (var item in query.terms) 
+                    {   
+                        var tempData = JsonConvert.DeserializeObject<dynamic>(item);
+
+                        var tmpTerm = new Term
+                        {
+                            id = tempData[0],
+                            rawTerm = tempData[1],
+                            lower = tempData[2],
+                            subTerms = new List<Term>(),
+                        };
+
+                        resConStr.terms.Add(tmpTerm);   
+                    }
+
+                    // A bit of a hack for now. But it maintains order because of
+                    // ...some reason.
+                    resConStr.terms.Reverse();
+
+                    // Build the Classifiable
+                    Classifiable resClassifiable = new Classifiable 
+                    {
+                        id = query.classifiable.id,
+                        name = query.classifiable.name,
+                        url = query.classifiable.url,
+                        conceptStr = resConStr,
+                    };
+                    return resClassifiable;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Gets a Classifiables by name. Since names are not unique,
+        /// can get multiples.
+        /// </summary>
+        /// <param name="name">The name of the Classifiable</param>
+        /// <returns></returns>
+        public ClassifiableCollection getClassifiablesByName(string name)
+        {
+
+            return null;
+        }
+
+        /// <summary>
         /// Queries the database to return Classifiables based on a ConceptString.
         /// </summary>
         /// <param name="cstring">A ConceptString to search by.</param>
@@ -32,34 +116,37 @@ namespace Neo4j
         {
             this.open();
 
-            var query = client.Cypher
-                .Match("(c:Classifiable)-[HAS_CONSTR]->(cs:ConceptString)")
-                .Return((c, cs) => new
-                {
-                    c = c.As<Classifiable>(),
-                    conceptString = Return.As<string>("cs.name"),
-                })
-                .Results;
-
-            var finalResult = new ClassifiableCollection
+            if (client != null)
             {
-                data = new List<Classifiable>(),
-            };
+                var query = client.Cypher
+                    .Match("(c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)")
+                    .Return((c, cs) => new
+                    {
+                        c = c.As<Classifiable>(),
+                        conceptString = Return.As<string>("cs.terms"),
+                    })
+                    .Results;
 
-            // Build up Classifiables
-            foreach (var result in query)
-            {
-                Classifiable dummy = new Classifiable
+                var finalResult = new ClassifiableCollection
                 {
-                    name = result.c.name,
-                    url = result.c.url,
-                    tmpConceptStr = result.conceptString,
+                    data = new List<Classifiable>(),
                 };
 
-                finalResult.data.Add(dummy);
-            }
+                // Build up Classifiables
+                foreach (var result in query)
+                {
+                    Classifiable dummy = new Classifiable
+                    {
+                        name = result.c.name,
+                        url = result.c.url,
+                        tmpConceptStr = result.conceptString,
+                    };
 
-            return finalResult;
+                    finalResult.data.Add(dummy);
+                }
+                return finalResult;
+            }
+            return null;
         }
 
         /// <summary>

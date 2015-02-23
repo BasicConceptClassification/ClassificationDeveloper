@@ -27,7 +27,6 @@ namespace BCCLib
             foreach (Term t in terms)
             {
                 result += t.ToString();
-                result += " ";
             }
             return result;
         }

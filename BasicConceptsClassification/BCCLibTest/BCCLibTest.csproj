@@ -53,6 +53,7 @@
     <Compile Include="TermTest.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ClassifiableCollectionTest.cs" />
+    <Compile Include="ConceptStringTest.cs" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\BCCLib\BCCLib.csproj">
