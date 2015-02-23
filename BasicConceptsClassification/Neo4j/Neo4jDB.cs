@@ -42,7 +42,7 @@ namespace Neo4j
                 // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
                 // RETURN 	c, 
 		        //          cs,
-		        //          COLLECT ([t.rawTerm, t.id]) as ts
+		        //          COLLECT ([t]) as ts
                 var query = client.Cypher
                     .Match("(c:Classifiable{id:{id}})-[:HAS_CONSTR]->(cs)")
                     .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
@@ -105,7 +105,7 @@ namespace Neo4j
                 // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
                 // RETURN 	c, 
                 //          cs,
-                //          COLLECT ([t.rawTerm, t.id]) as ts
+                //          COLLECT ([t]) as ts
                 var query = client.Cypher
                     .Match("(c:Classifiable{name:{name}})-[:HAS_CONSTR]->(cs)")
                     .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
@@ -194,44 +194,135 @@ namespace Neo4j
 
         /// <summary>
         /// Queries the database to return Classifiables based on a ConceptString.
+        /// Use the limit and skip parameters to page the results. 
         /// </summary>
-        /// <param name="cstring">A ConceptString to search by.</param>
-        /// <returns>Returns a ClassifiableCollection</returns>
-        public ClassifiableCollection getClassifiablesByConStr(ConceptString cstring)
+        /// <param name="cstring">A Concepttring to search by.</param>
+        /// <param name="optLimit">Default 25. Should be an integer greater than 0.
+        /// Indicate how many results to be returned at max.
+        /// Set to 0 if you want all the results with at least one match.</param>
+        /// <param name="optSkip">Default 0. Should be a positive integer.
+        /// Indicates how many results from the top should be
+        /// skipped. Set to 0 if no results should be skipped.</param>
+        /// <returns>Returns a ClassifiableCollection where each Classifiable's 
+        /// ConceptSring has at least one matching term from </returns>
+        public ClassifiableCollection getClassifiablesByConStr(ConceptString conStr, int optLimit = 25, int optSkip = 0)
         {
+
+            ClassifiableCollection resColl = new ClassifiableCollection
+            {
+                data = new List<Classifiable>(),
+            };
+                
             this.open();
 
             if (client != null)
             {
-                var query = client.Cypher
-                    .Match("(c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)")
-                    .Return((c, cs) => new
-                    {
-                        c = c.As<Classifiable>(),
-                        conceptString = Return.As<string>("cs.terms"),
-                    })
-                    .Results;
+                int limit = 25;
+                int skip = 0;
 
-                var finalResult = new ClassifiableCollection
+                if (optLimit > 0)
                 {
-                    data = new List<Classifiable>(),
-                };
-
-                // Build up Classifiables
-                foreach (var result in query)
-                {
-                    Classifiable dummy = new Classifiable
-                    {
-                        name = result.c.name,
-                        url = result.c.url,
-                        tmpConceptStr = result.conceptString,
-                    };
-
-                    finalResult.data.Add(dummy);
+                    limit = optLimit;
                 }
-                return finalResult;
+                if (optSkip > 0)
+                {
+                    skip = optSkip;
+                }
+
+                // Building one of the following:
+                // WHERE ( { t.id= {id_0}) OR .. OR (t.id = id_n } )
+                // WHERE ( { t.rawTerm = {rawTerm_0}) OR .. OR (t.rawTerm = rawTerm_n } )
+                // if going by rawTerms, maybe try to match by lower?
+                string whereClause = "";
+
+                foreach (Term t in conStr.terms)
+                {
+                    whereClause += String.Format(" (t.rawTerm = \"{0}\") OR", t.rawTerm);
+                }
+
+                whereClause += " (t.rawTerm = \"\")";
+
+                // Query idea - first part will collect, but not ordered
+                // by the number of matches. Second query does. Not sure what needs
+                // to be carried over/returned, but anyways...
+                // Ref: http://architects.dzone.com/articles/neo4jcypher-combining-count
+                // Query:
+
+                // MATCH (c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)
+                // WHERE ( { t.rawTerm = {rawTerm_0}) OR .. OR (t.rawTerm = rawTerm_n } )
+                // WITH DISTINCT    c, 
+                //                  cs, 
+                //                  COUNT([t]) AS numMatched
+
+                // MATCH (c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t2:Term)
+                // WITH DISTINCT    c, 
+                //                  cs, 
+                //                  COLLECT([t2]) AS matchedTerms,
+                //                  numMatched
+             
+                // RETURN c.name, matchedTerms
+                // ORDER BY numMatched DESC
+                // SKIP {skip} LIMIT {limit}
+                var query = client.Cypher
+                    .Match("(c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
+                    .Where(whereClause)
+                    .With("DISTINCT c, cs, COUNT([t]) AS numMatched")
+                    .Match("(c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t2:Term)")
+                    .With("DISTINCT c, t2, numMatched")
+                    .OrderBy("numMatched DESC")
+                    .Return((c, t2) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                        terms = t2.CollectAs<Term>(),
+                    })
+                    .Skip(skip)
+                    .Limit(limit)
+                    .Results.ToList();
+
+                if (query != null)
+                {
+                    // Build up Classifiables
+                    foreach (var res in query)
+                    {
+                   
+                        // TODO: reorder terms to match concept string,
+                        // other than the simple reversal later...
+                        ConceptString resConStr = new ConceptString
+                        {
+                            terms = new List<Term>(),
+                        };
+                     
+                        // Get the terms from the concept string
+                        foreach (var t in res.terms)
+                        {
+                            Term tmp = new Term
+                            {
+                                rawTerm = t.Data.rawTerm,
+                                id = t.Data.id,
+                                lower = t.Data.lower,
+                            };
+
+                            tmp.subTerms = new List<Term>();
+                            resConStr.terms.Add(tmp);
+                        }
+                       
+                        // A bit of a hack for now. But it maintains order because of
+                        // ...some reason.
+                        resConStr.terms.Reverse();
+                        
+                        Classifiable cTmp = new Classifiable
+                        {
+                            name = res.classifiable.name,
+                            id = res.classifiable.id,
+                            url = res.classifiable.url,
+                            conceptStr = resConStr,
+                        };
+
+                        resColl.data.Add(cTmp);
+                    }
+                }
             }
-            return null;
+            return resColl;
         }
 
         /// <summary>

@@ -102,18 +102,50 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void TestCSQuery()
+        public void TestGetClassifiableByConceptString()
         {
             var TestConnection = new Neo4jDB();
 
-            ClassifiableCollection results = 
-                TestConnection.getClassifiablesByConStr(new ConceptString());
+            Term termWood = new Term
+            {
+                rawTerm = "wood",
+            };
 
-            // TODO: Fix these test Asserts
-            // Should rely on test data once that's set up
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            Term termFor = new Term
+            {
+                rawTerm = "for",
+            };
+
+            // good where clause: 
+            // WHERE t.rawTerm = "wood" OR t.rawTerm = "for" OR t.rawTerm = "Tool"
+            // but put in ids and not rawTerms, since ids are unique....
+            // Maybe. Unless we want all kinds of say, "Beautiful"
+            ConceptString searchCS = new ConceptString
+            {
+                terms = new List<Term> 
+                {
+                    termWood, termTool, termFor,
+                },
+            };
+            
+            ClassifiableCollection results = TestConnection.getClassifiablesByConStr(searchCS);
+ 
             Assert.IsNotNull(results);
-            Assert.AreEqual(results.data[0].name, "Abrader");
-            Assert.AreEqual("(tool)(for)(smoothing)", results.data[0].tmpConceptStr);
+
+            // Only tests that each Classifiable's ConceptString does contain at least one of the
+            // terms that was searched by.
+            foreach (var classy in results.data)
+            {
+                bool test = classy.conceptStr.ToString().Contains(termWood.rawTerm) || 
+                            classy.conceptStr.ToString().Contains(termTool.rawTerm) ||
+                            classy.conceptStr.ToString().Contains(termFor.rawTerm);
+                Assert.IsTrue(test);
+            }
         }
 
         [TestMethod]
