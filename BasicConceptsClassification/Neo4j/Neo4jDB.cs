@@ -257,10 +257,10 @@ namespace Neo4j
                 // MATCH (c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t2:Term)
                 // WITH DISTINCT    c, 
                 //                  cs, 
-                //                  COLLECT([t2]) AS matchedTerms,
+                //                  COLLECT([t2]) AS terms,
                 //                  numMatched
              
-                // RETURN c.name, matchedTerms
+                // RETURN c AS classifiable, terms
                 // ORDER BY numMatched DESC
                 // SKIP {skip} LIMIT {limit}
                 var query = client.Cypher
