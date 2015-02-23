@@ -50,7 +50,7 @@ namespace Neo4j
                     .Return((c, t) => new
                     {
                         classifiable = c.As<Classifiable>(),
-                        terms = Return.As<IEnumerable<string>>("COLLECT([t.id, t.rawTerm, t.lower])"),
+                        terms = t.CollectAs<Term>(),
                     }).Results.SingleOrDefault();
 
                 if (query != null) {
@@ -62,34 +62,20 @@ namespace Neo4j
 
                     // Thanks muchy to the example:
                     // https://github.com/neo4j-contrib/developer-resources/blob/gh-pages/language-guides/dotnet/neo4jclient/Neo4jDotNetDemo/Controllers/MovieController.cs
-                    foreach (var item in query.terms) 
-                    {   
-                        var tempData = JsonConvert.DeserializeObject<dynamic>(item);
 
-                        var tmpTerm = new Term
-                        {
-                            id = tempData[0],
-                            rawTerm = tempData[1],
-                            lower = tempData[2],
-                            subTerms = new List<Term>(),
-                        };
-
-                        resConStr.terms.Add(tmpTerm);   
-                    }
+                     foreach (var t in query.terms)
+                     {
+                            t.Data.subTerms = new List<Term>();
+                            resConStr.terms.Add(t.Data);
+                     }
 
                     // A bit of a hack for now. But it maintains order because of
                     // ...some reason.
                     resConStr.terms.Reverse();
 
-                    // Build the Classifiable
-                    Classifiable resClassifiable = new Classifiable 
-                    {
-                        id = query.classifiable.id,
-                        name = query.classifiable.name,
-                        url = query.classifiable.url,
-                        conceptStr = resConStr,
-                    };
-                    return resClassifiable;
+                    query.classifiable.conceptStr = resConStr;
+
+                    return query.classifiable;
                 }
             }
             return null;
@@ -97,14 +83,113 @@ namespace Neo4j
 
         /// <summary>
         /// Gets a Classifiables by name. Since names are not unique,
-        /// can get multiples.
+        /// can get multiple results. If there are no results, the List will
+        /// be empty.
         /// </summary>
         /// <param name="name">The name of the Classifiable</param>
-        /// <returns></returns>
+        /// <returns>A ClassifiableCollection with its list of Classifiables
+        /// if any Classifiables exist, otherwise the list will be empty.
+        /// </returns>
         public ClassifiableCollection getClassifiablesByName(string name)
         {
+            ClassifiableCollection resColl = new ClassifiableCollection
+            {
+                data = new List<Classifiable>(),
+            };
 
-            return null;
+            this.open();
+            if (client != null)
+            {
+                // Query:
+                // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
+                // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
+                // RETURN 	c, 
+                //          cs,
+                //          COLLECT ([t.rawTerm, t.id]) as ts
+                var query = client.Cypher
+                    .Match("(c:Classifiable{name:{name}})-[:HAS_CONSTR]->(cs)")
+                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
+                    .WithParam("name", name)
+                    .Return((c, t) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                        terms = t.CollectAs<Term>(),
+                    }).Results.ToList();
+
+                if (query != null)
+                {
+                    foreach (var res in query)
+                    {
+                        // TODO: reorder terms to match concept string,
+                        // other than the simple reversal later...
+                        ConceptString resConStr = new ConceptString
+                        {
+                            terms = new List<Term>(),
+                        };
+
+                        // Getthe terms from the concept string
+                        foreach (var t in res.terms)
+                        {
+                            t.Data.subTerms = new List<Term>();
+                            resConStr.terms.Add(t.Data);
+                        }
+
+                        // A bit of a hack for now. But it maintains order because of
+                        // ...some reason.
+                        resConStr.terms.Reverse();
+
+                        res.classifiable.conceptStr = resConStr;
+                        
+                        resColl.data.Add(res.classifiable);
+                    }
+                }
+            }
+            return resColl;
+        }
+
+        /// <summary>
+        /// Get all the Classifiables that are not classified.
+        /// <para>Classifiables returned are not associated with whoever
+        /// added them.</para>
+        /// </summary>
+        /// <returns>A ClassifiableCollection with Classifiables that have
+        /// not been classified. If all have been classified then the 
+        /// the collection will be empty.</returns>
+        public ClassifiableCollection getAllUnClassified()
+        {
+            ClassifiableCollection resColl = new ClassifiableCollection
+            {
+                data = new List<Classifiable>(),
+            };
+
+            this.open();
+            if (client != null)
+            {
+                // Query 
+                // MATCH (c:Classifiable)-[:`HAS_CONSTR`]->(cs:ConceptString {terms:""}) 
+                // RETURN c, cs
+                var query = client.Cypher
+                    .Match("(c:Classifiable)-[:`HAS_CONSTR`]->(cs:ConceptString {terms:\"\"})")
+                    .Return((c) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                    })
+                    .Results.ToList();
+
+                if (query != null)
+                {
+                    foreach (var res in query) 
+                    {
+                        res.classifiable.conceptStr = new ConceptString
+                        {
+                            terms = new List<Term>(),
+                        };
+
+                        resColl.data.Add(res.classifiable);
+                    }
+                }
+            }
+            return resColl;
         }
 
         /// <summary>

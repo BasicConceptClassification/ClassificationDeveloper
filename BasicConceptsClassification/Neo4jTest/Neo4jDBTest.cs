@@ -27,7 +27,6 @@ namespace Neo4jTest
             var TestConn = new Neo4jDB();
 
             int id = 2;
-            
             Classifiable classy = TestConn.getClassifiableById(id);
 
             Assert.IsNotNull(classy);
@@ -40,13 +39,66 @@ namespace Neo4jTest
         [TestMethod]
         public void TestGetClassifiableById_NotClassified()
         {
-            Assert.IsNotNull(null);
+            var TestConn = new Neo4jDB();
+
+            int id = 14;
+            Classifiable classy = TestConn.getClassifiableById(id);
+
+            Assert.IsNotNull(classy);
+            Assert.AreEqual(id.ToString(), classy.id);
+            Assert.AreEqual(0, classy.conceptStr.terms.Count);
+            Assert.AreEqual("", classy.conceptStr.ToString());
+        }
+
+        [TestMethod]
+        public void TestGetClassifiableById_NotInDb()
+        {
+            var TestConn = new Neo4jDB();
+
+            int id = 909090;
+            Classifiable classy = TestConn.getClassifiableById(id);
+
+            Assert.IsNull(classy);
+        }
+
+        [TestMethod]
+        public void TestGetClassifiableByName_NotInDb()
+        {
+            var TestConn = new Neo4jDB();
+
+            string name = "909090";
+            ClassifiableCollection classyColl = TestConn.getClassifiablesByName(name);
+
+            Assert.IsNotNull(classyColl);
+            Assert.AreEqual(0, classyColl.data.Count);
         }
 
         [TestMethod]
         public void TestGetClassiableByName() 
         {
-            Assert.IsNotNull(null);
+            var TestConn = new Neo4jDB();
+
+            string searchName = "Adze Blade";
+            ClassifiableCollection classyColl = TestConn.getClassifiablesByName(searchName);
+
+            Assert.IsNotNull(classyColl.data);
+            Assert.AreEqual(searchName, classyColl.data[0].name);
+            Assert.AreEqual(6, classyColl.data[0].conceptStr.terms.Count);
+            Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", classyColl.data[0].conceptStr.ToString());
+        }
+
+        [TestMethod]
+        public void TestGetAllUnClassified()
+        {
+            var TestConn = new Neo4jDB();
+
+            ClassifiableCollection classyColl = TestConn.getAllUnClassified();
+
+            foreach (var classy in classyColl.data)
+            {
+                Assert.AreEqual(0, classy.conceptStr.terms.Count);
+                Assert.AreEqual("", classy.conceptStr.ToString());
+            }
         }
 
         [TestMethod]
