@@ -103,7 +103,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetClassifiableByConceptString_ClassifiablesMatch()
+        public void GetClassifiablesByConceptString_Ordered_ClassifiablesMatch()
         {
             var conn = new Neo4jDB();
 
@@ -134,7 +134,7 @@ namespace Neo4jTest
                 },
             };
             
-            ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr);
+            ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr, ordered: true);
  
             Assert.IsNotNull(matchedClassifiables);
 
@@ -143,6 +143,53 @@ namespace Neo4jTest
             foreach (var classifiable in matchedClassifiables.data)
             {
                 bool test = classifiable.conceptStr.ToString().Contains(termWood.rawTerm) || 
+                            classifiable.conceptStr.ToString().Contains(termTool.rawTerm) ||
+                            classifiable.conceptStr.ToString().Contains(termFor.rawTerm);
+                Assert.IsTrue(test);
+            }
+        }
+
+        [TestMethod]
+        public void GetClassifiablesByConceptString_Unordered_ClassifiablesMatch()
+        {
+            var conn = new Neo4jDB();
+
+            Term termWood = new Term
+            {
+                rawTerm = "wood",
+            };
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            Term termFor = new Term
+            {
+                rawTerm = "for",
+            };
+
+            // good where clause: 
+            // WHERE t.rawTerm = "wood" OR t.rawTerm = "for" OR t.rawTerm = "Tool"
+            // but put in ids and not rawTerms, since ids are unique....
+            // Maybe. Unless we want all kinds of say, "Beautiful"
+            ConceptString searchByConStr = new ConceptString
+            {
+                terms = new List<Term> 
+                {
+                    termWood, termTool, termFor,
+                },
+            };
+
+            ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr);
+
+            Assert.IsNotNull(matchedClassifiables);
+
+            // Only tests that each Classifiable's ConceptString does contain at least one of the
+            // terms that was searched by.
+            foreach (var classifiable in matchedClassifiables.data)
+            {
+                bool test = classifiable.conceptStr.ToString().Contains(termWood.rawTerm) ||
                             classifiable.conceptStr.ToString().Contains(termTool.rawTerm) ||
                             classifiable.conceptStr.ToString().Contains(termFor.rawTerm);
                 Assert.IsTrue(test);
@@ -347,7 +394,7 @@ namespace Neo4jTest
         }
     
         [TestMethod]
-        public void GetRootTerm__BccRoot_Exists()
+        public void GetRootTerm_BccRoot_Exists()
         {
             var conn = new Neo4jDB();
 

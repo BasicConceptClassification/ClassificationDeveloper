@@ -205,9 +205,9 @@ namespace Neo4j
         /// skipped. Set to 0 if no results should be skipped.</param>
         /// <returns>Returns a ClassifiableCollection where each Classifiable's 
         /// ConceptSring has at least one matching term from </returns>
-        public ClassifiableCollection getClassifiablesByConStr(ConceptString conStr, int optLimit = 25, int optSkip = 0)
+        public ClassifiableCollection getClassifiablesByConStr(ConceptString conStr, 
+            int optLimit = 25, int optSkip = 0, bool ordered = false)
         {
-
             ClassifiableCollection resColl = new ClassifiableCollection
             {
                 data = new List<Classifiable>(),
@@ -268,8 +268,14 @@ namespace Neo4j
                     .Where(whereClause)
                     .With("DISTINCT c, cs, COUNT([t]) AS numMatched")
                     .Match("(c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t2:Term)")
-                    .With("DISTINCT c, t2, numMatched")
-                    .OrderBy("numMatched DESC")
+                    .With("DISTINCT c, t2, numMatched");
+
+                if (ordered) 
+                {
+                     query = query.OrderBy("numMatched DESC");
+                }
+                
+                var results = query
                     .Return((c, t2) => new
                     {
                         classifiable = c.As<Classifiable>(),
@@ -282,7 +288,7 @@ namespace Neo4j
                 if (query != null)
                 {
                     // Build up Classifiables
-                    foreach (var res in query)
+                    foreach (var res in results)
                     {
                    
                         // TODO: reorder terms to match concept string,
