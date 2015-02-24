@@ -30,5 +30,15 @@ namespace BCCLib
             }
             return result;
         }
+
+        public List<string> TolistString()
+        {
+            List<string> results =new List<string>();
+            foreach (Term t in terms)
+            {
+                results.Add(t.ToString());
+            }
+            return results;
+        }
     }
 }

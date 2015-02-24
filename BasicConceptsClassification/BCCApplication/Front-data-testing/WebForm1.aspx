@@ -38,6 +38,11 @@
     <br />
     <asp:ListBox ID="ListBox3" runat="server" Height="297px" Width="295px"></asp:ListBox>
     <br />
+    <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Button" />
+    <br />
+    <asp:ListBox ID="ListBox4" runat="server" Height="254px" Width="277px"></asp:ListBox>
+    <br />
+    <br />
     <br />
 </form>
 

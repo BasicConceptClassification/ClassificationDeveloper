@@ -17,11 +17,15 @@ namespace BCCApplication.Neo4j_text
         public string name;
         public List<string> terms_term;
         public int counter;
-        public objects_example(string s, List<string> l, int c)
+        public string concept;
+        public string url;
+        public objects_example(string s, List<string> l, int c,string se, string u)
         {
             this.name = s;
             this.terms_term = l;
             this.counter = c;
+            this.concept = se;
+            this.url = u;
         }
     }
 
@@ -35,8 +39,7 @@ namespace BCCApplication.Neo4j_text
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            //var neo4jdbConnection = new Neo4jDB();
-            //neo4jdbConnection.open();
+            
 
         }
 
@@ -87,9 +90,9 @@ namespace BCCApplication.Neo4j_text
 
             List<objects_example> results = new List<objects_example>();
 
-            results.Add(new objects_example(name1, termsone, counter1));
-            results.Add(new objects_example(name2, termstwo, counter2));
-            results.Add(new objects_example(name3, termsthree, counter3));
+           // results.Add(new objects_example(name1, termsone, counter1));
+            //results.Add(new objects_example(name2, termstwo, counter2));
+            //results.Add(new objects_example(name3, termsthree, counter3));
 
             foreach (objects_example things in results)
             {
@@ -119,9 +122,9 @@ namespace BCCApplication.Neo4j_text
 
             List<objects_example> results = new List<objects_example>();
 
-            results.Add(new objects_example(name1, termsone, counter1));
-            results.Add(new objects_example(name2, termstwo, counter2));
-            results.Add(new objects_example(name3, termsthree, counter3));
+           // results.Add(new objects_example(name1, termsone, counter1));
+            //results.Add(new objects_example(name2, termstwo, counter2));
+            //results.Add(new objects_example(name3, termsthree, counter3));
 
             //List<objects_example> sort_result = results.OrderBy< x=>x.results. >
             var sort_result = from element in results orderby element.counter select element;
@@ -148,9 +151,9 @@ namespace BCCApplication.Neo4j_text
 
             List<objects_example> results = new List<objects_example>();
 
-            results.Add(new objects_example(name1, termsone, counter1));
-            results.Add(new objects_example(name2, termstwo, counter2));
-            results.Add(new objects_example(name3, termsthree, counter3));
+            //results.Add(new objects_example(name1, termsone, counter1));
+            //results.Add(new objects_example(name2, termstwo, counter2));
+            //results.Add(new objects_example(name3, termsthree, counter3));
 
             var sort_result = from element in results orderby element.name select element;
 
@@ -204,6 +207,32 @@ namespace BCCApplication.Neo4j_text
 
 
             Input_text.Text = inputstr_add;
+        }
+
+        protected void Button1_Click(object sender, EventArgs e)
+        {
+            var TestConn = new Neo4jDB();
+            int id = 2;
+
+            Classifiable classy = TestConn.getClassifiableById(id);
+            string name;
+            List<string> terms_term;
+            int counter;
+            string concept;
+            string url;
+
+            name = classy.name;
+            url = classy.url;
+            concept = classy.conceptStr.ToString();
+            terms_term = classy.conceptStr.TolistString();
+            ListBox4.Items.Add(name);
+            ListBox4.Items.Add(url);
+            ListBox4.Items.Add(concept);
+            foreach (String things in terms_term)
+            {
+                ListBox4.Items.Add(things);
+            }
+
         }
     }
    
