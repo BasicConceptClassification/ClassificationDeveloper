@@ -14,97 +14,98 @@ namespace Neo4jTest
     public class Neo4jDBTest
     {
         [TestMethod]
-        public void TestConnection()
+        public void Neo4jDB_OpenConnection_Successful()
         {
-             var neo4jdbConnection = new Neo4jDB();
-             neo4jdbConnection.open();
-             Assert.IsNotNull(neo4jdbConnection);
+             var TestConnection = new Neo4jDB();
+             TestConnection.open();
+             Assert.IsNotNull(TestConnection);
         }
 
         [TestMethod]
-        public void TestGetClassifiableById()
+        public void GetClassifiableById_IsClassified_IdExists()
         {
-            var TestConn = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            int id = 2;
-            Classifiable classy = TestConn.getClassifiableById(id);
+            int searchById = 2;
+            Classifiable classifiedWithGoodId = conn.getClassifiableById(searchById);
 
-            Assert.IsNotNull(classy);
-            Assert.AreEqual(id.ToString(), classy.id);
-            Assert.AreEqual("Adze Blade", classy.name);
-            Assert.AreEqual(6, classy.conceptStr.terms.Count);
-            Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", classy.conceptStr.ToString());
+            Assert.IsNotNull(classifiedWithGoodId);
+            Assert.AreEqual(searchById.ToString(), classifiedWithGoodId.id);
+            Assert.AreEqual("Adze Blade", classifiedWithGoodId.name);
+            Assert.AreEqual(6, classifiedWithGoodId.conceptStr.terms.Count);
+            Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", classifiedWithGoodId.conceptStr.ToString());
         }
 
         [TestMethod]
-        public void TestGetClassifiableById_NotClassified()
+        public void GetClassifiableById_NotClassified_IdExists()
         {
-            var TestConn = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            int id = 14;
-            Classifiable classy = TestConn.getClassifiableById(id);
+            int searchById = 14;
+            Classifiable notClassifiedWithGoodId = conn.getClassifiableById(searchById);
 
-            Assert.IsNotNull(classy);
-            Assert.AreEqual(id.ToString(), classy.id);
-            Assert.AreEqual(0, classy.conceptStr.terms.Count);
-            Assert.AreEqual("", classy.conceptStr.ToString());
+            Assert.IsNotNull(notClassifiedWithGoodId);
+            Assert.AreEqual(searchById.ToString(), notClassifiedWithGoodId.id);
+            Assert.AreEqual(0, notClassifiedWithGoodId.conceptStr.terms.Count);
+            Assert.AreEqual("", notClassifiedWithGoodId.conceptStr.ToString());
         }
 
         [TestMethod]
-        public void TestGetClassifiableById_NotInDb()
+        public void GetClassifiableById_DoesNotExist()
         {
-            var TestConn = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            int id = 909090;
-            Classifiable classy = TestConn.getClassifiableById(id);
+            int searchById = 909090;
+            Classifiable doesNotExistClassifiable = conn.getClassifiableById(searchById);
 
-            Assert.IsNull(classy);
+            Assert.IsNull(doesNotExistClassifiable);
         }
 
         [TestMethod]
-        public void TestGetClassifiableByName_NotInDb()
+        public void GetClassiablesByName_ExistsOne() 
         {
-            var TestConn = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            string name = "909090";
-            ClassifiableCollection classyColl = TestConn.getClassifiablesByName(name);
+            string searchByName = "Adze Blade";
+            ClassifiableCollection matchedNameClassifiable = conn.getClassifiablesByName(searchByName);
 
-            Assert.IsNotNull(classyColl);
-            Assert.AreEqual(0, classyColl.data.Count);
+            Assert.IsNotNull(matchedNameClassifiable.data);
+            Assert.AreEqual(1, matchedNameClassifiable.data.Count);
+            Assert.AreEqual(searchByName, matchedNameClassifiable.data[0].name);
+            Assert.AreEqual(6, matchedNameClassifiable.data[0].conceptStr.terms.Count);
+            Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", matchedNameClassifiable.data[0].conceptStr.ToString());
         }
 
         [TestMethod]
-        public void TestGetClassiableByName() 
+        public void GetClassifiablesByName_DoesNotExist()
         {
-            var TestConn = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            string searchName = "Adze Blade";
-            ClassifiableCollection classyColl = TestConn.getClassifiablesByName(searchName);
+            string searchByName = "909090";
+            ClassifiableCollection noMatchedName = conn.getClassifiablesByName(searchByName);
 
-            Assert.IsNotNull(classyColl.data);
-            Assert.AreEqual(searchName, classyColl.data[0].name);
-            Assert.AreEqual(6, classyColl.data[0].conceptStr.terms.Count);
-            Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", classyColl.data[0].conceptStr.ToString());
+            Assert.IsNotNull(noMatchedName);
+            Assert.AreEqual(0, noMatchedName.data.Count);
         }
 
         [TestMethod]
-        public void TestGetAllUnClassified()
+        public void GetAllUnClassified_Exists()
         {
-            var TestConn = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            ClassifiableCollection classyColl = TestConn.getAllUnClassified();
+            ClassifiableCollection unclassifieds = conn.getAllUnClassified();
 
-            foreach (var classy in classyColl.data)
+            foreach (var unclassified in unclassifieds.data)
             {
-                Assert.AreEqual(0, classy.conceptStr.terms.Count);
-                Assert.AreEqual("", classy.conceptStr.ToString());
+                Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
+                Assert.AreEqual("", unclassified.conceptStr.ToString());
             }
         }
 
         [TestMethod]
-        public void TestGetClassifiableByConceptString()
+        public void GetClassifiableByConceptString_ClassifiablesMatch()
         {
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
             Term termWood = new Term
             {
@@ -125,7 +126,7 @@ namespace Neo4jTest
             // WHERE t.rawTerm = "wood" OR t.rawTerm = "for" OR t.rawTerm = "Tool"
             // but put in ids and not rawTerms, since ids are unique....
             // Maybe. Unless we want all kinds of say, "Beautiful"
-            ConceptString searchCS = new ConceptString
+            ConceptString searchByConStr = new ConceptString
             {
                 terms = new List<Term> 
                 {
@@ -133,55 +134,56 @@ namespace Neo4jTest
                 },
             };
             
-            ClassifiableCollection results = TestConnection.getClassifiablesByConStr(searchCS);
+            ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr);
  
-            Assert.IsNotNull(results);
+            Assert.IsNotNull(matchedClassifiables);
 
             // Only tests that each Classifiable's ConceptString does contain at least one of the
             // terms that was searched by.
-            foreach (var classy in results.data)
+            foreach (var classifiable in matchedClassifiables.data)
             {
-                bool test = classy.conceptStr.ToString().Contains(termWood.rawTerm) || 
-                            classy.conceptStr.ToString().Contains(termTool.rawTerm) ||
-                            classy.conceptStr.ToString().Contains(termFor.rawTerm);
+                bool test = classifiable.conceptStr.ToString().Contains(termWood.rawTerm) || 
+                            classifiable.conceptStr.ToString().Contains(termTool.rawTerm) ||
+                            classifiable.conceptStr.ToString().Contains(termFor.rawTerm);
                 Assert.IsTrue(test);
             }
         }
 
         [TestMethod]
-        public void TestGetTermByRaw()
+        public void GetTermByRaw_Exists()
         {
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            string rawT = "Art";
-            Term term1 = TestConnection.getTermByRaw(rawT);
+            string searchByRawTerm = "Art";
+            Term artTerm = conn.getTermByRaw(searchByRawTerm);
 
-            Assert.AreEqual(rawT,term1.rawTerm);
-            Assert.AreEqual("art", term1.lower);
-            Assert.IsNotNull(term1.id);
-            Assert.IsNotNull(term1.subTerms);
+            Assert.AreEqual(searchByRawTerm, artTerm.rawTerm);
+            Assert.AreEqual("art", artTerm.lower);
+            Assert.IsNotNull(artTerm.id);
+            Assert.IsNotNull(artTerm.subTerms);
         }
 
         [TestMethod]
-        public void TestGetTermByLower()
+        public void GetTermByLower_Exists()
         {
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            string lower = "art";
-            Term term1 = TestConnection.getTermByLower(lower);
+            string searchByLowerTerm = "art";
+            Term term1 = conn.getTermByLower(searchByLowerTerm);
 
-            Assert.AreEqual(lower, term1.lower);
+            Assert.AreEqual(searchByLowerTerm, term1.lower);
             Assert.AreEqual("Art", term1.rawTerm);
             Assert.IsNotNull(term1.id);
             Assert.IsNotNull(term1.subTerms);
         }
 
         [TestMethod]
-        public void TestGetChildrenOfTerm()
+        public void GetChildrenOfTerm_RootTerm_Exists()
         {
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
             string rootRaw = "ROOT TERM";
+            int NOT_FOUND = -1;
 
             // These are the rawTerms that are one depth away from the root.
             List<string> rootSubTerms = new List<string>
@@ -207,67 +209,73 @@ namespace Neo4jTest
                 "Waves and Particles",
             };
 
-            Term rootTerm = TestConnection.getTermByRaw(rootRaw);
+            Term rootTerm = conn.getTermByRaw(rootRaw);
 
-            rootTerm.subTerms = TestConnection.getChildrenOfTerm(rootTerm);
+            rootTerm.subTerms = conn.getChildrenOfTerm(rootTerm);
 
             // Make sure they're the same length
             Assert.AreEqual(rootSubTerms.Count, rootTerm.subTerms.Count);
 
-            for (int i = 0; i < rootSubTerms.Count; i++)
+            foreach (string expectedSubTermStr in rootSubTerms)
             {
-                Assert.AreEqual(rootSubTerms.ElementAt(i), rootTerm.subTerms.ElementAt(i).rawTerm);
-                Assert.AreEqual(0, rootTerm.subTerms.ElementAt(1).subTerms.Count);
+                Term expectedSubTerm = new Term
+                {
+                    rawTerm = expectedSubTermStr,
+                };
+                Assert.AreNotEqual(NOT_FOUND, rootTerm.hasSubTerm(expectedSubTerm));
             }
         }
 
         [TestMethod]
-        public void TestGetChildrenOfTermWithNoChildren()
+        public void GetChildrenOfTerm_NoChildren()
         {
-            var TestConnection = new Neo4jDB();
-            string rawT = "Biology";
+            var conn = new Neo4jDB();
+            string searchRawTerm = "Biology";
 
-            Term Biology = TestConnection.getTermByRaw(rawT);
-            Assert.IsNotNull(Biology);
+            Term biologyTerm = conn.getTermByRaw(searchRawTerm);
+            Assert.IsNotNull(biologyTerm);
 
-            Biology.subTerms = TestConnection.getChildrenOfTerm(Biology);
-            Assert.AreEqual(0,Biology.subTerms.Count);
+            biologyTerm.subTerms = conn.getChildrenOfTerm(biologyTerm);
+            Assert.AreEqual(0,biologyTerm.subTerms.Count);
         }
 
         [TestMethod]
-        public void TestSearchForNonTerm()
+        public void SearchForNonTerm_ManyFunctions_ReturnNull()
         {
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            Term term = new Term
+            Term NotExistTerm = new Term
             {
                 rawTerm = "I am NOT a Term",
                 subTerms = new List<Term>(),
             };
 
-            Term resTerm = TestConnection.getTermByRaw(term.rawTerm);
+            Term resTerm = conn.getTermByRaw(NotExistTerm.rawTerm);
             Assert.IsNull(resTerm);
 
-            List<Term> resTerm2 = TestConnection.getChildrenOfTerm(term);
+            List<Term> resTerm2 = conn.getChildrenOfTerm(NotExistTerm);
             Assert.AreEqual(0, resTerm2.Count);
 
-            Term resTerm3 = TestConnection.getBccFromTermWithDepth(term, 0);
+            Term resTerm3 = conn.getBccFromTermWithDepth(NotExistTerm, 0);
             Assert.IsNull(resTerm3);
 
-            Term resTerm4 = TestConnection.getBccFromTermWithDepth(term, 2);
+            Term resTerm4 = conn.getBccFromTermWithDepth(NotExistTerm, 2);
             Assert.IsNull(resTerm4);
 
-            Term resTerm5 = TestConnection.getBccFromTerm(term);
+            Term resTerm5 = conn.getBccFromTerm(NotExistTerm);
             Assert.IsNull(resTerm5);
         }
 
         [TestMethod]
-        public void TestGetBccFromTerm()
+        public void GetBccFromTermWithDepth_NaturalSciencesMaxDepth_Exists()
         {
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            string rawT = "Natural Sciences";
-            List<string> subT = new List<string>
+            int MAX_DEPTH = -1;
+            int NOT_FOUND = -1;
+
+            string searchRawTerm = "Natural Sciences";
+            List<string> expectedNaturalSciencesSubTermStr = new List<string>
             {
                 "Biology",
                 "Chemistry",
@@ -276,100 +284,113 @@ namespace Neo4jTest
                 "Physics",
             };
 
-            Term term = TestConnection.getTermByRaw(rawT);
+            Term naturalSciencesTerm = conn.getTermByRaw(searchRawTerm);
 
-            Term testRoot = TestConnection.getBccFromTermWithDepth(term, -1);
+            Term naturalSciencesTree = conn.getBccFromTermWithDepth(naturalSciencesTerm, 
+                                                                    MAX_DEPTH);
 
-            Assert.AreEqual(rawT, testRoot.rawTerm);
-            Assert.AreEqual(subT.Count, testRoot.subTerms.Count);
+            Assert.AreEqual(searchRawTerm, naturalSciencesTree.rawTerm);
+            Assert.AreEqual(expectedNaturalSciencesSubTermStr.Count, 
+                            naturalSciencesTree.subTerms.Count);
 
             // Expected results, not in a particular order.
             // Natural Sciences - Biology, 
             //                  - Chemistry
             //                  - Physics
-            //                      - Atstronomy
+            //                      - Astronomy
             //                  - Computer Science
             //                  - Geology
-            foreach (string rT in subT)
+            foreach (string rawSubTermStr in expectedNaturalSciencesSubTermStr)
             {
-                Term tmp = new Term 
+                Term expectedSubTerm = new Term 
                 {
-                    rawTerm = rT,
+                    rawTerm = rawSubTermStr,
                 };
-                int index = testRoot.hasSubTerm(tmp);
-                Assert.AreNotEqual(-1, index);
 
-                if (rawT == "Physics") 
+                int index = naturalSciencesTree.hasSubTerm(expectedSubTerm);
+                Assert.AreNotEqual(NOT_FOUND, index);
+
+                // Physics has Astronmy underneath it.
+                if (searchRawTerm == "Physics") 
                 {
-                    Assert.AreEqual("astronomy", testRoot.subTerms[index].subTerms[0].rawTerm);
+                    Term astronomy = new Term
+                    {
+                        rawTerm = "Astronomy"
+                    };
+                    Assert.AreNotEqual(NOT_FOUND, naturalSciencesTree.subTerms[index].hasSubTerm(astronomy));
                 }
             }
         }
 
         [TestMethod]
-        public void TestGetBccFromTermWithDepth()
+        public void GetBccFromTermWithDepth_WavesAndParticlesDepth2_OnlyHasDepth2()
         {
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            string rawT = "Waves and Particles";
+            int depth = 2;
+            int EXPECTED_NUM_SUBTERMS = 6;
 
-            Term term = TestConnection.getTermByRaw(rawT);
+            string searchRawTerm = "Waves and Particles";
 
-            Term testRoot = TestConnection.getBccFromTermWithDepth(term, 2);
+            Term wavesParticlesTerm = conn.getTermByRaw(searchRawTerm);
+
+            Term wavesParticlesRootD2 = conn.getBccFromTermWithDepth(wavesParticlesTerm, depth);
 
             // "Waves and Particles" has subTerms, and each of those subTerms
             // also has subTerms. Makes it a bit easier to test that we only get 
             // a depth of 2 for results when the subTerm results are (currently) 
             // not organized alphabetically. 
-            Assert.AreEqual(rawT, testRoot.rawTerm);
-            Assert.AreEqual(6, testRoot.subTerms.Count);
-            Assert.AreNotEqual(0, testRoot.subTerms[0].subTerms.Count);
-            Assert.AreEqual(0, testRoot.subTerms[0].subTerms[0].subTerms.Count);
+            Assert.AreEqual(searchRawTerm, wavesParticlesRootD2.rawTerm);
+            Assert.AreEqual(EXPECTED_NUM_SUBTERMS, wavesParticlesRootD2.subTerms.Count);
+            Assert.AreNotEqual(0, wavesParticlesRootD2.subTerms[0].subTerms.Count);
+            Assert.AreEqual(0, wavesParticlesRootD2.subTerms[0].subTerms[0].subTerms.Count);
         }
     
         [TestMethod]
-        public void TestGetRootTerm()
+        public void GetRootTerm__BccRoot_Exists()
         {
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            Term rootTerm = TestConnection.getRootTerm();
+            Term bccRootTerm = conn.getRootTerm();
 
-            Assert.IsNotNull(rootTerm);
-            Assert.AreEqual("bccRoot", rootTerm.id);
-            Assert.AreEqual("bccroot", rootTerm.lower);
-            Assert.AreEqual("BccRoot", rootTerm.rawTerm);
-            Assert.IsNotNull(rootTerm.subTerms);
-            Assert.AreEqual(0, rootTerm.subTerms.Count);
+            Assert.IsNotNull(bccRootTerm);
+            Assert.AreEqual("bccRoot", bccRootTerm.id);
+            Assert.AreEqual("bccroot", bccRootTerm.lower);
+            Assert.AreEqual("BccRoot", bccRootTerm.rawTerm);
+            Assert.IsNotNull(bccRootTerm.subTerms);
+            Assert.AreEqual(0, bccRootTerm.subTerms.Count);
         }
 
         [TestMethod]
-        public void TestGetBccFromRootWithDepth()
+        public void GetBccFromRootWithDepth_BccRootD1_Exists()
         {
-            Term term1 = new Term
+            int depth1 = 1;
+
+            Term rootTermWithRawTerm = new Term
             {
                 rawTerm = "ROOT TERM",
             };
 
-            Term term2 = new Term
+            Term topObjPropertyWithRawTerm = new Term
             {
                 rawTerm = "TOP OBJECT PROPERTY",
             };
 
-            Term term3 = new Term
+            Term notRealTermWithRawTerm = new Term
             {
                 rawTerm = "Not a Real Term",
             };
 
-            var TestConnection = new Neo4jDB();
+            var conn = new Neo4jDB();
 
-            Term bccRoot = TestConnection.getBccFromRootWithDepth(1);
+            Term bccRootTermD1 = conn.getBccFromRootWithDepth(depth1);
 
-            Assert.IsNotNull(bccRoot);
-            Assert.AreEqual("bccroot", bccRoot.lower);
-            Assert.IsNotNull(bccRoot.subTerms.Count);
-            Assert.IsNotNull(bccRoot.hasSubTerm(term1));
-            Assert.IsNotNull(bccRoot.hasSubTerm(term2));
-            Assert.IsNotNull(bccRoot.hasSubTerm(term3));
+            Assert.IsNotNull(bccRootTermD1);
+            Assert.AreEqual("bccroot", bccRootTermD1.lower);
+            Assert.IsNotNull(bccRootTermD1.subTerms.Count);
+            Assert.IsNotNull(bccRootTermD1.hasSubTerm(rootTermWithRawTerm));
+            Assert.IsNotNull(bccRootTermD1.hasSubTerm(topObjPropertyWithRawTerm));
+            Assert.IsNotNull(bccRootTermD1.hasSubTerm(notRealTermWithRawTerm));
         }
     }
 }

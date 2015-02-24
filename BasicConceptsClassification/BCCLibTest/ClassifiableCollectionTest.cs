@@ -9,8 +9,9 @@ namespace BCCLibTest
     public class ClassifiableCollectionTest
     {
         [TestMethod]
-        public void TestSort()
+        public void ClassifiableCollection_Sort()
         {
+            Assert.IsTrue(false, "Sort method untested!");
         }
     }
 }

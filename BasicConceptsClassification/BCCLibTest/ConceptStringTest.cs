@@ -10,7 +10,7 @@ namespace BCCLibTest
     public class ConceptStringTest
     {
         [TestMethod]
-        public void Test_ToString()
+        public void ConceptString_ToString_HasTerms()
         {
             Term t1 = new Term 
             { 

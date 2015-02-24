@@ -10,130 +10,135 @@ namespace BCCLibTest
     public class TermTest
     {
         [TestMethod]
-        public void TestHasSubTerm_Found()
+        public void HasSubTerm_TermWithSubTerms_Found()
         {
-            Term t = new Term
+            Term term = new Term
             {
                 id = "id01",
                 rawTerm = "Raw",
                 subTerms = new List<Term>(),
             };
 
-            Term subT = new Term
+            Term subTerm = new Term
             {
                 id = "id02",
                 rawTerm = "subRaw",
                 subTerms = new List<Term>(),
             };
 
-            t.subTerms.Add(subT);
+            term.subTerms.Add(subTerm);
 
-            int index = t.hasSubTerm(subT);
+            int foundSubTermIndex = term.hasSubTerm(subTerm);
 
-            Assert.AreEqual(0, index);
-            Assert.AreEqual(subT, t.subTerms[index]);
+            Assert.AreEqual(0, foundSubTermIndex);
+            Assert.AreEqual(subTerm, term.subTerms[foundSubTermIndex]);
         }
 
         [TestMethod]
-        public void TestHasSubTerm_NotFound()
+        public void HasSubTerm_TermWithSubTerms_NotFound()
         {
-            Term t = new Term
+            int NOT_FOUND = -1;
+
+            Term term = new Term
             {
                 id = "id01",
                 rawTerm = "Raw",
                 subTerms = new List<Term>(),
             };
 
-            Term subT = new Term
+            Term subTerm1 = new Term
             {
                 id = "id02",
                 rawTerm = "subRaw",
                 subTerms = new List<Term>(),
             };
 
-            Term t2 = new Term
+            Term subTerm2 = new Term
             {
                 id = "id03",
                 rawTerm = "Raw2",
                 subTerms = new List<Term>(),
             };
 
-            t.subTerms.Add(subT);
+            term.subTerms.Add(subTerm1);
 
-            int index = t.hasSubTerm(t2);
+            int subTermNotFoundIndex = term.hasSubTerm(subTerm2);
 
-            Assert.AreEqual(-1, index);
+            Assert.AreEqual(NOT_FOUND, subTermNotFoundIndex);
         }
 
         [TestMethod]
-        public void TestHasSubTerm_NoSubTerms()
+        public void HasSubTerm_TermWithNoSubTerms_NotFound()
         {
-            Term t = new Term
+            int NOT_FOUND = -1;
+
+            Term term = new Term
             {
                 id = "id01",
                 rawTerm = "Raw",
                 subTerms = new List<Term>(),
             };
 
-            Term subT = new Term
+            Term subTerm = new Term
             {
                 id = "id02",
                 rawTerm = "subRaw",
                 subTerms = new List<Term>(),
             };
 
-            int index = t.hasSubTerm(subT);
+            int notFoundSubTermIndex = term.hasSubTerm(subTerm);
 
-            Assert.AreEqual(-1, index);
+            Assert.AreEqual(NOT_FOUND, notFoundSubTermIndex);
         }
 
         [TestMethod]
-        public void TestConnectTermsFromList() 
+        public void ConnectTermsFromList_SingleTermListExists() 
         {
-            Term t = new Term
+            Term term = new Term
             {
                 id = "id01",
                 rawTerm = "Raw",
                 subTerms = new List<Term>(),
             };
 
-            Term subT = new Term
+            Term subTerm1 = new Term
             {
                 id = "id02",
                 rawTerm = "subRaw",
                 subTerms = new List<Term>(),
             };
 
-            Term subT2 = new Term
+            Term subTerm2 = new Term
             {
                 id = "id03",
                 rawTerm = "subRaw3",
                 subTerms = new List<Term>(),
             };
 
-            List<Term> termList = new List<Term> 
+            List<Term> subTermList = new List<Term> 
             {
-                subT, subT2,
+                subTerm1, subTerm2,
             };
 
-            t.connectTermsFromList(termList);
+            term.connectTermsFromList(subTermList);
 
             // Expect the following structure:
             // t.subTerms has subT, subT.subTerms has subT2 
-            Assert.AreEqual(1, t.subTerms.Count);
-            Assert.AreEqual(subT.rawTerm, t.subTerms[0].rawTerm);
-            Assert.AreEqual(1, t.subTerms[0].subTerms.Count);
-            Assert.AreEqual(subT2.rawTerm, t.subTerms[0].subTerms[0].rawTerm);
-            Assert.AreEqual(0, t.subTerms[0].subTerms[0].subTerms.Count);
+            Assert.AreEqual(1, term.subTerms.Count);
+            Assert.AreEqual(subTerm1.rawTerm, term.subTerms[0].rawTerm);
+            Assert.AreEqual(1, term.subTerms[0].subTerms.Count);
+            Assert.AreEqual(subTerm2.rawTerm, term.subTerms[0].subTerms[0].rawTerm);
+            Assert.AreEqual(0, term.subTerms[0].subTerms[0].subTerms.Count);
         }
     
         [TestMethod]
-        public void TestToString()
+        public void Term_ToString_HasRawTerm()
         {
             Term t = new Term
             {
                 id = "id01",
                 rawTerm = "Raw",
+                lower = "raw",
                 subTerms = new List<Term>(),
             };
 
