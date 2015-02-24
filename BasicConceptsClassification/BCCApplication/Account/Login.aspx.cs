@@ -20,5 +20,13 @@ namespace BCCApplication.Account
                 RegisterHyperLink.NavigateUrl += "?ReturnUrl=" + returnUrl;
             }
         }
+
+        protected void log_button_Click(object sender, EventArgs e)
+        {
+           // TextBox UserName = this.FindControl("UserName");
+            //string user = ((TextBox)BodyContent.FindControl("UserName")).Text;
+
+
+        }
     }
 }

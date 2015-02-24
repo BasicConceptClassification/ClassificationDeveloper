@@ -1,17 +1,16 @@
-﻿<%@ Page Title="Search" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Search.aspx.cs" Inherits="Search" %>
+﻿<%@ Page Title="Search" Language="C#" CodeBehind ="Search.aspx.cs" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Search.aspx.cs" Inherits="Search" %>
 
 
-<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+<asp:Searchpart id="Search_part" ContentPlaceHolderID="MainContent" runat="server">
     <div>
         <center><h1>Search</h1></center>
         <p>Quick explanation on how to use with or w/out the buttons. For more information please go <a href="About.aspx" target="_self">about/help page</a>.</p>
         <br />
         <center>
             <form action="SearchResults.aspx" method="get" target="_self">
-                Search:
-                <input type="search" name="BCCSearch" placeholder ="[term1] [term2]">
-                <input type="button" onclick="location.href = 'SearchResults.aspx'" value='Search' />
-            </form>
+                Search:&nbsp;<asp:TextBox ID="Search_input" runat="server"></asp:TextBox>
+&nbsp;&nbsp;</form>
+            <asp:Button ID="Search_button" runat="server" OnClick="Search_button_Click1" Text="Search" />
         </center>
     </div>
     <br />
@@ -127,4 +126,4 @@
             </li>
         </ul>
         </div>
-</asp:Content>
+</asp:Searchpart>
