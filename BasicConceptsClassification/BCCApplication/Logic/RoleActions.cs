@@ -9,6 +9,9 @@ namespace BCCApplication.Logic
 {
     internal class RoleActions
     {
+        public const string ROLE_ADMIN = "Administrator";
+        public const string ROLE_CLASS = "Classifier";
+
         internal void AddUserAndRole()
         {
             // Access the application context and create result variables.
@@ -21,13 +24,17 @@ namespace BCCApplication.Logic
             var roleStore = new RoleStore<IdentityRole>(context);
 
             // Create a RoleManager object that is only allowed to contain IdentityRole objects.
-            // When creating the RoleManager object, you pass in (as a parameter) a new RoleStore object. 
+            // When creating the RoleManager object, you pass in (as a parameter) a new RoleStore object.
             var roleMgr = new RoleManager<IdentityRole>(roleStore);
 
             // Then, you create the "canEdit" role if it doesn't already exist.
-            if (!roleMgr.RoleExists("canEdit"))
+            if (!roleMgr.RoleExists(ROLE_ADMIN))
             {
-                IdRoleResult = roleMgr.Create(new IdentityRole { Name = "canEdit" });
+                IdRoleResult = roleMgr.Create(new IdentityRole { Name = ROLE_ADMIN });
+            }
+            if (!roleMgr.RoleExists(ROLE_CLASS))
+            {
+                IdRoleResult = roleMgr.Create(new IdentityRole { Name = ROLE_CLASS });
             }
 
             // Create a UserManager object based on the UserStore object and the ApplicationDbContext  
@@ -37,16 +44,16 @@ namespace BCCApplication.Logic
             var userMgr = new UserManager<ApplicationUser>(new UserStore<ApplicationUser>(context));
             var appUser = new ApplicationUser
             {
-                UserName = "canEditUser@wingtiptoys.com",
-                Email = "canEditUser@wingtiptoys.com"
+                UserName = "Admin",
+                Email = "admin@basicconceptsclassification.com"
             };
-            IdUserResult = userMgr.Create(appUser, "Pa$$word1");
+            IdUserResult = userMgr.Create(appUser, "password");
 
             // If the new "canEdit" user was successfully created, 
             // add the "canEdit" user to the "canEdit" role. 
-            if (!userMgr.IsInRole(userMgr.FindByEmail("canEditUser@wingtiptoys.com").Id, "canEdit"))
+            if (!userMgr.IsInRole(userMgr.FindByEmail("admin@basicconceptsclassification.com").Id, ROLE_ADMIN))
             {
-                IdUserResult = userMgr.AddToRole(userMgr.FindByEmail("canEditUser@wingtiptoys.com").Id, "canEdit");
+                IdUserResult = userMgr.AddToRole(userMgr.FindByEmail("admin@basicconceptsclassification.com").Id, ROLE_ADMIN);
             }
         }
     }

@@ -23,7 +23,7 @@ namespace BCCApplication
             RouteConfig.RegisterRoutes(RouteTable.Routes);
 
             RoleActions roles = new RoleActions();
-            //roles.AddUserAndRole();
+            roles.AddUserAndRole();
         }
 
         void Application_End(object sender, EventArgs e)
