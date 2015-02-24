@@ -38,6 +38,7 @@
                                 <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" />
                             </p>
                         </LoggedInTemplate>
+                        
                     </asp:LoginView>
                 </section>
                 <nav>
