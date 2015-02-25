@@ -12,13 +12,13 @@
 public partial class SearchResults {
     
     /// <summary>
-    /// testForYu control.
+    /// searching_textbox control.
     /// </summary>
     /// <remarks>
     /// Auto-generated field.
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
-    protected global::System.Web.UI.WebControls.TextBox testForYu;
+    protected global::System.Web.UI.WebControls.TextBox searching_textbox;
     
     /// <summary>
     /// btnclick control.
@@ -28,15 +28,6 @@ public partial class SearchResults {
     /// To modify move field declaration from designer file to code-behind file.
     /// </remarks>
     protected global::System.Web.UI.WebControls.Button btnclick;
-    
-    /// <summary>
-    /// printResults control.
-    /// </summary>
-    /// <remarks>
-    /// Auto-generated field.
-    /// To modify move field declaration from designer file to code-behind file.
-    /// </remarks>
-    protected global::System.Web.UI.WebControls.Label printResults;
     
     /// <summary>
     /// SearchReCon control.

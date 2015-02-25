@@ -58,4 +58,10 @@ public partial class Search : System.Web.UI.Page
         }
         return currentNode;
     }
+
+    protected void Button1_Click(object sender, EventArgs e)
+    {
+        string str = TextBox1.Text;
+
+    }
 }

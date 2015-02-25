@@ -6,10 +6,9 @@
         <br />
         <center>
             Search Results:
-            <asp:TextBox ID="testForYu" runat="server" placeholder ="Enter text to print here"/>
+            <asp:TextBox ID="searching_textbox" runat="server" placeholder ="Enter text to print here"/>
             <asp:Button ID="btnclick" onclick="btnclick_Click" Text="Test Button!" runat="server" />
             <br />
-            <asp:Label ID="printResults" runat="server"></asp:Label>
             <br />
             <br />
         </center>

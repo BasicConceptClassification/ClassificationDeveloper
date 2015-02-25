@@ -8,10 +8,10 @@
         <br />
         <center>
             <form action="SearchResults.aspx" method="get" target="_self">
-                Search:
-                <input type="search" name="BCCSearch" placeholder ="[term1] [term2]">
-                <input type="button" onclick="location.href = 'SearchResults.aspx'" value='Search' />
+                Search:<asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
+&nbsp;&nbsp;
             </form>
+            <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Button" />
         </center>
     </div>
     <br />
