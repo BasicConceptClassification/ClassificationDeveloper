@@ -30,6 +30,8 @@ class objects
 
 public partial class SearchResults : System.Web.UI.Page
 {
+
+    static List<objects> obj_results = new List<objects>();
     protected void Page_Load(object sender, EventArgs e)
     {
 
@@ -48,7 +50,7 @@ public partial class SearchResults : System.Web.UI.Page
         string Triminput_str = user_searching.Trim();
         string sstring = Triminput_str.Replace("(", "");
         sstring = sstring.Replace(")", "");
-        List<string> new_str = sstring.Split(',').ToList();
+        List<string> new_str = Triminput_str.Split(',').ToList();
 
         List<Term> new_terms = new List<Term>();
 
@@ -73,57 +75,98 @@ public partial class SearchResults : System.Web.UI.Page
         // This part definately stays on this page. 
         // Assume a Classifiable collection gets passed to this page or it gets 
         // generated like above
-        generateSearchResults(matchedClassifiables);
+          int resultsLength = matchedClassifiables.data.Count;
 
+          for (int i = 0; i < resultsLength; i++)
+          {
+              Classifiable currentClassifiable = matchedClassifiables.data[i];
 
+              string name;
+              List<string> terms_term;
+              int counter =0;
+              string concept;
+              string url;
 
+              //List<string> terms_two = new List<string>(new string[] { "pig", "cat" });
+              
 
-        //----------------------------------------------------------------------
-        //-----------------searching part --------------------------
-        /*
-        int id = 2;
+              name = currentClassifiable.name;
+              url = currentClassifiable.url;
+              concept = currentClassifiable.conceptStr.ToString();
+              terms_term = currentClassifiable.conceptStr.ToListstring();
 
-        Classifiable classy = dbConn.getClassifiableById(id);
-        
+              foreach (string items in new_str)
+              {
+                  foreach (string thing in terms_term)
+                  {
+                      if (items == thing)
+                      {
+                          counter = counter + 1;
+                      }
+                  }
+              }
 
+              obj_results.Add(new objects(name, terms_term, counter, concept, url));
+              
+          }
 
-        string name;
-        List<string> terms_term;
-        int counter = 0;
-        string concept;
-        string url;
+          var sort_result = from element in obj_results orderby element.name select element;
+          int ind = 0;
 
-        name = classy.name;
-        url = classy.url;
-        concept = classy.conceptStr.ToString();
-        terms_term = classy.conceptStr.ToListstring();
-        results_box.Items.Add(name);
-        results_box.Items.Add(url);
-        results_box.Items.Add(concept);
-        foreach (String things in terms_term)
-        {
-            results_box.Items.Add(things);
-        }
+          foreach (objects things in sort_result)
+          {
 
-        foreach (String things in new_str)
-        {
-            results_box.Items.Add(things);
-        }*/
+              //Classifiable currentClassifiable = searchResults.data[i];
+
+              Label ObName = new Label();
+
+              // Set this label to diaply the name of the Classifiable
+              ObName.ID = "ObName_" + ind;
+              ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
+
+              SearchReCon.Controls.Add(new LiteralControl("<strong>"));
+              SearchReCon.Controls.Add(ObName);
+              SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
+
+              // Create label for the concept string
+              Label NTag = new Label();
+              NTag.ID = "Ob_" + ind + "_Tag_";
+              NTag.Text = things.concept;
+              SearchReCon.Controls.Add(NTag);
+
+              // Add hyperlink to the url of the Classifiable
+              SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
+
+              HyperLink ObLink = new HyperLink();
+              ObLink.ID = "ObLink_" + ind;
+              ObLink.Target = "_blank";
+              ObLink.Text = things.url;
+              ObLink.NavigateUrl = things.url;
+
+              SearchReCon.Controls.Add(ObLink);
+              SearchReCon.Controls.Add(new LiteralControl("<br/>"+things.counter.ToString()+"<br/>"));
+
+              ind++;
+
+          }
+
     }
 
-    protected void generateSearchResults(ClassifiableCollection searchResults)
+    protected void relev_sort_Click(object sender, EventArgs e)
     {
-        int resultsLength = searchResults.data.Count;  
+        int ind = 0;
+        var sort_result = from element in obj_results orderby element.counter select element;
 
-        for (int i = 0; i < resultsLength; i++)
+        foreach (objects things in sort_result.Reverse().ToList())
         {
-            Classifiable currentClassifiable = searchResults.data[i];
+
+            //Classifiable currentClassifiable = searchResults.data[i];
 
             Label ObName = new Label();
 
             // Set this label to diaply the name of the Classifiable
-            ObName.ID = "ObName_" + i;
-            ObName.Text = String.Format("{0:D}. {1}", (i + 1), currentClassifiable.name);
+            ObName.ID = "ObName_" + ind;
+            ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
 
             SearchReCon.Controls.Add(new LiteralControl("<strong>"));
             SearchReCon.Controls.Add(ObName);
@@ -131,21 +174,32 @@ public partial class SearchResults : System.Web.UI.Page
 
             // Create label for the concept string
             Label NTag = new Label();
-            NTag.ID = "Ob_" + i + "_Tag_";
-            NTag.Text = currentClassifiable.conceptStr.ToString();
+            NTag.ID = "Ob_" + ind + "_Tag_";
+            NTag.Text = things.concept;
             SearchReCon.Controls.Add(NTag);
 
             // Add hyperlink to the url of the Classifiable
             SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
 
             HyperLink ObLink = new HyperLink();
-            ObLink.ID = "ObLink_" + i;
+            ObLink.ID = "ObLink_" + ind;
             ObLink.Target = "_blank";
-            ObLink.Text = currentClassifiable.url;
-            ObLink.NavigateUrl = currentClassifiable.url;
+            ObLink.Text = things.url;
+            ObLink.NavigateUrl = things.url;
 
             SearchReCon.Controls.Add(ObLink);
             SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
+            ind++;
+
         }
     }
+
+/*
+    protected void generateSearchResults(List<objects> searchResults)
+    {
+        //int resultsLength = searchResults.data.Count;  
+        
+    }*/
+
+
 }

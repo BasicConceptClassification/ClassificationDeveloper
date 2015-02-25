@@ -30,6 +30,24 @@ public partial class SearchResults {
     protected global::System.Web.UI.WebControls.Button btnclick;
     
     /// <summary>
+    /// name_sort control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button name_sort;
+    
+    /// <summary>
+    /// relev_sort control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button relev_sort;
+    
+    /// <summary>
     /// SearchReCon control.
     /// </summary>
     /// <remarks>
