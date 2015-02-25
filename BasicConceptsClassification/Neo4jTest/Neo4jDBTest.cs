@@ -135,18 +135,45 @@ namespace Neo4jTest
             };
             
             ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr, ordered: true);
- 
+
             Assert.IsNotNull(matchedClassifiables);
 
-            // Only tests that each Classifiable's ConceptString does contain at least one of the
-            // terms that was searched by.
-            foreach (var classifiable in matchedClassifiables.data)
+            // Tests that results are in order of most matches in its own concept string
+            int prevMatchCount = searchByConStr.terms.Count;
+            int currMatchCount = 0;
+            Classifiable prevClassifiable = new Classifiable 
+            { 
+                name = "first",
+            };
+
+            for (int i = 0; i < matchedClassifiables.data.Count; i++)
             {
-                bool test = classifiable.conceptStr.ToString().Contains(termWood.rawTerm) || 
-                            classifiable.conceptStr.ToString().Contains(termTool.rawTerm) ||
-                            classifiable.conceptStr.ToString().Contains(termFor.rawTerm);
-                Assert.IsTrue(test);
-            }
+                var classifiable = matchedClassifiables.data[i];
+
+                foreach (Term t in searchByConStr.terms)
+                {
+                    if (classifiable.conceptStr.ToString().Contains(t.ToString()))
+                    {
+                        currMatchCount += 1;
+                    }
+                }
+
+                Assert.AreNotEqual(0, currMatchCount,
+                    String.Format("Classifiable has {0} matches at index: {1:D} in results",
+                        classifiable.name, i));
+
+                Assert.IsTrue(currMatchCount <= prevMatchCount,
+                              String.Format("Index {4}: Current match: {0:D} for {2}, Previous match: {1:D} for {3}",
+                                currMatchCount,
+                                prevMatchCount,
+                                classifiable.name,
+                                prevClassifiable.name,
+                                i));
+
+                prevMatchCount = currMatchCount;
+                prevClassifiable = classifiable;
+                currMatchCount = 0;
+            }  
         }
 
         [TestMethod]
@@ -181,6 +208,7 @@ namespace Neo4jTest
                 },
             };
 
+            
             ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr);
 
             Assert.IsNotNull(matchedClassifiables);
@@ -194,6 +222,7 @@ namespace Neo4jTest
                             classifiable.conceptStr.ToString().Contains(termFor.rawTerm);
                 Assert.IsTrue(test);
             }
+             
         }
 
         [TestMethod]
