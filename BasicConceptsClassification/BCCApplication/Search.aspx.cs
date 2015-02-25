@@ -15,7 +15,6 @@ public partial class Search : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
         // Testing purposes, only loading from BccRoot with a small depth
         int expandDepth = 2;
 
@@ -37,9 +36,15 @@ public partial class Search : System.Web.UI.Page
 
     }
 
-    protected TreeNode generateBccTree(Term t, TreeNode currentNode)
+    /// <summary>
+    /// Converts a Term and its subTerms/children Terms to a TreeNode. 
+    /// </summary>
+    /// <param name="currentTerm">Current Term in the recursion.</param>
+    /// <param name="currentNode">Current TreeNode in the recursion.</param>
+    /// <returns>TreeNode reprentation of a Term.</returns>
+    protected TreeNode generateBccTree(Term currentTerm, TreeNode currentNode)
     {
-        String nodeTerm = t.rawTerm;
+        String nodeTerm = currentTerm.rawTerm;
 
         // Create/set the current node we're on: the text displayed with the
         // node and the action when selected.
@@ -47,11 +52,10 @@ public partial class Search : System.Web.UI.Page
         currentNode.SelectAction = TreeNodeSelectAction.None;
 
         // Foreach child, recursively build this up
-        foreach (var childTerm in t.subTerms)
+        foreach (var childTerm in currentTerm.subTerms)
         {    
             currentNode.ChildNodes.Add(generateBccTree(childTerm, currentNode));
         }
-
         return currentNode;
     }
 }

@@ -5,48 +5,92 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+using BCCLib;
+using Neo4j;
+
 public partial class SearchResults : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        // handles the search results
-        int x = 5;  // Eventually tie to number of results in search thing
 
-        for (int i = 0; i < x; i++)
+        // **** This section should not be done here! **** //
+        // Using same example from the Neo4jTest.cs
+        // CREATING TERMS FOR MAKING SAMPLE CONCEPT STRING 
+        Term termWood = new Term
         {
-            Label ObName = new Label();
-            ObName.ID = "ObName_" + i;
-            ObName.Text = (i+1) + ". Object Name"; // Change to read name of object
+            rawTerm = "wood",
+        };
 
-            SearchReCon.Controls.Add(new LiteralControl("<strong>"));
-            SearchReCon.Controls.Add(ObName);
-            SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
+        Term termTool = new Term
+        {
+            rawTerm = "Tool",
+        };
 
-            int y = 3;  // Number of tags that are associated with the object
-            for (int j = 0; j < y; j++)
-            {
-                Label NTag = new Label();
-                NTag.ID = "Ob_" + i + "_Tag_" + j;
-                NTag.Text = "Tag " + (j + 1) + ". ";  // Change to individual string tag of object
+        Term termFor = new Term
+        {
+            rawTerm = "for",
+        };
 
-                SearchReCon.Controls.Add(NTag);
-            }
-            SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
+        // CREATING SAMPLE CONCEPT STRING
+        ConceptString searchByConStr = new ConceptString
+        {
+            terms = new List<Term> 
+                {
+                    termWood, termTool, termFor,
+                },
+        };
+        // ********************************************* //
 
-            HyperLink ObLink = new HyperLink();
-            ObLink.ID = "ObLink_" + i;
-            ObLink.Target = "_blank";
-            ObLink.Text = "http://www.something.com";  // Change to string of associated website
-            ObLink.NavigateUrl = "Contact.aspx";  // Change to string of associated website
+        // Searching for the concept string happens on this page?
+        var dbConn = new Neo4jDB();
+        ClassifiableCollection matchedClassifiables = dbConn.getClassifiablesByConStr(searchByConStr);
 
-            SearchReCon.Controls.Add(ObLink);
-            SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
-
-        }
+        // This part definately stays on this page. 
+        // Assume a Classifiable collection gets passed to this page or it gets 
+        // generated like above
+        generateSearchResults(matchedClassifiables);
     }
 
     protected void btnclick_Click(object sender, EventArgs e)
     {
         printResults.Text = "You typed: " + testForYu.Text;
+    }
+
+    protected void generateSearchResults(ClassifiableCollection searchResults)
+    {
+        int resultsLength = searchResults.data.Count;  
+
+        for (int i = 0; i < resultsLength; i++)
+        {
+            Classifiable currentClassifiable = searchResults.data[i];
+
+            Label ObName = new Label();
+
+            // Set this label to diaply the name of the Classifiable
+            ObName.ID = "ObName_" + i;
+            ObName.Text = String.Format("{0:D}. {1}", (i + 1), currentClassifiable.name);
+
+            SearchReCon.Controls.Add(new LiteralControl("<strong>"));
+            SearchReCon.Controls.Add(ObName);
+            SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
+
+            // Create label for the concept string
+            Label NTag = new Label();
+            NTag.ID = "Ob_" + i + "_Tag_";
+            NTag.Text = currentClassifiable.conceptStr.ToString();
+            SearchReCon.Controls.Add(NTag);
+
+            // Add hyperlink to the url of the Classifiable
+            SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
+
+            HyperLink ObLink = new HyperLink();
+            ObLink.ID = "ObLink_" + i;
+            ObLink.Target = "_blank";
+            ObLink.Text = currentClassifiable.url;
+            ObLink.NavigateUrl = currentClassifiable.url;
+
+            SearchReCon.Controls.Add(ObLink);
+            SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
+        }
     }
 }
