@@ -7,19 +7,26 @@ namespace BCCLib
 {
     public class ConceptString
     {
+        /// <summary>
+        /// Ordered by how it was classified.
+        /// </summary>
         public List<Term> terms
         {
             get;
             set;
         }
 
+        /// <summary>
+        /// Returns the string representation of space separated 
+        /// terms in the concept string. 
+        /// </summary>
+        /// <returns>Returns space separated Terms.</returns>
         public override string ToString()
         {
             string result = "";
             foreach (Term t in terms)
             {
                 result += t.ToString();
-                result += " ";
             }
             return result;
         }

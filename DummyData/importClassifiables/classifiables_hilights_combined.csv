@@ -1,74 +1,44 @@
 "ItemId","ItemName","ConceptString","Glam","ClassifierId"
-"0","Abrader","(tool)(for)(smoothing)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"1","Adobe","(clay)(for)(building)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"2","Adze Blade","(blade)(of)(tool)(for)(carving)(wood) [there are similar tools like mattock going under quite different names]
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"3","Adze Head","(head?)(of)(tool)(for)(carving)(wood)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"4","Antler Artifact","(artifact)(from)(antler)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"5","Apache Tear","(round)(nodules)(obsidian)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"6","Apron","(clothing)(to protect)(clothing)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"7","Armor Slat","(flat)(wood)(for)(armor)   
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"8","armor","(protection)(for)(war)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"9","Arrow","(long)(round)(pointed)(projectile)(weapon) 
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"10","Projectile","(object)(propelled)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"11","Arrow Foreshaft","(front)(long)(part of)(arrow)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"12","Arrow Shaft","(long)(part of)(arrow)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"13","Atlatl","(weapon)(for)(throwing)(spear)  
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"0","Abrader","(tool)(for)(smoothing)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"1","Adobe","(clay)(for)(building)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"2","Adze Blade","(blade)(of)(tool)(for)(carving)(wood)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"3","Adze Head","(head?)(of)(tool)(for)(carving)(wood)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"4","Antler Artifact","(artifact)(from)(antler)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"5","Apache Tear","(round)(nodules)(obsidian)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"6","Apron","(clothing)(to protect)(clothing)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"7","Armor Slat","(flat)(wood)(for)(armor)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"8","armor","(protection)(for)(war)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"9","Arrow","(long)(round)(pointed)(projectile)(weapon)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"10","Projectile","(object)(propelled)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"11","Arrow Foreshaft","(front)(long)(part of)(arrow)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"12","Arrow Shaft","(long)(part of)(arrow)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"13","Atlatl","(weapon)(for)(throwing)(spear)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "14","Atlatl Foreshaft","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "15","Atlatl Shaft","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"16","Awl_01","(long)(pointed)(spike) 
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"17","Awl_02","(making)(holes)(in)(wood)   
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"18","Awl_03","(scratching/carving)(wood)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"19","Awl_04","(making)(holes)(in)(leather)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"20","Axe_01","(tool)(for)(cutting)(wood)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"21","Axe_02","(sharp)(blade)(with)(long)(handle)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"22","Bag","(flexible)(container)(for)(carrying)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"23","Bag Handle","(part of)(bag)(for)(carrying)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"16","Awl_01","(long)(pointed)(spike)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"17","Awl_02","(making)(holes)(in)(wood)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"18","Awl_03","(scratching/carving)(wood)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"19","Awl_04","(making)(holes)(in)(leather)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"20","Axe_01","(tool)(for)(cutting)(wood)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"21","Axe_02","(sharp)(blade)(with)(long)(handle)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"22","Bag","(flexible)(container)(for)(carrying)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"23","Bag Handle","(part of)(bag)(for)(carrying)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "24","Bag, Apron","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "25","Bag, Awl","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "26","Bag, Pipe","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "27","Ball","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"28","Band","(flat)(thin)(strip)(for)(collecting?)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"29","Basket","(container)(for)(carrying)(made of)(strips)(intertwined)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"28","Band","(flat)(thin)(strip)(for)(collecting?)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"29","Basket","(container)(for)(carrying)(made of)(strips)(intertwined)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "30","Basket, Burden","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "31","Basketry Fragment","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "32","Basketry Fragment, Cord","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "33","Basketry Fragment, Sherd","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"34","Baton","(short)(stick)   (for)(directing)(music)  (as)(symbol)(power) 
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"35","Batten","(long)(flat)(strip)(wood or metal)(for)(fastening)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"36","Bead","(small)(round)(with)(hole) 
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"37","Beaker","(wide)(glass)(with)(pouring)(lip)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"38","Beam","(long)(squared)(wood or metal)(support)(roof or floor)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"39","Beamer","(bone)(implement)(for)(cutting or scraping)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"34","Baton","(short)(stick)(for)(directing)(music)(as)(symbol)(power)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"35","Batten","(long)(flat)(strip)(wood or metal)(for)(fastening)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"36","Bead","(small)(round)(with)(hole)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"37","Beaker","(wide)(glass)(with)(pouring)(lip)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"38","Beam","(long)(squared)(wood or metal)(support)(roof or floor)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"39","Beamer","(bone)(implement)(for)(cutting or scraping)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "40","Bell","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "41","Belt","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "42","Biface","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
@@ -296,8 +266,7 @@
 "264","Sandal/Cord","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "265","Saucer","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "266","Scalp Lock","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"267","NPS Museum Handbook, Part II","(2000) E:13
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"267","NPS Museum Handbook, Part II","(2000)(E:13)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "268","Scat","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "269","Scoop","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "270","Scoop, Effigy","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
@@ -370,48 +339,26 @@
 "337","Yarn/Cord","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "338","Yucca Knot","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "339","Yucca Knot/Raw Material","","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"340","Melencolia I","(elderly)(winged)(woman)(sadness)(clutching)(caliper)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"341","The beautiful virgin of Regensburg","(virgin)(halo)(woodcut)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"342","Venus with a mirror:","(nude)(Venus)(with)(mirror)(and)(cupid
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"343","Marchesa Brigida Spinola Doria","(Portrait)(standing)(dress)(smiling)(self-possessed)(holding)(fan)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"344","Laocoön","(Laocoön)(and)(sons)(attacked by)(snakes)(fear)(suffering)  
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"345","Pan reclining","(drawing)(Pan)(reclining)(with)(pipes)(goatskin)   
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"346","Pan","(mythological)(goat)(human)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"347","Marchesa Elena Grimaldi Cattaneo","(standing)(shielded by)(parasol)(held by)(servant)(imperious)    
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"348","Monsignor Francesco Barberini","(statue)(bust)(lifelike)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"349","Self-portrait [Judith Leyster]","(smiling)(turned)(wearing)(dress)(painting)(fiddler)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"350","The Maas at Dordrecht","(Dutch)(sailing)(ships)(pressuring)(Spain)(Dordrecht)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"351","Self-portrait [Rembrandt]","(seated)(brooding)(wise)    
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"352","Woman holding a balance","(woman)(1/4)(holding)(balance)(measuring)(sin)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"353","Young girl reading","(profile)(pink)(cheeks)(positive)(portrayal)(focused).  
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"354","Watson and the shark","(naked)(boy)(attacked)(rescued)(shark)(fear)(contempt)(shock)(compassion)(Havana) 
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"355","The Great Red Dragon and the Woman Clothed with the Sun","(based on)(Revelations)(battle)(good)(versus)(evil)(tension)(sweeping)(lines)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"356","The Emperor Napoleon in his Study at the Tuileries","(standing)(wearing)(soldier)(uniform)(hand)(in)(waistcoat)   (Code Napoleon)(map)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"357","Wivenhoe Park, Essex","(placid)(landscape)(lake)(trees)(cows)(house)(distant)(small)(fishing)(boat)(donkey cart)   
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"358","The Japanese footbridge","(bridge)(water lilies)(pond)(luminous)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"359","Open Window, Collioure [Matisse]","(vivid)(unnatural)(colours)(view)(out)(window)(boats)(sky)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"360","Number 1 [Lavender mist]  [Pollock]","(drip)(painting)(various)(colours)(generate)(mauve)
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
-"361","Vertical constellation with bomb","(mobile)(painted)(wire)(wood)(with)(bomb)   
-","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"340","Melencolia I","(elderly)(winged)(woman)(sadness)(clutching)(caliper)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"341","The beautiful virgin of Regensburg","(virgin)(halo)(woodcut)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"342","Venus with a mirror:","(nude)(Venus)(with)(mirror)(and)(cupid)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"343","Marchesa Brigida Spinola Doria","(Portrait)(standing)(dress)(smiling)(self-possessed)(holding)(fan)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"344","Laocoön","(Laocoön)(and)(sons)(attacked by)(snakes)(fear)(suffering)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"345","Pan reclining","(drawing)(Pan)(reclining)(with)(pipes)(goatskin)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"346","Pan","(mythological)(goat)(human)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"347","Marchesa Elena Grimaldi Cattaneo","(standing)(shielded by)(parasol)(held by)(servant)(imperious)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"348","Monsignor Francesco Barberini","(statue)(bust)(lifelike)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"349","Self-portrait [Judith Leyster]","(smiling)(turned)(wearing)(dress)(painting)(fiddler)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"350","The Maas at Dordrecht","(Dutch)(sailing)(ships)(pressuring)(Spain)(Dordrecht)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"351","Self-portrait [Rembrandt]","(seated)(brooding)(wise)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"352","Woman holding a balance","(woman)(1/4)(holding)(balance)(measuring)(sin)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"353","Young girl reading","(profile)(pink)(cheeks)(positive)(portrayal)(focused)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"354","Watson and the shark","(naked)(boy)(attacked)(rescued)(shark)(fear)(contempt)(shock)(compassion)(Havana)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"355","The Great Red Dragon and the Woman Clothed with the Sun","(based on)(Revelations)(battle)(good)(versus)(evil)(tension)(sweeping)(lines)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"356","The Emperor Napoleon in his Study at the Tuileries","(standing)(wearing)(soldier)(uniform)(hand)(in)(waistcoat)(Code Napoleon)(map)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"357","Wivenhoe Park, Essex","(placid)(landscape)(lake)(trees)(cows)(house)(distant)(small)(fishing)(boat)(donkey cart)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"358","The Japanese footbridge","(bridge)(water lilies)(pond)(luminous)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"359","Open Window, Collioure [Matisse]","(vivid)(unnatural)(colours)(view)(out)(window)(boats)(sky)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"360","Number 1 [Lavender mist]  [Pollock]","(drip)(painting)(various)(colours)(generate)(mauve)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
+"361","Vertical constellation with bomb","(mobile)(painted)(wire)(wood)(with)(bomb)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"
 "362","Tomorrow I May Be Far Away","(collage)(man)(seated)(in front)(shack)(evokes)(jazz)","https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service","99999"

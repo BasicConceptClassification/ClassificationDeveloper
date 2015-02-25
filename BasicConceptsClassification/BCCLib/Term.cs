@@ -11,17 +11,27 @@ namespace BCCLib
     /// </summary>
     public class Term
     {
-        // Terms currently have an "id" which was their Protege IRI. (Think URL.)
-        // Should switch to GUIDs eventually?
+        /// <summary>Terms currently have an "id" which was their Protege IRI. 
+        /// (Think URL.) Should switch to GUIDs eventually?</summary> 
         public string id
         {
             get;
             set;
         }
+ 
         /// <summary>
         /// The string content of the Term.
         /// </summary>
         public String rawTerm
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The lower case version of rawTerm.
+        /// </summary>
+        public String lower
         {
             get;
             set;
@@ -37,9 +47,29 @@ namespace BCCLib
         }
 
         /// <summary>
+        /// ToString() format: (rawTerm)
+        /// </summary>
+        /// <returns>Parenthesis of rawTerm.</returns>
+        public override string ToString()
+        {
+            return "(" + rawTerm + ")";
+        }
+
+        /// <summary>
+        /// Checks if the Term has the subTerm t. Compares by rawTerm. 
+        /// Returns index in the subTerms.
+        /// </summary>
+        /// <param name="t">Term to compare by.</param>
+        /// <returns>Index of the subTerm in the subTerm List, -1 if does not exist.</returns>
+        public int hasSubTerm(Term t)
+        {
+            return subTerms.FindIndex(0, subTerms.Count, a => a.rawTerm == t.rawTerm);
+        }
+
+        /// <summary>
         /// Creates all terms along the list of terms provided, order from immediate
         /// subTerm to furthest subterm. The current term should NOT be included in 
-        /// the list of terms.
+        /// the list of terms. The list of terms passed in is NOT modified.
         /// </summary>
         /// <param name="tList">List of terms starting with the Term's immediate subterm
         /// that need to be added to the Term's subTerms.</param>
@@ -83,17 +113,6 @@ namespace BCCLib
                 this.subTerms.Add(newChild);
                 this.subTerms[this.subTerms.Count - 1].connectTermsFromList(trmList);
             }
-        }
-
-        /// <summary>
-        /// Checks if the Term has the subTerm t. Compares by rawTerm. 
-        /// Returns index in the subTerms.
-        /// </summary>
-        /// <param name="t">Term to compare by.</param>
-        /// <returns>Index of the subTerm in the subTerm List, -1 if does not exist.</returns>
-        public int hasSubTerm(Term t)
-        {
-            return subTerms.FindIndex(0, subTerms.Count, a => a.rawTerm == t.rawTerm);
         }
     }
 }
