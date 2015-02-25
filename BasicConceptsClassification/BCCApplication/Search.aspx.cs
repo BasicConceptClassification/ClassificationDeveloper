@@ -6,61 +6,28 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using System.Web.UI.HtmlControls;
 
+using BCCLib;
+using Neo4j;
+
+using System.Diagnostics;
+
 public partial class Search : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-        int dataObjects = 2; // Have it as number of objects in database
-        int i = 0; //used to figure out if it has found all objects
 
+        // Testing purposes, only loading from BccRoot with a small depth
+        int expandDepth = 2;
 
+        // Fetch BCC from the DB
+        var dbConn = new Neo4jDB();
+        Term bccRootTerm = dbConn.getBccFromRootWithDepth(expandDepth);
+
+        // Create a starting TreeNode as the root to generate the BCC
         TreeNode currentNode = new TreeNode();
-        TreeNode tempNode;
-        while (i < dataObjects)
-        {
-            //if(has child) {
-            String currentTag = "Tag";
+        DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
 
-            if (currentNode.Parent == null)
-            {
-                currentNode = new TreeNode(currentTag);
-
-                currentNode.SelectAction = TreeNodeSelectAction.None;
-                DataSet.Nodes.Add(currentNode);
-            }
-            else
-            {
-                tempNode = new TreeNode(currentTag);
-
-                tempNode.SelectAction = TreeNodeSelectAction.None;
-                currentNode.ChildNodes.Add(tempNode);
-
-                currentNode = tempNode;
-            }
-            // Will need to figure out how to implement selectAction to add tag to search string
-
-            TreeNode tempCont = new TreeNode(currentTag);
-            //}
-            //else {
-            // basically this is if it finds a object instead of a tag (thus a non-parent object or whatever)
-            String currentObName = "I need a Name from Database"; // have it as object name
-            String currentObHTML = "http://www.something.com"; // have it as object html
-            String childLabel = "<b>" + currentObName + "</b><br/>Source/Stored at: ";
-            childLabel = childLabel + "<a href='" + "'>" + currentObHTML + "</a>"; // Going to have to add currentObHTML between "<a... and "'/>"
-
-            TreeNode childNodeThing = new TreeNode(childLabel);
-            childNodeThing.SelectAction = TreeNodeSelectAction.None;
-
-            currentNode.ChildNodes.Add(childNodeThing);
-
-            i = i + 1;
-            //}
-
-            // need to return to parent of next tag
-            //while (nextTag.parent.Text != currentNode.Text) {
-            //  currentNode = currentNode.parent;
-            //}
-        }
+        // By default, leave collapsed
         DataSet.CollapseAll();
     }
 
@@ -68,5 +35,23 @@ public partial class Search : System.Web.UI.Page
     protected void DataSet_SelectedNodeChanged(object sender, EventArgs e)
     {
 
+    }
+
+    protected TreeNode generateBccTree(Term t, TreeNode currentNode)
+    {
+        String nodeTerm = t.rawTerm;
+
+        // Create/set the current node we're on: the text displayed with the
+        // node and the action when selected.
+        currentNode = new TreeNode(nodeTerm);
+        currentNode.SelectAction = TreeNodeSelectAction.None;
+
+        // Foreach child, recursively build this up
+        foreach (var childTerm in t.subTerms)
+        {    
+            currentNode.ChildNodes.Add(generateBccTree(childTerm, currentNode));
+        }
+
+        return currentNode;
     }
 }
