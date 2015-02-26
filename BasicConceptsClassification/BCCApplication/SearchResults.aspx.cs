@@ -50,7 +50,7 @@ public partial class SearchResults : System.Web.UI.Page
         string Triminput_str = user_searching.Trim();
         string sstring = Triminput_str.Replace("(", "");
         sstring = sstring.Replace(")", "");
-        List<string> new_str = Triminput_str.Split(',').ToList();
+        List<string> new_str = sstring.Split(',').ToList();
 
         List<Term> new_terms = new List<Term>();
 
@@ -58,6 +58,7 @@ public partial class SearchResults : System.Web.UI.Page
         {
             //change to terms
             Term terterma = new Term{rawTerm = things,};
+            //ListBox1.Items.Add(things);
             new_terms.Add(terterma);
         }
 
@@ -94,10 +95,20 @@ public partial class SearchResults : System.Web.UI.Page
               url = currentClassifiable.url;
               concept = currentClassifiable.conceptStr.ToString();
               terms_term = currentClassifiable.conceptStr.ToListstring();
+              List<string> check_list = new List<string>();
+              foreach (string things in terms_term)
+              {
+                  string newthings = things.Replace("(", "");
+                  string new_t_things = newthings.Replace(")", "");
+                  //ListBox1.Items.Add(new_t_things);
+                  check_list.Add(new_t_things);
+              }
+
 
               foreach (string items in new_str)
               {
-                  foreach (string thing in terms_term)
+                  //ListBox1.Items.Add(items);
+                  foreach (string thing in check_list)
                   {
                       if (items == thing)
                       {
@@ -110,10 +121,10 @@ public partial class SearchResults : System.Web.UI.Page
               
           }
 
-          var sort_result = from element in obj_results orderby element.name select element;
+          var sort_result = from element in obj_results orderby element.counter select element;
           int ind = 0;
 
-          foreach (objects things in sort_result)
+          foreach (objects things in sort_result.Reverse())
           {
 
               //Classifiable currentClassifiable = searchResults.data[i];
@@ -144,7 +155,7 @@ public partial class SearchResults : System.Web.UI.Page
               ObLink.NavigateUrl = things.url;
 
               SearchReCon.Controls.Add(ObLink);
-              SearchReCon.Controls.Add(new LiteralControl("<br/>"+things.counter.ToString()+"<br/>"));
+              SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));//+things.counter.ToString()+
 
               ind++;
 
@@ -158,6 +169,48 @@ public partial class SearchResults : System.Web.UI.Page
         var sort_result = from element in obj_results orderby element.counter select element;
 
         foreach (objects things in sort_result.Reverse().ToList())
+        {
+
+            //Classifiable currentClassifiable = searchResults.data[i];
+
+            Label ObName = new Label();
+
+            // Set this label to diaply the name of the Classifiable
+            ObName.ID = "ObName_" + ind;
+            ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
+
+            SearchReCon.Controls.Add(new LiteralControl("<strong>"));
+            SearchReCon.Controls.Add(ObName);
+            SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
+
+            // Create label for the concept string
+            Label NTag = new Label();
+            NTag.ID = "Ob_" + ind + "_Tag_";
+            NTag.Text = things.concept;
+            SearchReCon.Controls.Add(NTag);
+
+            // Add hyperlink to the url of the Classifiable
+            SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
+
+            HyperLink ObLink = new HyperLink();
+            ObLink.ID = "ObLink_" + ind;
+            ObLink.Target = "_blank";
+            ObLink.Text = things.url;
+            ObLink.NavigateUrl = things.url;
+
+            SearchReCon.Controls.Add(ObLink);
+            SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
+            ind++;
+
+        }
+    }
+
+    protected void name_sort_Click(object sender, EventArgs e)
+    {
+        int ind = 0;
+        var sort_result = from element in obj_results orderby element.name select element;
+
+        foreach (objects things in sort_result)
         {
 
             //Classifiable currentClassifiable = searchResults.data[i];
