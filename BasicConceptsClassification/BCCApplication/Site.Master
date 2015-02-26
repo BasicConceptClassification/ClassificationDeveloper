@@ -33,7 +33,6 @@
                     <section id="login">
                         <asp:LoginView runat="server" ViewStateMode="Disabled">
                             <RoleGroups>
-                                <%-- See: RoleActions.cs for definitions --%>
                                 <asp:RoleGroup Roles="Administrator">
                                     <ContentTemplate>
                                         Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account"><asp:LoginName runat="server" CssClass="username" /></a>!
@@ -56,10 +55,8 @@
                             </AnonymousTemplate>
                             <LoggedInTemplate>
                                 <p>
-                                    Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account">
-                                        <asp:LoginName runat="server" CssClass="username" />
-                                    </a>!
-                                <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
+                                    Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account"><asp:LoginName runat="server" CssClass="username" /></a>!
+                                    <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                 </p>
                             </LoggedInTemplate>
 

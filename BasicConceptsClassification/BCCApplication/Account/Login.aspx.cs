@@ -38,13 +38,10 @@ namespace BCCApplication.Account
                 switch (result)
                 {
                     case SignInStatus.Success:
-                        Response.Redirect("/");
+                        IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
                         break;
                     case SignInStatus.LockedOut:
-                        //Response.Redirect("/Account/Lockout");
-                        break;
                     case SignInStatus.RequiresVerification:
-                        break;
                     case SignInStatus.Failure:
                     default:
                         break;
