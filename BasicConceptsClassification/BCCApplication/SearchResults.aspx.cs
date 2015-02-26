@@ -16,15 +16,17 @@ class objects
     public string name;
     public List<string> terms_term;
     public int counter;
+    public int scor;
     public string concept;
     public string url;
-    public objects(string s, List<string> l, int c, string se, string u)
+    public objects(string s, List<string> l, int c, string se, string u, int sc)
     {
         this.name = s;
         this.terms_term = l;
         this.counter = c;
         this.concept = se;
         this.url = u;
+        this.scor = sc;
     }
 }
 
@@ -87,6 +89,10 @@ public partial class SearchResults : System.Web.UI.Page
               int counter =0;
               string concept;
               string url;
+              int scores = 0;
+
+              int set_s1 = 0;
+              
 
               //List<string> terms_two = new List<string>(new string[] { "pig", "cat" });
               
@@ -117,7 +123,66 @@ public partial class SearchResults : System.Web.UI.Page
                   }
               }
 
-              obj_results.Add(new objects(name, terms_term, counter, concept, url));
+
+              List<string> counter_str = new List<string>();
+
+              foreach(string items in new_str)
+              {
+                  foreach (string things in check_list)
+                  {
+                      if (items == things)
+                      {
+                          counter_str.Add(things);
+                          //ListBox1.Items.Add(things);
+                      }
+
+                  }
+              }
+
+              //ListBox1.Items.Add("----------------------------");
+
+
+              foreach (string items in new_str)
+              {
+                  set_s1++;
+                  int set_s2 = 0;
+                  //ListBox1.Items.Add("&&&&&&&&&" + items);
+
+                  foreach (string things in counter_str)
+                  {
+                      set_s2++;
+                      if (items == things)
+                      {
+                        //scores = scores + Math.Abs(set_s1 - set_s2);
+                          if (set_s2 == set_s1)
+                          {
+                              scores = scores + 50;
+                          }
+                          else
+                          {
+                              scores = scores + 1;
+                          }
+                          //ListBox1.Items.Add(things);
+                      }
+                      
+                  }
+                  
+              }
+              
+
+
+              //ListBox1.Items.Add(scores.ToString());
+              int decreasecounter = counter;
+              while (decreasecounter != 0)
+              {
+                  scores = scores + 100;
+                  decreasecounter--;
+              }
+              //ListBox1.Items.Add(scores.ToString());
+              //ListBox1.Items.Add("********************************");
+
+
+              obj_results.Add(new objects(name, terms_term, counter, concept, url, scores));
               
           }
 
@@ -245,6 +310,49 @@ public partial class SearchResults : System.Web.UI.Page
             ind++;
 
         }
+    }
+
+    protected void order_sort_Click(object sender, EventArgs e)
+    {
+        int ind = 0;
+        var sort_result = from element in obj_results orderby element.scor select element;
+
+        foreach (objects things in sort_result.Reverse().ToList())
+        {
+
+            //Classifiable currentClassifiable = searchResults.data[i];
+
+            Label ObName = new Label();
+
+            // Set this label to diaply the name of the Classifiable
+            ObName.ID = "ObName_" + ind;
+            ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
+
+            SearchReCon.Controls.Add(new LiteralControl("<strong>"));
+            SearchReCon.Controls.Add(ObName);
+            SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
+
+            // Create label for the concept string
+            Label NTag = new Label();
+            NTag.ID = "Ob_" + ind + "_Tag_";
+            NTag.Text = things.concept;
+            SearchReCon.Controls.Add(NTag);
+
+            // Add hyperlink to the url of the Classifiable
+            SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
+
+            HyperLink ObLink = new HyperLink();
+            ObLink.ID = "ObLink_" + ind;
+            ObLink.Target = "_blank";
+            ObLink.Text = things.url;
+            ObLink.NavigateUrl = things.url;
+
+            SearchReCon.Controls.Add(ObLink);
+            SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
+            ind++;
+
+        }
+
     }
 
 /*

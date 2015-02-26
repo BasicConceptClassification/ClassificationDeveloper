@@ -38,6 +38,8 @@ namespace BCCLib
             {
                 results.Add(t.ToString());
             }
+            results.Reverse();
+
             return results;
         }
     }

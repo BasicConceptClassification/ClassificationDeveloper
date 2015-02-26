@@ -48,6 +48,15 @@ public partial class SearchResults {
     protected global::System.Web.UI.WebControls.Button relev_sort;
     
     /// <summary>
+    /// order_sort control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Button order_sort;
+    
+    /// <summary>
     /// SearchReCon control.
     /// </summary>
     /// <remarks>
