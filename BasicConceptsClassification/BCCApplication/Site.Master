@@ -24,6 +24,17 @@
             <div class="float-right">
                 <section id="login">
                     <asp:LoginView runat="server" ViewStateMode="Disabled">
+                        <RoleGroups>
+                            <!-- See RoleActions.cs -->
+                            <asp:RoleGroup Roles="Administrator">
+                                <ContentTemplate>
+
+                                </ContentTemplate>
+                            </asp:RoleGroup>
+                            <asp:RoleGroup Roles="Classifier">
+
+                            </asp:RoleGroup>
+                        </RoleGroups>
                         <AnonymousTemplate>
                             <ul>
                                 <li><a id="registerLink" runat="server" href="~/Account/Register">Register</a></li>
@@ -35,7 +46,7 @@
                                 Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account">
                                     <asp:LoginName runat="server" CssClass="username" />
                                 </a>!
-                                <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" />
+                                <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                             </p>
                         </LoggedInTemplate>
                         

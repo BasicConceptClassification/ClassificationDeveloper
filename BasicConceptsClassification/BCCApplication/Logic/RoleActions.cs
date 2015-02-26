@@ -45,15 +45,14 @@ namespace BCCApplication.Logic
             var appUser = new ApplicationUser
             {
                 UserName = "Admin",
-                Email = "admin@basicconceptsclassification.com"
             };
             IdUserResult = userMgr.Create(appUser, "password");
 
             // If the new "canEdit" user was successfully created, 
             // add the "canEdit" user to the "canEdit" role. 
-            if (!userMgr.IsInRole(userMgr.FindByEmail("admin@basicconceptsclassification.com").Id, ROLE_ADMIN))
+            if (!userMgr.IsInRole(userMgr.FindByName("Admin").Id, ROLE_ADMIN))
             {
-                IdUserResult = userMgr.AddToRole(userMgr.FindByEmail("admin@basicconceptsclassification.com").Id, ROLE_ADMIN);
+                IdUserResult = userMgr.AddToRole(userMgr.FindByName("Admin").Id, ROLE_ADMIN);
             }
         }
     }
