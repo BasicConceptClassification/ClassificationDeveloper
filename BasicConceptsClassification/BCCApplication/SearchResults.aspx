@@ -6,8 +6,8 @@
         <br />
         <center>
             Search Results:
-            <asp:TextBox ID="searching_textbox" runat="server" placeholder ="Enter text to print here"/>
-            <asp:Button ID="btnclick" onclick="btnclick_Click" Text="Test Button!" runat="server" />
+            <asp:TextBox ID="searching_textbox" runat="server" placeholder ="(term1),(term2),(term3)"/>
+            <asp:Button ID="btnclick" onclick="btnclick_Click" Text="Search" runat="server" />
             <br />
             <asp:Button ID="name_sort" runat="server" Text="Sort_Name" OnClick="name_sort_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
