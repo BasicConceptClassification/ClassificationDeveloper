@@ -7,11 +7,8 @@
         <p>Quick explanation on how to use with or w/out the buttons. For more information please go <a href="About.aspx" target="_self">about/help page</a>.</p>
         <br />
         <center>
-            <form action="SearchResults.aspx" method="get" target="_self">
-                Search:<asp:TextBox ID="TextBox1" runat="server"></asp:TextBox>
-&nbsp;&nbsp;
-            </form>
-            <asp:Button ID="Button1" runat="server" OnClick="Button1_Click" Text="Button" />
+            search:<asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
+            <asp:Button ID="Button1" runat="server" Text="Search" OnClick="Button1_Click" />
         </center>
     </div>
     <br />

@@ -13,6 +13,7 @@ using System.Diagnostics;
 
 public partial class Search : System.Web.UI.Page
 {
+    
     protected void Page_Load(object sender, EventArgs e)
     {
         // Testing purposes, only loading from BccRoot with a small depth
@@ -65,7 +66,14 @@ public partial class Search : System.Web.UI.Page
 
     protected void Button1_Click(object sender, EventArgs e)
     {
-        string str = TextBox1.Text;
+        string str = TextBox2.Text;
+        Application["textpass"] = str;
+        Server.Transfer("SearchResults.aspx", true);
+
 
     }
+
+   
+
+    
 }
