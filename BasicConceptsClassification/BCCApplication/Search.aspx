@@ -3,12 +3,12 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <center><h1>Search</h1></center>
+        <center><h1>Search Builder</h1></center>
         <p>Quick explanation on how to use with or w/out the buttons. For more information please go <a href="About.aspx" target="_self">about/help page</a>.</p>
         <br />
         <center>
             search:<asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
-            <asp:Button ID="Button1" runat="server" Text="Search" OnClick="Button1_Click" />
+            <asp:Button ID="Button1" runat="server" Text="Jump to Search page" OnClick="Button1_Click" />
         </center>
     </div>
     <br />

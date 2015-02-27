@@ -2,7 +2,7 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <center><h1>Search Results</h1></center>
+        <center><h1>Search</h1></center>
         <br />
         <center>
             Search Results:
