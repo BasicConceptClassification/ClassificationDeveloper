@@ -145,5 +145,118 @@ namespace BCCLibTest
             string raw = t.ToString();
             Assert.AreEqual("(Raw)", raw);
         }
+        
+        [TestMethod]
+        public void Term_sortSubTerms_HasLower()
+        {
+            Term term = new Term
+            {
+                id = "id01",
+                rawTerm = "Raw",
+                lower = "raw",
+                subTerms = new List<Term>(),
+            };
+
+            Term subTerm1 = new Term
+            {
+                id = "id02",
+                rawTerm = "alpha",
+                lower = "alpha",
+                subTerms = new List<Term>(),
+            };
+
+            Term subTerm2 = new Term
+            {
+                id = "id03",
+                rawTerm = "Beta",
+                lower = "beta",
+                subTerms = new List<Term>(),
+            };
+
+            Term subTerm3 = new Term
+            {
+                id = "id03",
+                rawTerm = "gAmma",
+                lower = "gamma",
+                subTerms = new List<Term>(),
+            };
+
+            // Added order: gAmma, alpha, Beta
+            term.subTerms.Add(subTerm3);
+            term.subTerms.Add(subTerm1);
+            term.subTerms.Add(subTerm2);
+
+            term.sortSubTerms();
+
+            // Expected order: 
+            // alpha (subTerm1), Beta (subTerm2), gAmma (subTerm3)
+            Assert.AreEqual(subTerm1, term.subTerms[0]);
+            Assert.AreEqual(subTerm2, term.subTerms[1]);
+            Assert.AreEqual(subTerm3, term.subTerms[2]);
+        }
+
+        [TestMethod]
+        public void Term_sortSubTerms_HasNoLower()
+        {
+            Term term = new Term
+            {
+                id = "id01",
+                rawTerm = "Raw",
+                subTerms = new List<Term>(),
+            };
+
+            Term subTerm1 = new Term
+            {
+                id = "id02",
+                rawTerm = "alpha",
+                subTerms = new List<Term>(),
+            };
+
+            Term subTerm2 = new Term
+            {
+                id = "id03",
+                rawTerm = "Beta",
+                subTerms = new List<Term>(),
+            };
+
+            Term subTerm3 = new Term
+            {
+                id = "id03",
+                rawTerm = "gAmma",
+                subTerms = new List<Term>(),
+            };
+
+            // Added order: gAmma, alpha, Beta
+            term.subTerms.Add(subTerm3);
+            term.subTerms.Add(subTerm1);
+            term.subTerms.Add(subTerm2);
+
+            term.sortSubTerms();
+
+            // Expected order: 
+            // alpha (subTerm1), Beta (subTerm2), gAmma (subTerm3)
+            Assert.AreEqual(subTerm1, term.subTerms[0]);
+            Assert.AreEqual(subTerm2, term.subTerms[1]);
+            Assert.AreEqual(subTerm3, term.subTerms[2]);
+        }
+
+        [TestMethod]
+        public void Term_sortSubTerms_HasNoSubTerms()
+        {
+            Term term = new Term
+            {
+                id = "id01",
+                rawTerm = "Raw",
+                lower = "raw",
+                subTerms = new List<Term>(),
+            };
+
+            term.sortSubTerms();
+
+            // Not sure what to check, other than nothin horrible
+            // happen. Make sure no subTerms were added?
+            Assert.AreEqual(0, term.subTerms.Count);
+        }
+
     }
 }

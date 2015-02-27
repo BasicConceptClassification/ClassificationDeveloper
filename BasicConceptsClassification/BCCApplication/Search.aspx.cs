@@ -51,6 +51,9 @@ public partial class Search : System.Web.UI.Page
         currentNode = new TreeNode(nodeTerm);
         currentNode.SelectAction = TreeNodeSelectAction.None;
 
+        // Sort subTerms by alphabetical order
+        currentTerm.sortSubTerms();
+
         // Foreach child, recursively build this up
         foreach (var childTerm in currentTerm.subTerms)
         {    
