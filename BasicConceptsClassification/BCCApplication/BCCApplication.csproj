@@ -170,6 +170,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="Account\AccessDenied.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Manage.aspx" />
     <Content Include="Account\OpenAuthProviders.ascx" />
@@ -232,10 +233,19 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
+    <Content Include="Roles\Classification\Classification.aspx" />
     <Content Include="Roles\Web.config" />
-    <Content Include="Roles\Administration.aspx" />
+    <Content Include="Roles\Admin\Administration.aspx" />
     <Content Include="Scripts\jquery-1.4.2.min.js" />
+    <Compile Include="Account\AccessDenied.aspx.cs">
+      <DependentUpon>AccessDenied.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AccessDenied.aspx.designer.cs">
+      <DependentUpon>AccessDenied.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\Startup.Auth.cs" />
+    <Content Include="Roles\Classification\Web.config" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
     <Content Include="Scripts\jquery-2.1.3.min.js" />
@@ -332,13 +342,20 @@
     </Compile>
     <Compile Include="Logic\IdentityModel.cs" />
     <Compile Include="Logic\RoleActions.cs" />
+    <Compile Include="Roles\Classification\Classification.aspx.cs">
+      <DependentUpon>Classification.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Roles\Classification\Classification.aspx.designer.cs">
+      <DependentUpon>Classification.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Roles\Administration.aspx.cs">
+    <Compile Include="Roles\Admin\Administration.aspx.cs">
       <DependentUpon>Administration.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
     </Compile>
-    <Compile Include="Roles\Administration.aspx.designer.cs">
+    <Compile Include="Roles\Admin\Administration.aspx.designer.cs">
       <DependentUpon>Administration.aspx</DependentUpon>
     </Compile>
     <Compile Include="Search.aspx.cs">

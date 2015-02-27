@@ -15,9 +15,9 @@ namespace BCCApplication.Logic
     {
         public ClaimsIdentity GenerateUserIdentity(ApplicationUserManager manager)
         {
-            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType 
+            // Note the authenticationType must match the one defined in CookieAuthenticationOptions.AuthenticationType
             var userIdentity = manager.CreateIdentity(this, DefaultAuthenticationTypes.ApplicationCookie);
-            // Add custom user claims here 
+            // Add custom user claims here
             return userIdentity;
         }
 
@@ -30,7 +30,7 @@ namespace BCCApplication.Logic
     public class ApplicationDbContext : IdentityDbContext<ApplicationUser>
     {
         public ApplicationDbContext()
-            : base("DefaultConnection")
+            : base("DefaultConnection", throwIfV1Schema: false)
         {
         }
 
@@ -38,7 +38,7 @@ namespace BCCApplication.Logic
         {
             return new ApplicationDbContext();
         }
-    } 
+    }
 }
 
 
@@ -49,14 +49,6 @@ namespace BCCApplication
     {
         // Used for XSRF when linking external logins
         public const string XsrfKey = "XsrfId";
-
-        public static void SignIn(ApplicationUserManager manager, ApplicationUser user, bool isPersistent)
-        {
-            IAuthenticationManager authenticationManager = HttpContext.Current.GetOwinContext().Authentication;
-            authenticationManager.SignOut(DefaultAuthenticationTypes.ExternalCookie);
-            var identity = manager.CreateIdentity(user, DefaultAuthenticationTypes.ApplicationCookie);
-            authenticationManager.SignIn(new AuthenticationProperties() { IsPersistent = isPersistent }, identity);
-        }
 
         public const string ProviderNameKey = "providerName";
         public static string GetProviderNameFromRequest(HttpRequest request)
