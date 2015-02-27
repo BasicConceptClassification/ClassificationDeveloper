@@ -1,0 +1,33 @@
+// Test queries for connecting concept strings and their terms
+
+// An empty concept string should not be connected to any terms
+// EXPECTED: no rows returned
+// NOTE: if you want to see if you have Classifiables which are not classified,
+// then run: MATCH (cs:ConceptString {terms:""})--(c) RETURN cs, c LIMIT 25;
+MATCH (cs:ConceptString {terms:""})-[:`HAS_TERM`]->(t) RETURN cs, t LIMIT 25;
+
+// See some concept strings with their terms
+MATCH (cs)-[:`HAS_TERM`]->(t) RETURN cs,t LIMIT 25;
+
+// get some not real terms
+MATCH (t)-[:SUBTERM_OF]->(t2:Term{id:"notRealId"})
+RETURN t, t2
+LIMIT 25;
+
+// (wood) which is a real term
+// EXPECTED: 8 nodes, 7 relationships
+MATCH (cs)-[:`HAS_TERM`]->(t{lower:"wood"}) RETURN cs, t LIMIT 25;
+
+// (for) which is not a real term yet 
+// EXPECTED: 16 nodes, 15 relationships
+MATCH (cs)-[:`HAS_TERM`]->(t{lower:"for"}) RETURN cs, t LIMIT 25;
+
+// Get the terms of the very root of the bcc
+// EXPECTED: 13 terms, 12 relationships
+MATCH (t)-[:SUBTERM_OF]->(top:BccRoot {id:"bccRoot"}) RETURN t, top
+
+// Check for any terms with no parent.
+// EXPECTED: Should not return any results
+MATCH (t:Term)
+WHERE NOT (t)-[:SUBTERM_OF]->()
+RETURN t

@@ -1,0 +1,24 @@
+// STEP 0: Drop old constraint
+// NOTE: If it FAILS, it's FINE. You won't have to run this again.
+DROP CONSTRAINT ON (c:Classifier) ASSERT c.name IS UNIQUE;
+
+// STEP 0.5: Constraint on id of a user
+CREATE CONSTRAINT ON (c:Classifier) ASSERT c.id IS UNIQUE;
+
+// STEP 1: Remove all previous Classifiers and any relationship they had
+// Question: What will happen to their Classifiables? They won't be owned
+// by anyone at the moment.
+MATCH (n:Classifier)
+OPTIONAL MATCH (n)-[r]-()
+DELETE n,r;
+
+// STEP 2: Add Classifiers
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 
+"https://raw.githubusercontent.com/BasicConceptClassification/ClassificationDeveloper/master/DummyData/importClassifiers/sampleClassifiers.csv"
+AS line
+MERGE (c:Classifier {id:line.Uid})
+ON CREATE SET c.id = line.Uid,
+			  c.name = line.Username, 
+              c.email = line.Email, 
+			  c.password = line.Password;

@@ -326,10 +326,541 @@
     <packageHasNamedElement>
       <component
         Id="b20867f9-89ab-4290-8865-18250b8bed36"
+        name="Search"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="70b4a9a7-4b19-418b-bcf5-4df55a746b72"
+            name="subsystem"
+            profile="StandardProfileL2" />
+        </appliedStereotypesInternal>
+        <ownedAttributesInternal>
+          <part
+            Id="e1bc4aa9-856c-43ff-9209-698388069044"
+            name="Search"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="Composite"
+            isComposite="true">
+            <type_NamedElement>
+              <componentMoniker
+                Id="18e2e098-83c4-42a0-9dcb-79c9404e9678"
+                LastKnownName="SearchEngine"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </part>
+          <providedInterface
+            Id="966835a3-131e-4595-9baf-4fd4aa39deef"
+            name="Port1"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="2a2533b5-5ea2-41d1-bac8-4697bae4582d"
+                LastKnownName="Classification Search"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </providedInterface>
+          <requiredInterface
+            Id="eed972d0-00c4-4dc2-85d4-f9c3c63e87ad"
+            name="Port2"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="640cbf10-79b5-4b4c-b943-834b527a6c10">
+                <providedInterfaceMoniker
+                  Id="16dfbc67-64a0-4744-b66f-9b92ab6e22c9"
+                  LastKnownName="Port1"
+                  LastKnownLocation="BCCModel.uml" />
+              </dependency>
+            </suppliersInternal>
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="00727f36-bdaa-40db-be55-0d022d253d5d"
+                LastKnownName=" "
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </requiredInterface>
+        </ownedAttributesInternal>
+      </component>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="4dd18079-7fe5-4afd-969b-ff76a3addfbc"
         name="Component1"
         isAbstract="false"
         isLeaf="false"
         isActiveClass="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="18e2e098-83c4-42a0-9dcb-79c9404e9678"
+        name="SearchEngine"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="2a2533b5-5ea2-41d1-bac8-4697bae4582d"
+        name="Classification Search"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="5a0650c9-a8de-4cc2-9ba5-9fc0816d985a"
+        name="Component2"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="4e56ec58-7570-450c-ae4e-9cd999d25b24"
+            name="subsystem"
+            profile="StandardProfileL2" />
+        </appliedStereotypesInternal>
+      </component>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="7090e0c2-12a5-4006-8beb-b0fffce22979"
+        name="Classify"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="c5374f28-2d12-42b0-b36a-7bd094768578"
+            name="subsystem"
+            profile="StandardProfileL2" />
+        </appliedStereotypesInternal>
+        <ownedAttributesInternal>
+          <part
+            Id="c2eeb8d1-e29f-4c87-a821-cad1f9326a44"
+            name="Classify"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="Composite"
+            isComposite="true">
+            <targetNamedElementsInternal>
+              <connector
+                Id="da960171-885a-4bd7-b8ae-4635f64e8099"
+                isLeaf="false"
+                isStatic="false">
+                <partMoniker
+                  Id="749b00a1-def5-46e9-be53-da3225925b8f"
+                  LastKnownName="Classify"
+                  LastKnownLocation="BCCModel.uml" />
+                <relationshipOwnedElementsInternal>
+                  <connectorHasConnectorEnds>
+                    <connectorEnd
+                      Id="b0f5a959-771b-4bbf-96e9-1cbdab9da682">
+                      <portWithPart>
+                        <requiredInterfaceMoniker
+                          Id="c62663e3-769e-4e2e-b518-f20258eb0e2f"
+                          LastKnownName="Port1"
+                          LastKnownLocation="BCCModel.uml" />
+                      </portWithPart>
+                    </connectorEnd>
+                  </connectorHasConnectorEnds>
+                  <connectorHasConnectorEnds>
+                    <connectorEnd
+                      Id="b97f6c1e-94ce-4021-9b4f-da7fabb69cca">
+                      <portWithPart>
+                        <providedInterfaceMoniker
+                          Id="4e086197-75c8-4738-8f83-2009806f0526"
+                          LastKnownName="Port1"
+                          LastKnownLocation="BCCModel.uml" />
+                      </portWithPart>
+                    </connectorEnd>
+                  </connectorHasConnectorEnds>
+                </relationshipOwnedElementsInternal>
+              </connector>
+            </targetNamedElementsInternal>
+            <type_NamedElement>
+              <componentMoniker
+                Id="40c2a0c4-b3e2-4881-bafb-ccaba76d943b"
+                LastKnownName="DB Handle"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </part>
+          <part
+            Id="749b00a1-def5-46e9-be53-da3225925b8f"
+            name="Classify"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="Composite"
+            isComposite="true">
+            <type_NamedElement>
+              <componentMoniker
+                Id="ad9b27c1-081e-4677-8be0-54381656652b"
+                LastKnownName="Authentication"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </part>
+          <requiredInterface
+            Id="8606ed1e-ac9d-4de9-a747-a4ee47b89c5d"
+            name="Port1"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="458fdc28-3bf6-4cae-9431-a89e789aa6a6">
+                <providedInterfaceMoniker
+                  Id="1d62b27d-c6ee-46b8-80de-b0ca43d9e2f2"
+                  LastKnownName="Port2"
+                  LastKnownLocation="BCCModel.uml" />
+              </dependency>
+            </suppliersInternal>
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="bd9a905b-4474-4a17-b9fd-b5b27b64e74a"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </requiredInterface>
+          <requiredInterface
+            Id="7383230c-67e5-4ef2-9801-89a6b5b1bd09"
+            name="Port2"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <suppliersInternal>
+              <dependency
+                Id="d71170f1-defa-4cc0-b27f-92c4fc9cc4cc">
+                <providedInterfaceMoniker
+                  Id="7a6503bc-6955-4507-9622-25d05cc7d051"
+                  LastKnownName="Port1"
+                  LastKnownLocation="BCCModel.uml" />
+              </dependency>
+            </suppliersInternal>
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="e4c7a611-9e22-4bf8-9e31-d185373092f6"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </requiredInterface>
+          <providedInterface
+            Id="50d76e27-45ed-4061-a203-ac77b6a0da87"
+            name="Port3"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="d34115dc-ce5b-4640-8164-526ed8a81abe"
+                LastKnownName="DB Modification"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </providedInterface>
+          <providedInterface
+            Id="d66c9d4c-6a25-41a6-b5f1-d1f578be8e53"
+            name="Port4"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="82042c69-1edd-459c-9ca3-fdfd035e790e"
+                LastKnownName="User Session"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </providedInterface>
+        </ownedAttributesInternal>
+      </component>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="40c2a0c4-b3e2-4881-bafb-ccaba76d943b"
+        name="DB Handle"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <ownedAttributesInternal>
+          <requiredInterface
+            Id="c62663e3-769e-4e2e-b518-f20258eb0e2f"
+            name="Port1"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="9e734998-e69d-435e-9414-4ec600f8406f"
+                LastKnownName=" "
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </requiredInterface>
+        </ownedAttributesInternal>
+      </component>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="0060e411-910e-4bf0-9b3e-ccda55e62a4f"
+        name="Neo4j"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="98e0bcde-86c2-4deb-a06e-2d87aea909dc"
+            name="subsystem"
+            profile="StandardProfileL2" />
+        </appliedStereotypesInternal>
+        <ownedAttributesInternal>
+          <part
+            Id="cf3dc528-d3d5-4f15-8f0d-b398edfaaf44"
+            name="Neo4j"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="Composite"
+            isComposite="true">
+            <type_NamedElement>
+              <componentMoniker
+                Id="7c9a3eb5-a135-4178-9f0a-377e79e616bf"
+                LastKnownName="Neo4jDB"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </part>
+          <providedInterface
+            Id="16dfbc67-64a0-4744-b66f-9b92ab6e22c9"
+            name="Port1"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="27f8b284-ebab-4c58-b4b3-fcfc4c76fe56"
+                LastKnownName="Data Query"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </providedInterface>
+          <providedInterface
+            Id="1d62b27d-c6ee-46b8-80de-b0ca43d9e2f2"
+            name="Port2"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="58aecd46-96f3-4402-8b2d-0fee20824d2b"
+                LastKnownName="Add / Modify Query"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </providedInterface>
+        </ownedAttributesInternal>
+      </component>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="7c9a3eb5-a135-4178-9f0a-377e79e616bf"
+        name="Neo4jDB"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="ad9b27c1-081e-4677-8be0-54381656652b"
+        name="Authentication"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <ownedAttributesInternal>
+          <providedInterface
+            Id="4e086197-75c8-4738-8f83-2009806f0526"
+            name="Port1"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="537a581b-b547-437e-b86b-3269e0ae154c"
+                LastKnownName=" "
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </providedInterface>
+        </ownedAttributesInternal>
+      </component>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="9e734998-e69d-435e-9414-4ec600f8406f"
+        name=" "
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="537a581b-b547-437e-b86b-3269e0ae154c"
+        name=" "
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="00727f36-bdaa-40db-be55-0d022d253d5d"
+        name=" "
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="bd9a905b-4474-4a17-b9fd-b5b27b64e74a"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="e4c7a611-9e22-4bf8-9e31-d185373092f6"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="27f8b284-ebab-4c58-b4b3-fcfc4c76fe56"
+        name="Data Query"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="58aecd46-96f3-4402-8b2d-0fee20824d2b"
+        name="Add / Modify Query"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <component
+        Id="5f042995-0e65-46be-bc7b-6e88c39c2cb3"
+        name="OpenAuth"
+        isAbstract="false"
+        isLeaf="false"
+        isActiveClass="false">
+        <appliedStereotypesInternal>
+          <stereotypeInstance
+            Id="b23b2229-ee91-459c-9981-7b90b225e9f8"
+            name="subsystem"
+            profile="StandardProfileL2" />
+        </appliedStereotypesInternal>
+        <ownedAttributesInternal>
+          <providedInterface
+            Id="7a6503bc-6955-4507-9622-25d05cc7d051"
+            name="Port1"
+            isLeaf="false"
+            isStatic="false"
+            isReadOnly="false"
+            isDerived="false"
+            isDerivedUnion="false"
+            aggregation="None"
+            isComposite="false"
+            isService="false"
+            isBehavior="false">
+            <type_NamedElement>
+              <interfaceMoniker
+                Id="29716160-6abd-406d-a027-c201b6696143"
+                LastKnownLocation="BCCModel.uml" />
+            </type_NamedElement>
+          </providedInterface>
+        </ownedAttributesInternal>
+      </component>
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="29716160-6abd-406d-a027-c201b6696143"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="d34115dc-ce5b-4640-8164-526ed8a81abe"
+        name="DB Modification"
+        isAbstract="false"
+        isLeaf="false" />
+    </packageHasNamedElement>
+    <packageHasNamedElement>
+      <Interface
+        Id="82042c69-1edd-459c-9ca3-fdfd035e790e"
+        name="User Session"
+        isAbstract="false"
+        isLeaf="false" />
     </packageHasNamedElement>
   </packagedElements>
   <primitiveType
