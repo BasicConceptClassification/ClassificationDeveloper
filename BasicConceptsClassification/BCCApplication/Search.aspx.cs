@@ -28,6 +28,7 @@ public partial class Search : System.Web.UI.Page
 
         // By default, leave collapsed
         DataSet.CollapseAll();
+        DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
     }
 
 
