@@ -267,30 +267,31 @@ namespace Neo4j
                     .Match("(c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
                     .Where(whereClause)
                     .With("DISTINCT c, cs, COUNT([t]) AS numMatched")
-                    .Match("(c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t2:Term)")
-                    .With("DISTINCT c, t2, numMatched");
+                    .Match("(c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t)")
+                    .With("DISTINCT c, COLLECT([t.id, t.rawTerm]) as terms, numMatched");
 
                 if (ordered) 
                 {
-                     query = query.OrderBy("numMatched DESC");
+                    query = query.OrderBy("numMatched DESC");
                 }
-                
-                var results = query
-                    .Return((c, t2) => new
+                  
+                var results = query.Return((c, terms) => new
                     {
                         classifiable = c.As<Classifiable>(),
-                        terms = t2.CollectAs<Term>(),
+                        terms = terms.As<IEnumerable<string>>(),
                     })
                     .Skip(skip)
                     .Limit(limit)
                     .Results.ToList();
 
+
                 if (query != null)
                 {
                     // Build up Classifiables
-                    foreach (var res in results)
+                    for (int i = 0; i < results.Count; i++)
                     {
-                   
+                        var res = results.ElementAt(i);
+
                         // TODO: reorder terms to match concept string,
                         // other than the simple reversal later...
                         ConceptString resConStr = new ConceptString
@@ -301,11 +302,11 @@ namespace Neo4j
                         // Get the terms from the concept string
                         foreach (var t in res.terms)
                         {
-                            Term tmp = new Term
+                            var tempData = JsonConvert.DeserializeObject<dynamic>(t);
+                            var tmp = new Term
                             {
-                                rawTerm = t.Data.rawTerm,
-                                id = t.Data.id,
-                                lower = t.Data.lower,
+                                id = tempData[0],
+                                rawTerm = tempData[1],
                             };
 
                             tmp.subTerms = new List<Term>();
@@ -326,7 +327,9 @@ namespace Neo4j
 
                         resColl.data.Add(cTmp);
                     }
+                 
                 }
+
             }
             return resColl;
         }
