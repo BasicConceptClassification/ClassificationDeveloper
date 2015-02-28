@@ -17,7 +17,7 @@ public partial class Search : System.Web.UI.Page
     protected void Page_Load(object sender, EventArgs e)
     {
         // Testing purposes, only loading from BccRoot with a small depth
-        int expandDepth = 2;
+        int expandDepth = -1;
 
         // Fetch BCC from the DB
         var dbConn = new Neo4jDB();
