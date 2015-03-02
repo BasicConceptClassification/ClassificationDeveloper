@@ -26,12 +26,13 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            int searchById = 2;
+            string searchById = "2";
             Classifiable classifiedWithGoodId = conn.getClassifiableById(searchById);
 
             Assert.IsNotNull(classifiedWithGoodId);
             Assert.AreEqual(searchById.ToString(), classifiedWithGoodId.id);
             Assert.AreEqual("Adze Blade", classifiedWithGoodId.name);
+            Assert.AreEqual("Classified", Classifiable.Status.Classified.ToString());
             Assert.AreEqual(6, classifiedWithGoodId.conceptStr.terms.Count);
             Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", classifiedWithGoodId.conceptStr.ToString());
         }
@@ -41,7 +42,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            int searchById = 14;
+            string searchById = "14";
             Classifiable notClassifiedWithGoodId = conn.getClassifiableById(searchById);
 
             Assert.IsNotNull(notClassifiedWithGoodId);
@@ -55,7 +56,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            int searchById = 909090;
+            string searchById = "909090";
             Classifiable doesNotExistClassifiable = conn.getClassifiableById(searchById);
 
             Assert.IsNull(doesNotExistClassifiable);
@@ -100,6 +101,112 @@ namespace Neo4jTest
                 Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
                 Assert.AreEqual("", unclassified.conceptStr.ToString());
             }
+        }
+
+        [TestMethod]
+        public void UpdateClassifiable_CreateNew()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing@BCCNeo4j.com";
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = "Neo4j-dummyiD",
+                name = "dummyName",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+            Assert.AreEqual(newClassifiable.id, result.id);
+            Assert.AreEqual(newClassifiable.name, result.name);
+            Assert.AreEqual(newClassifiable.url, result.url);
+            Assert.AreEqual(newClassifiable.perm, result.perm);
+            Assert.AreEqual(newClassifiable.status, result.status);
+            Assert.AreEqual(newClassifiable.owner.email, result.owner.email);
+
+            Assert.AreEqual(newClassifiable.conceptStr.ToString(),
+                result.conceptStr.ToString());
+            
+            Assert.AreEqual(newClassifiable.conceptStr.terms.Count,
+                            result.conceptStr.terms.Count);
+
+            for (int i = 0; i < newClassifiable.conceptStr.terms.Count; i++)
+            {
+                Assert.AreEqual(newClassifiable.conceptStr.terms[i].ToString(),
+                                result.conceptStr.terms[i].ToString());
+            }
+
+            conn.deleteClassifiable(result);
+        }
+
+        [TestMethod]
+        public void DeleteClassifiable()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing@BCCNeo4j.com";
+
+            Term termWood = new Term
+            {
+                rawTerm = "wood",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termWood, 
+                }
+            };
+
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = "Neo4j-dummyiD-del",
+                name = "dummyName",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+            Assert.AreEqual(newClassifiable.id, result.id);
+
+            conn.deleteClassifiable(result);
+
+            Classifiable isGone = conn.getClassifiableById(newClassifiable.id);
+            Assert.IsNull(isGone);
         }
 
         [TestMethod]
@@ -258,7 +365,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            string rootRaw = "ROOT TERM";
+            string rootRaw = "Top Object";
             int NOT_FOUND = -1;
 
             // These are the rawTerms that are one depth away from the root.
@@ -286,6 +393,7 @@ namespace Neo4jTest
             };
 
             Term rootTerm = conn.getTermByRaw(rootRaw);
+            Assert.IsNotNull(rootTerm);
 
             rootTerm.subTerms = conn.getChildrenOfTerm(rootTerm);
 

@@ -18,6 +18,12 @@ namespace BCCLib
             set;
         }
 
+        public String email
+        {
+            get;
+            set;
+        }
+
         protected GLAM organization
         {
             get;

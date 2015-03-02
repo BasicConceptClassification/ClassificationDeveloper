@@ -30,13 +30,11 @@ namespace Neo4j
         /// </summary>
         /// <param name="id">The id of the Classifiable</param>
         /// <returns>A Classifiable with the given id.</returns>
-        public Classifiable getClassifiableById(int id) 
+        public Classifiable getClassifiableById(string id) 
         {
             this.open();
             if (client != null)
             {
-                string searchId = id.ToString();
-
                 // Query:
                 // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
                 // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
@@ -46,7 +44,7 @@ namespace Neo4j
                 var query = client.Cypher
                     .Match("(c:Classifiable{id:{id}})-[:HAS_CONSTR]->(cs)")
                     .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
-                    .WithParam("id", searchId)
+                    .WithParam("id", id)
                     .Return((c, t) => new
                     {
                         classifiable = c.As<Classifiable>(),
@@ -193,20 +191,147 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Add a NEW CLASSIFIABLE to the database, with a Classifier with a VALID email. 
+        /// If you call this when the Classifier already has this classifiable, 
+        /// you're gonna get some funky stuff. Does not currently check for that stuff.
+        /// </summary>
+        /// <param name="newClassifiable"></param>
+        /// <returns>The new Classifiable from the Database for verification.</returns>
+        public Classifiable addClassifiable(Classifiable newClassifiable)
+        {
+            Classifiable rtnClassifiable = new Classifiable();
+
+            this.open();
+            if (client != null)
+            {
+                // Query:
+                // MERGE (c:Classifiable {id:"dummyID5"})-[:OWNED_BY]->(o:Classififer{email:"1234@sample.com"})
+                // ON CREATE SET c.name="name-2",c.url = "url2", c.perm="perm2", c.status="status2"
+                // CREATE UNQIUE (c)-[:HAS_CONSTR]->(cs:Classifiable)
+                // SET cs.terms = "(new)(con)(str)"
+                // WITH c, cs, REPLACE(cs.terms, "(", "") AS trmStr
+                //      UNWIND ( FILTER
+			    //          ( x in 
+				//              SPLIT( trmStr, ")" ) 
+				//              WHERE x <> ""
+		  	    //          ) 
+		        //      ) AS t4
+                // MERGE (t:Term{lower:LOWER(t4)})
+                // ON CREATE SET t.rawTerm=t4, t.lower=Lower(t4)
+                // MERGE (cs)-[:HAS_TERM]->(t)
+                // WITH c, cs, COLLECT([matchedT.rawTerm]) AS ts
+                // RETURN c AS classifiable, ts AS terms
+                
+                // Owner isn't returned at this point
+                var query = client.Cypher
+                    .Merge("(c:Classifiable {id:{cId}})<-[:OWNS]-(o:Classifier{email:{em}} )")
+                    .WithParams(new
+                    {
+                        cId = newClassifiable.id,
+                        cName = newClassifiable.name,
+                        cUrl = newClassifiable.url,
+                        cPerm = newClassifiable.perm,
+                        cStatus = newClassifiable.status,
+                        em = newClassifiable.owner.email,
+                        newConStr = newClassifiable.conceptStr.ToString()
+                    })
+                    .OnCreate()
+                    .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
+                    .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
+                    .Set("cs.terms = {newConStr}")
+                    .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
+                                    UNWIND ( FILTER
+                                                ( x in
+                                                    SPLIT( trmStr, "")"" )
+                                                    WHERE x <> """"
+                                                )
+                                            ) AS t4")
+                    .Match("(matchedT:Term {rawTerm: t4})")
+                    .Merge("(cs)-[:HAS_TERM]->(matchedT)")
+                    .With("c, COLLECT([matchedT.rawTerm]) AS ts")        
+                    .Return((c, ts) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                        terms = ts.As<IEnumerable<string>>(),
+                        //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
+                    })
+                    .Results.ToList();
+
+                if (query != null)
+                {
+
+                    // Construct the Concept String from results
+                    ConceptString resConStr = new ConceptString
+                    {
+                        terms = new List<Term>(),
+                    };
+
+                    // Build the terms
+                    foreach (var t in query.ElementAt(0).terms)
+                    {
+                        var tempData = JsonConvert.DeserializeObject<dynamic>(t);
+                        var tmp = new Term
+                        {
+                            rawTerm = tempData[0]
+                        };
+
+                        tmp.subTerms = new List<Term>();
+                        resConStr.terms.Add(tmp);
+                    }
+                   
+                    rtnClassifiable = query.ElementAt(0).classifiable;
+                    rtnClassifiable.owner = newClassifiable.owner;
+
+                    // Reverse for some reason
+                    resConStr.terms.Reverse();
+                    rtnClassifiable.conceptStr = resConStr;
+
+                    return rtnClassifiable;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Deletes a classifiable
+        /// </summary>
+        /// <param name="classifiable"></param>
+        public void deleteClassifiable(Classifiable classifiable)
+        {   
+            this.open();
+            if (client != null) {
+                // MATCH (:Classifier)-[r]-(a{id:"Neo4j-dummyiD"})-[r2:`HAS_CONSTR`]->(b)
+                // OPTIONAL MATCH (b)-[r3:HAS_TERM]->(t) 
+                // DELETE r, a, r2, b, r3
+                client.Cypher
+                    .Match("(:Classifier)-[r]-(c:Classifiable {id:{cId}})")
+                    .OptionalMatch("(c)-[r1:HAS_CONSTR]->(cs:ConceptString)-[r2:HAS_TERM]->(:Term)")
+                    .WithParam("cId", classifiable.id)
+                    .Delete("r, c, r1, cs, r2")
+                    .ExecuteWithoutResults();
+            }
+        }
+
+        /// <summary>
+        /// Not finished. Will do as name implies.
+        /// </summary>
+        /// <param name="updatedClassifiable"></param>
+        /// <returns></returns>
+        public Classifiable updateClassifiable(Classifiable updatedClassifiable)
+        {
+            //.OnMatch()
+            // .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
+            return null;
+        }
+
+        /// <summary>
         /// Queries the database to return Classifiables based on a ConceptString.
         /// Use the limit and skip parameters to page the results. 
         /// </summary>
         /// <param name="cstring">A Concepttring to search by.</param>
-        /// <param name="optLimit">Default 25. Should be an integer greater than 0.
-        /// Indicate how many results to be returned at max.
-        /// Set to 0 if you want all the results with at least one match.</param>
-        /// <param name="optSkip">Default 0. Should be a positive integer.
-        /// Indicates how many results from the top should be
-        /// skipped. Set to 0 if no results should be skipped.</param>
         /// <returns>Returns a ClassifiableCollection where each Classifiable's 
         /// ConceptSring has at least one matching term from </returns>
-        public ClassifiableCollection getClassifiablesByConStr(ConceptString conStr, 
-            int optLimit = 25, int optSkip = 0, bool ordered = false)
+        public ClassifiableCollection getClassifiablesByConStr(ConceptString conStr, bool ordered = false)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
             {
@@ -217,17 +342,6 @@ namespace Neo4j
 
             if (client != null)
             {
-                int limit = 25;
-                int skip = 0;
-
-                if (optLimit > 0)
-                {
-                    limit = optLimit;
-                }
-                if (optSkip > 0)
-                {
-                    skip = optSkip;
-                }
 
                 // Building one of the following:
                 // WHERE ( { t.id= {id_0}) OR .. OR (t.id = id_n } )
@@ -280,8 +394,6 @@ namespace Neo4j
                         classifiable = c.As<Classifiable>(),
                         terms = terms.As<IEnumerable<string>>(),
                     })
-                    .Skip(skip)
-                    .Limit(limit)
                     .Results.ToList();
 
 
@@ -327,9 +439,7 @@ namespace Neo4j
 
                         resColl.data.Add(cTmp);
                     }
-                 
                 }
-
             }
             return resColl;
         }
