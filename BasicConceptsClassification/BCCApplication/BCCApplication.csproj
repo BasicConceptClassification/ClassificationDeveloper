@@ -118,6 +118,7 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="About.aspx" />
+    <Content Include="Account\GLAMClass.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Manage.aspx" />
     <Content Include="Account\OpenAuthProviders.ascx" />
@@ -225,6 +226,12 @@
     </None>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Account\GLAMClass.aspx.cs">
+      <DependentUpon>GLAMClass.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\GLAMClass.aspx.designer.cs">
+      <DependentUpon>GLAMClass.aspx</DependentUpon>
+    </Compile>
     <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="About.aspx.cs">
       <DependentUpon>About.aspx</DependentUpon>
