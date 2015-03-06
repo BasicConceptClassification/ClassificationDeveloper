@@ -16,6 +16,22 @@ namespace Neo4j
         protected Uri dbLocation = new Uri("http://localhost:7474/db/data");
         protected GraphClient client;
 
+        /* TODO:
+         * We should define all of the DB constants as class constants to make
+         * refactoring the db less of a PITA. Then again, string concatenation
+         * is a classic expensive operation.
+         * 
+         * I haven't actually used any of these, it's just an example.
+         */
+        protected internal const string TERM_LABEL = "Term";
+        protected internal const string TERM_PROPERTY_ID = "id";
+        protected internal const string TERM_PROPERTY_RAW = "rawTerm";
+        protected internal const string TERM_PROPERTY_LOWER = "lower";
+
+        protected internal const string REL_SUBTERMOF_LABEL = "SUBTERM_OF";
+
+
+
         /// <summary>
         /// Open the connection to the database.
         /// </summary>
@@ -30,7 +46,7 @@ namespace Neo4j
         /// </summary>
         /// <param name="id">The id of the Classifiable</param>
         /// <returns>A Classifiable with the given id.</returns>
-        public Classifiable getClassifiableById(int id) 
+        public Classifiable getClassifiableById(int id)
         {
             this.open();
             if (client != null)
@@ -41,8 +57,8 @@ namespace Neo4j
                 // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
                 // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
                 // RETURN 	c, 
-		        //          cs,
-		        //          COLLECT ([t]) as ts
+                //          cs,
+                //          COLLECT ([t]) as ts
                 var query = client.Cypher
                     .Match("(c:Classifiable{id:{id}})-[:HAS_CONSTR]->(cs)")
                     .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
@@ -53,7 +69,8 @@ namespace Neo4j
                         terms = t.CollectAs<Term>(),
                     }).Results.SingleOrDefault();
 
-                if (query != null) {
+                if (query != null)
+                {
                     // TODO: reorder terms to match concept string
                     ConceptString resConStr = new ConceptString
                     {
@@ -63,11 +80,11 @@ namespace Neo4j
                     // Thanks muchy to the example:
                     // https://github.com/neo4j-contrib/developer-resources/blob/gh-pages/language-guides/dotnet/neo4jclient/Neo4jDotNetDemo/Controllers/MovieController.cs
 
-                     foreach (var t in query.terms)
-                     {
-                            t.Data.subTerms = new List<Term>();
-                            resConStr.terms.Add(t.Data);
-                     }
+                    foreach (var t in query.terms)
+                    {
+                        t.Data.subTerms = new List<Term>();
+                        resConStr.terms.Add(t.Data);
+                    }
 
                     // A bit of a hack for now. But it maintains order because of
                     // ...some reason.
@@ -139,7 +156,7 @@ namespace Neo4j
                         resConStr.terms.Reverse();
 
                         res.classifiable.conceptStr = resConStr;
-                        
+
                         resColl.data.Add(res.classifiable);
                     }
                 }
@@ -178,7 +195,7 @@ namespace Neo4j
 
                 if (query != null)
                 {
-                    foreach (var res in query) 
+                    foreach (var res in query)
                     {
                         res.classifiable.conceptStr = new ConceptString
                         {
@@ -205,14 +222,14 @@ namespace Neo4j
         /// skipped. Set to 0 if no results should be skipped.</param>
         /// <returns>Returns a ClassifiableCollection where each Classifiable's 
         /// ConceptSring has at least one matching term from </returns>
-        public ClassifiableCollection getClassifiablesByConStr(ConceptString conStr, 
+        public ClassifiableCollection getClassifiablesByConStr(ConceptString conStr,
             int optLimit = 25, int optSkip = 0, bool ordered = false)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
             {
                 data = new List<Classifiable>(),
             };
-                
+
             this.open();
 
             if (client != null)
@@ -259,7 +276,7 @@ namespace Neo4j
                 //                  cs, 
                 //                  COLLECT([t2]) AS terms,
                 //                  numMatched
-             
+
                 // RETURN c AS classifiable, terms
                 // ORDER BY numMatched DESC
                 // SKIP {skip} LIMIT {limit}
@@ -270,11 +287,11 @@ namespace Neo4j
                     .Match("(c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t)")
                     .With("DISTINCT c, COLLECT([t.id, t.rawTerm]) as terms, numMatched");
 
-                if (ordered) 
+                if (ordered)
                 {
                     query = query.OrderBy("numMatched DESC");
                 }
-                  
+
                 var results = query.Return((c, terms) => new
                     {
                         classifiable = c.As<Classifiable>(),
@@ -298,7 +315,7 @@ namespace Neo4j
                         {
                             terms = new List<Term>(),
                         };
-                     
+
                         // Get the terms from the concept string
                         foreach (var t in res.terms)
                         {
@@ -312,11 +329,11 @@ namespace Neo4j
                             tmp.subTerms = new List<Term>();
                             resConStr.terms.Add(tmp);
                         }
-                       
+
                         // A bit of a hack for now. But it maintains order because of
                         // ...some reason.
                         resConStr.terms.Reverse();
-                        
+
                         Classifiable cTmp = new Classifiable
                         {
                             name = res.classifiable.name,
@@ -327,7 +344,7 @@ namespace Neo4j
 
                         resColl.data.Add(cTmp);
                     }
-                 
+
                 }
 
             }
@@ -526,7 +543,7 @@ namespace Neo4j
                 // If this method is called with some non-sensical integer, 
                 // it's just going to call getBccFromTErm and you're getting 
                 // all the sub terms.
-                else 
+                else
                 {
                     return this.getBccFromTerm(rootTerm);
                 }
@@ -560,7 +577,7 @@ namespace Neo4j
 
                     // Connect the subterms from a list. Remove first since
                     // it's the root term.
-                    foreach (List<Term> path in queryRes) 
+                    foreach (List<Term> path in queryRes)
                     {
                         path.RemoveAt(0);
                         resTree.connectTermsFromList(path);
@@ -613,6 +630,161 @@ namespace Neo4j
                 return getBccFromTermWithDepth(tmpRoot, depth);
             }
             return tmpRoot;
+        }
+
+        /// <summary>
+        /// Adds a new term to the database.
+        /// </summary>
+        /// <param name="newTerm">The new term to add.</param>
+        /// <param name="parent">The target parent term, or null if adding to the root.</param>
+        /// <returns>The new term added (as retreived by the database) or null if no term was added.</returns>
+        public Term addTerm(Term newTerm, Term parent)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                var addTerm = client.Cypher
+                    .Create("(x:Term {id : 'PARAM1', rawTerm : 'PARAM2', lower : 'PARAM3'})")
+                    .WithParam("PARAM1", newTerm.id).WithParam("PARAM2", newTerm.rawTerm).WithParam("PARAM3", newTerm.lower)
+                    .Return(() => Return.As<Term>("x")).Results.First();
+
+                if (addTerm != null)
+                {
+                    foreach (Term child in newTerm.subTerms)
+                    {
+                        var addChild = client.Cypher
+                            .Match("(a:Term),(b:Term)")
+                            .Where(   "a.id = PARAM1").WithParam("PARAM1", newTerm.id)
+                            .AndWhere("b.id = PARAM2").WithParam("PARAM2", child.id)
+                            .Create("(b)-[r:SUBTERM_OF]->(a)")
+                            .Return(() => Return.As<int>("count(r)")).Results.First();
+
+                        if (addChild == 0)
+                        {
+                            // For some reason, a relationship was not added.
+                            Console.Error.WriteLine("In Neo4jDB.addTerm, a child term could not be related to its parent."); // LINE 666 WHHHAAAAAAAAAT
+                        }
+                    }
+
+                    if (parent != null)
+                    {
+                        // Link the parent.
+                        var addParent = client.Cypher
+                                .Match("(a:Term),(b:Term)")
+                                .Where("a.id = PARAM1").WithParam("PARAM1", parent.id)
+                                .AndWhere("b.id = PARAM2").WithParam("PARAM2", newTerm.id)
+                                .Create("(b)-[r:SUBTERM_OF]->(a)")
+                                .Return(() => Return.As<int>("count(r)")).Results.First();
+
+                        if (addParent == 0)
+                        {
+                            // The term was not given a parent, and will thus be added to the root.
+                            Console.Error.WriteLine("In Neo4jDB.addTerm, the added term could not be linked to its parent. Instead linking it to bccRoot.");
+                            _addTermToRoot(newTerm);
+                        }
+                    }
+                    else
+                    {
+                        _addTermToRoot(newTerm);
+                    }
+                }
+
+                return addTerm;
+            }
+            else
+            { return null; }
+        }
+
+        /// <summary>
+        /// Auxilliary function. Adds a term to the root node of the DB
+        /// </summary>
+        /// <param name="t">The term to add.</param>
+        protected internal void _addTermToRoot(Term t)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                var result = client.Cypher
+                        .Match("(a:BccRoot),(b:Term)")
+                        .Where("a.id = bccRoot")
+                        .AndWhere("b.id = PARAM1").WithParam("PARAM1", t.id)
+                        .Create("(b)-[r:SUBTERM_OF]->(a)")
+                        .Return(() => Return.As<int>("count(r)")).Results.First();
+
+                if (result != 1)
+                {
+                    // Something fucky happened.
+                    Console.Error.WriteLine("In Neo4jDB._addTermToRoot, the added term could not be linked to the root node.");
+                }
+            }
+        }
+
+        /// <summary>
+        /// Convienience function. Deletes a term from the classification. 
+        /// Actually delegates its functionality to a sister method which 
+        /// deletes a term by ID.
+        /// </summary>
+        /// <param name="t">A term object representing the term to be added. Note that ID is the only matching criteria.</param>
+        /// <returns>The number of nodes affected by the operation.</returns>
+        public int delTerm(Term t)
+        {
+            return delTerm(t.id);
+        }
+
+        /// <summary>
+        /// Deletes a term and all of its relationships from the 
+        /// classification. It's parent term will inherit all of the deleted
+        /// term's children (each child is inherited by its grandparent).
+        /// </summary>
+        /// <param name="id">The ID of the term to delete.</param>
+        /// <returns>The number of nodes affected by the operation. Specifically, the number of nodes and the number of relationships affected.</returns>
+        public int delTerm(string id)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                // Find all children of the target.
+                var orphans = client.Cypher
+                    .Match("(a:Term{id:PARAM1})<-[:SUBTERM_OF]-(b)")
+                    .Return(() => Return.As<Term>("b")).Results.ToList();
+
+                // Find the parent of the term. AFAIK, terms can only have one parent term.
+                var grandparent = client.Cypher
+                    .Match("(a:Term)<-[:SUBTERM_OF]-(b:Term{id:PARAM1})")
+                    .WithParam("PARAM1", id)
+                    .Return(() => Return.As<Term>("a")).Results.First();
+
+                foreach (Term orphan in orphans)
+                {
+                    // Add each orphan to the grandparent term
+                    var adopt = client.Cypher
+                        .Create("(a:Term)<-[:SUBTERM_OF]-(b:Term)")
+                        .Where(   "a.id = PARAM1").WithParam("PARAM1", grandparent.id)
+                        .AndWhere("b.id = PARAM2").WithParam("PARAM2", orphan.id);
+                }
+
+                // Delete the term and all its relationships
+                var destroy = client.Cypher
+                    .Match("(c:Term{id:PARAM1})-[r]-()")
+                    .WithParam("PARAM1", id)
+                    .Delete("c, r")
+                    .Return(() => Return.As<int>("count(c), count(r)")).Results.ToList();
+
+                int result = 0;
+                foreach (int i in destroy)
+                {
+                    result += i;
+                }
+
+                return result;
+            }
+            else
+            {
+                return 0;
+            }
         }
     }
 }

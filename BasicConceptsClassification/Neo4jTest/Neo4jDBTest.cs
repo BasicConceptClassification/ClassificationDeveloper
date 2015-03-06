@@ -468,5 +468,21 @@ namespace Neo4jTest
             Assert.IsNotNull(bccRootTermD1.hasSubTerm(topObjPropertyWithRawTerm));
             Assert.IsNotNull(bccRootTermD1.hasSubTerm(notRealTermWithRawTerm));
         }
+
+        [TestMethod]
+        public void TestAddTerm()
+        {
+            var conn = new Neo4jDB();
+
+            Term t1 = new Term();
+            t1.id = "TEST_TERM_1";
+            t1.rawTerm = "Foo";
+            t1.rawTerm = "foo";
+        }
+
+        public void TestDelTerm()
+        {
+
+        }
     }
 }
