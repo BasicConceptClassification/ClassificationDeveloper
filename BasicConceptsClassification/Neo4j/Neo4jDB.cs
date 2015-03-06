@@ -655,7 +655,7 @@ namespace Neo4j
                     {
                         var addChild = client.Cypher
                             .Match("(a:Term),(b:Term)")
-                            .Where(   "a.id = PARAM1").WithParam("PARAM1", newTerm.id)
+                            .Where("a.id = PARAM1").WithParam("PARAM1", newTerm.id)
                             .AndWhere("b.id = PARAM2").WithParam("PARAM2", child.id)
                             .Create("(b)-[r:SUBTERM_OF]->(a)")
                             .Return(() => Return.As<int>("count(r)")).Results.First();
@@ -722,25 +722,77 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Convienience function. Deletes a term from the classification. 
-        /// Actually delegates its functionality to a sister method which 
-        /// deletes a term by ID.
+        /// 
+        /// </summary>
+        /// <param name="target">The term to move</param>
+        /// <param name="newParent">The new target parent</param>
+        /// <returns>The number of nodes affected by the operation.</returns>
+        public int moveTerm(Term target, Term newParent)
+        {
+            this.open();
+
+            int result = 0;
+
+            if (client != null)
+            {
+                // Ensure that both the target and the new parent exist in the DB
+                var targetSearch = client.Cypher
+                    .Match("(a:Term{id:PARAM1})")
+                    .WithParam("PARAM1", target.id)
+                    .Return(() => Return.As<int>("count(a)")).Results.First();
+
+                // The specified target could not be found in the DB.
+                if (targetSearch != 1) return 0;
+
+                var newParentSearch = client.Cypher
+                    .Match("(a:Term{id:PARAM1})")
+                    .WithParam("PARAM1", newParent.id)
+                    .Return(() => Return.As<int>("count(a)")).Results.First();
+
+                // The specified parent could not be found in the DB.
+                if (newParentSearch != 1) return 0;
+
+
+            }
+            return result;
+        }
+
+        /// <summary>
+        /// Safe-deletes a term from the database. The operation has no effect
+        /// if the target has child terms.
         /// </summary>
         /// <param name="t">A term object representing the term to be added. Note that ID is the only matching criteria.</param>
         /// <returns>The number of nodes affected by the operation.</returns>
         public int delTerm(Term t)
         {
-            return delTerm(t.id);
+            return 0;
+
+            // TODO
+
+            this.open();
+
+            if (client != null)
+            {
+                var checkChildren = client.Cypher
+                    .Match("(a:Term)-[:SUBTERM_OF]->(b:Term{id:PARAM1})")
+                    .WithParam("PARAM1", t.id)
+                    .Return(() => Return.As<int>("count(a)")).Results.First();
+
+                if (checkChildren != 0)
+                {
+                    return 0;
+                }
+            }
         }
 
         /// <summary>
-        /// Deletes a term and all of its relationships from the 
+        /// Force-deletes a term and all of its relationships from the 
         /// classification. It's parent term will inherit all of the deleted
         /// term's children (each child is inherited by its grandparent).
         /// </summary>
         /// <param name="id">The ID of the term to delete.</param>
         /// <returns>The number of nodes affected by the operation. Specifically, the number of nodes and the number of relationships affected.</returns>
-        public int delTerm(string id)
+        public int delTermDashF(string id)
         {
             this.open();
 
@@ -762,7 +814,7 @@ namespace Neo4j
                     // Add each orphan to the grandparent term
                     var adopt = client.Cypher
                         .Create("(a:Term)<-[:SUBTERM_OF]-(b:Term)")
-                        .Where(   "a.id = PARAM1").WithParam("PARAM1", grandparent.id)
+                        .Where("a.id = PARAM1").WithParam("PARAM1", grandparent.id)
                         .AndWhere("b.id = PARAM2").WithParam("PARAM2", orphan.id);
                 }
 
