@@ -22,6 +22,14 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void DeleteClassifier_Successful()
+        {
+            // TODO: ATM it's tested as clean up a cleanup function when adding 
+            // a classifiable... 
+            Assert.IsFalse(true);
+        }
+
+        [TestMethod]
         public void GetClassifiableById_IsClassified_IdExists()
         {
             var conn = new Neo4jDB();
@@ -137,7 +145,6 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
-            
             Classifiable result = conn.addClassifiable(newClassifiable);
 
             Assert.AreEqual(newClassifiable.id, result.id);
@@ -160,6 +167,7 @@ namespace Neo4jTest
             }
 
             conn.deleteClassifiable(result);
+            conn.deleteClassifier(classifier);
         }
 
         [TestMethod]
@@ -246,6 +254,8 @@ namespace Neo4jTest
 
             Classifiable isGone = conn.getClassifiableById(newClassifiable.id);
             Assert.IsNull(isGone);
+
+            conn.deleteClassifier(classifier);
         }
 
         [TestMethod]

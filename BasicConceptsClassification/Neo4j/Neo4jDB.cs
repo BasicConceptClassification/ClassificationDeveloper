@@ -26,6 +26,27 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Delete a Classifier from the GraphDB.
+        /// <para>Mostly for unit testing puposes. Will only delete if has no Classifiables.</para>
+        /// </summary>
+        public void deleteClassifier(Classifier classifierToDel)
+        {
+            this.open();
+            if (client != null)
+            {
+                // MATCH (:Classifier)-[r]-(a{id:"Neo4j-dummyiD"})-[r2:`HAS_CONSTR`]->(b)
+                // OPTIONAL MATCH (b)-[r3:HAS_TERM]->(t) 
+                // DELETE r, a, r2, b, r3
+                client.Cypher
+                    .Match("(o:Classifier{email: {em} })")
+                    .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
+                    .WithParam("em", classifierToDel.email)
+                    .Delete("o,r")
+                    .ExecuteWithoutResults();
+            }
+        }
+
+        /// <summary>
         /// Gets a Classifiables by id
         /// </summary>
         /// <param name="id">The id of the Classifiable</param>
@@ -294,6 +315,7 @@ namespace Neo4j
                         rtnClassifiable.conceptStr = resConStr;
 
                         return rtnClassifiable;
+                
                     }
                 }
                 catch (NullReferenceException e) 
