@@ -2,6 +2,7 @@
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Neo4j;
+using Neo4jClient;
 using BCCLib;
 using System.Collections.Generic;
 using System.Linq;
@@ -119,7 +120,7 @@ namespace Neo4jTest
             GLAM glam = new GLAM("Sample", "someurl");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testing@BCCNeo4j.com";
+            classifier.email = "testing1@BCCNeo4j.com";
 
             Term termTool = new Term
             {
@@ -136,8 +137,8 @@ namespace Neo4jTest
 
             Classifiable newClassifiable = new Classifiable
             {
-                id = glam.name + "_" + "dummyName",
-                name = "dummyName",
+                id = glam.name + "_" + "dummyName1",
+                name = "dummyName1",
                 url = "dummyURL",
                 perm = Classifiable.Persmission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
@@ -173,7 +174,7 @@ namespace Neo4jTest
         [TestMethod]
         [ExpectedException(typeof(NullReferenceException),
             "Classifiable information missing or Classifier email was not seted.")]
-        public void AddClassifiable_NoClassifier_ThrowException()
+        public void AddClassifiable_NoClassifier_ThrowNullReferenceException()
         {
             var conn = new Neo4jDB();
 
@@ -194,8 +195,8 @@ namespace Neo4jTest
 
             Classifiable newClassifiable = new Classifiable
             {
-                id = glam.name + "_" + "dummyName",
-                name = "dummyName",
+                id = glam.name + "_" + "dummyName2",
+                name = "dummyName2",
                 url = "dummyURL",
                 perm = Classifiable.Persmission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
@@ -207,7 +208,51 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void AddClassifiable_AlreadyExists()
+        [ExpectedException(typeof(NeoException))]
+        public void AddClassifiable_AlreadyExists_ThrowNeoException()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing3@BCCNeo4j.com";
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName3",
+                name = "dummyName3",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+            result.url = "anotherDummyUrl";
+            Classifiable result2 = conn.addClassifiable(result);
+
+            conn.deleteClassifiable(result);
+            conn.deleteClassifiable(result2);
+            conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        public void AddClassifiable_TermsDoNotExist()
         {
             Assert.IsFalse(true);
         }
@@ -220,7 +265,7 @@ namespace Neo4jTest
             GLAM glam = new GLAM("Sample", "someurl");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testing@BCCNeo4j.com";
+            classifier.email = "testingToDel@BCCNeo4j.com";
 
             Term termWood = new Term
             {
