@@ -90,7 +90,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetAllUnClassified_Exists()
+        public void GetAllUnClassified()
         {
             var conn = new Neo4jDB();
 
@@ -126,10 +126,9 @@ namespace Neo4jTest
                 }
             };
 
-
             Classifiable newClassifiable = new Classifiable
             {
-                id = "Neo4j-dummyiD",
+                id = glam.name + "_" + "dummyName",
                 name = "dummyName",
                 url = "dummyURL",
                 perm = Classifiable.Persmission.GLAM.ToString(),
@@ -187,7 +186,7 @@ namespace Neo4jTest
 
             Classifiable newClassifiable = new Classifiable
             {
-                id = "Neo4j-dummyiD",
+                id = glam.name + "_" + "dummyName",
                 name = "dummyName",
                 url = "dummyURL",
                 perm = Classifiable.Persmission.GLAM.ToString(),
@@ -230,8 +229,8 @@ namespace Neo4jTest
 
             Classifiable newClassifiable = new Classifiable
             {
-                id = "Neo4j-dummyiD-del",
-                name = "dummyName",
+                id = glam.name + "_" + "dummyNameToDelete",
+                name = "dummyNameToDelete",
                 url = "dummyURL",
                 perm = Classifiable.Persmission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),

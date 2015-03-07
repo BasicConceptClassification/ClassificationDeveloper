@@ -230,7 +230,9 @@ namespace Neo4j
                     var query = client.Cypher
                         .WithParams(new
                         {
-                            cId = newClassifiable.id,
+                            cId = newClassifiable.owner.getOrganizationName() + 
+                                "_" + 
+                                newClassifiable.name,
                             cName = newClassifiable.name,
                             cUrl = newClassifiable.url,
                             cPerm = newClassifiable.perm,
@@ -292,7 +294,6 @@ namespace Neo4j
                         rtnClassifiable.conceptStr = resConStr;
 
                         return rtnClassifiable;
-                
                     }
                 }
                 catch (NullReferenceException e) 

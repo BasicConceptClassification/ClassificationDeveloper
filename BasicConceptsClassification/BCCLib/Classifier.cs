@@ -34,5 +34,10 @@ namespace BCCLib
         {
             return name + " " + organization.ToString();
         }
+
+        public string getOrganizationName()
+        {
+            return organization.ToString();
+        }
     }
 }
