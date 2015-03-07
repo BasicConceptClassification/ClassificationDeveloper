@@ -26,7 +26,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            string searchById = "2";
+            string searchById = "US National Parks Service_Adze Blade";
             Classifiable classifiedWithGoodId = conn.getClassifiableById(searchById);
 
             Assert.IsNotNull(classifiedWithGoodId);
@@ -42,7 +42,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            string searchById = "14";
+            string searchById = "US National Parks Service_Atlatl Foreshaft";
             Classifiable notClassifiedWithGoodId = conn.getClassifiableById(searchById);
 
             Assert.IsNotNull(notClassifiedWithGoodId);
@@ -104,11 +104,11 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void UpdateClassifiable_CreateNew()
+        public void AddClassifiable_Suceed()
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("Sample", "someurl");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testing@BCCNeo4j.com";
@@ -164,11 +164,53 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void DeleteClassifiable()
+        [ExpectedException(typeof(NullReferenceException),
+            "Classifiable information missing or Classifier email was not seted.")]
+        public void AddClassifiable_NoClassifier_ThrowException()
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = "Neo4j-dummyiD",
+                name = "dummyName",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+            
+        }
+
+        [TestMethod]
+        public void AddClassifiable_AlreadyExists()
+        {
+            Assert.IsFalse(true);
+        }
+
+        [TestMethod]
+        public void DeleteClassifiable_Suceed()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testing@BCCNeo4j.com";
@@ -186,7 +228,6 @@ namespace Neo4jTest
                 }
             };
 
-
             Classifiable newClassifiable = new Classifiable
             {
                 id = "Neo4j-dummyiD-del",
@@ -198,7 +239,6 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
-
             Classifiable result = conn.addClassifiable(newClassifiable);
 
             Assert.AreEqual(newClassifiable.id, result.id);
@@ -207,6 +247,12 @@ namespace Neo4jTest
 
             Classifiable isGone = conn.getClassifiableById(newClassifiable.id);
             Assert.IsNull(isGone);
+        }
+
+        [TestMethod]
+        public void DeleteClassifiable_DoesNotExist()
+        {
+            Assert.IsFalse(true);
         }
 
         [TestMethod]

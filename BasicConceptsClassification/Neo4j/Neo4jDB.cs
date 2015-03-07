@@ -191,11 +191,11 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Add a NEW CLASSIFIABLE to the database, with a Classifier with a VALID email. 
-        /// If you call this when the Classifier already has this classifiable, 
-        /// you're gonna get some funky stuff. Does not currently check for that stuff.
+        /// Add a new Classifiable to the database.
         /// </summary>
-        /// <param name="newClassifiable"></param>
+        /// <exception cref="System.NullReferenceException">Thrown when there is insufficient
+        /// information for to add a Classifiable.</exception>
+        /// <param name="newClassifiable">New Classifiable to add. Must have a Classifier.</param>
         /// <returns>The new Classifiable from the Database for verification.</returns>
         public Classifiable addClassifiable(Classifiable newClassifiable)
         {
@@ -204,9 +204,12 @@ namespace Neo4j
             this.open();
             if (client != null)
             {
-                // Query:
-                // MERGE (c:Classifiable {id:"dummyID5"})-[:OWNED_BY]->(o:Classififer{email:"1234@sample.com"})
-                // ON CREATE SET c.name="name-2",c.url = "url2", c.perm="perm2", c.status="status2"
+                // Query: Merge classifier based on email, create new Classifiable and 
+                // create relationship to the Classifier, split the ConStr into Terms and connect them.
+                // MERGE (o:Classifier{email:{em}})
+                // ON CREATE SET o.email ={em}
+                // CREATE UNIQUE (c:Classifiable {id:{cId}})<-[:OWNS]-(o)
+                // SET c.name="name-2",c.url = "url2", c.perm="perm2", c.status="status2"
                 // CREATE UNQIUE (c)-[:HAS_CONSTR]->(cs:Classifiable)
                 // SET cs.terms = "(new)(con)(str)"
                 // WITH c, cs, REPLACE(cs.terms, "(", "") AS trmStr
@@ -216,77 +219,86 @@ namespace Neo4j
 				//              WHERE x <> ""
 		  	    //          ) 
 		        //      ) AS t4
-                // MERGE (t:Term{lower:LOWER(t4)})
+                // MERGt:Term{lower:LOWER(t4)})
                 // ON CREATE SET t.rawTerm=t4, t.lower=Lower(t4)
                 // MERGE (cs)-[:HAS_TERM]->(t)
                 // WITH c, cs, COLLECT([matchedT.rawTerm]) AS ts
                 // RETURN c AS classifiable, ts AS terms
-                
-                // Owner isn't returned at this point
-                var query = client.Cypher
-                    .Merge("(c:Classifiable {id:{cId}})<-[:OWNS]-(o:Classifier{email:{em}} )")
-                    .WithParams(new
-                    {
-                        cId = newClassifiable.id,
-                        cName = newClassifiable.name,
-                        cUrl = newClassifiable.url,
-                        cPerm = newClassifiable.perm,
-                        cStatus = newClassifiable.status,
-                        em = newClassifiable.owner.email,
-                        newConStr = newClassifiable.conceptStr.ToString()
-                    })
-                    .OnCreate()
-                    .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
-                    .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
-                    .Set("cs.terms = {newConStr}")
-                    .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
+                // NOTE: Owner isn't returned from the actual DB at this point
+                try
+                {
+                    var query = client.Cypher
+                        .WithParams(new
+                        {
+                            cId = newClassifiable.id,
+                            cName = newClassifiable.name,
+                            cUrl = newClassifiable.url,
+                            cPerm = newClassifiable.perm,
+                            cStatus = newClassifiable.status,
+                            em = newClassifiable.owner.email,
+                            newConStr = newClassifiable.conceptStr.ToString()
+                        })
+                        .Merge("(o:Classifier{email:{em}})")
+                        .OnCreate()
+                        .Set("o.email ={em}")
+                        .CreateUnique("(c:Classifiable {id:{cId}})<-[:OWNS]-(o)")
+                        .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
+                        .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
+                        .Set("cs.terms = {newConStr}")
+                        .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
                                     UNWIND ( FILTER
                                                 ( x in
                                                     SPLIT( trmStr, "")"" )
                                                     WHERE x <> """"
                                                 )
                                             ) AS t4")
-                    .Match("(matchedT:Term {rawTerm: t4})")
-                    .Merge("(cs)-[:HAS_TERM]->(matchedT)")
-                    .With("c, COLLECT([matchedT.rawTerm]) AS ts")        
-                    .Return((c, ts) => new
-                    {
-                        classifiable = c.As<Classifiable>(),
-                        terms = ts.As<IEnumerable<string>>(),
-                        //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
-                    })
-                    .Results.ToList();
-
-                if (query != null)
-                {
-
-                    // Construct the Concept String from results
-                    ConceptString resConStr = new ConceptString
-                    {
-                        terms = new List<Term>(),
-                    };
-
-                    // Build the terms
-                    foreach (var t in query.ElementAt(0).terms)
-                    {
-                        var tempData = JsonConvert.DeserializeObject<dynamic>(t);
-                        var tmp = new Term
+                        .Match("(matchedT:Term {rawTerm: t4})")
+                        .Merge("(cs)-[:HAS_TERM]->(matchedT)")
+                        .With("c, COLLECT([matchedT.rawTerm]) AS ts")
+                        .Return((c, ts) => new
                         {
-                            rawTerm = tempData[0]
+                            classifiable = c.As<Classifiable>(),
+                            terms = ts.As<IEnumerable<string>>(),
+                            //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
+                        })
+                        .Results.ToList().Single();
+
+                    if (query != null)
+                    {
+                        // Construct the Concept String from results
+                        ConceptString resConStr = new ConceptString
+                        {
+                            terms = new List<Term>(),
                         };
 
-                        tmp.subTerms = new List<Term>();
-                        resConStr.terms.Add(tmp);
-                    }
+                        // Build the terms
+                        foreach (var t in query.terms)
+                        {
+                            var tempData = JsonConvert.DeserializeObject<dynamic>(t);
+                            var tmp = new Term
+                            {
+                                rawTerm = tempData[0]
+                            };
+
+                            tmp.subTerms = new List<Term>();
+                            resConStr.terms.Add(tmp);
+                        }
                    
-                    rtnClassifiable = query.ElementAt(0).classifiable;
-                    rtnClassifiable.owner = newClassifiable.owner;
+                        rtnClassifiable = query.classifiable;
+                        rtnClassifiable.owner = newClassifiable.owner;
 
-                    // Reverse for some reason
-                    resConStr.terms.Reverse();
-                    rtnClassifiable.conceptStr = resConStr;
+                        // Reverse for some reason
+                        resConStr.terms.Reverse();
+                        rtnClassifiable.conceptStr = resConStr;
 
-                    return rtnClassifiable;
+                        return rtnClassifiable;
+                
+                    }
+                }
+                catch (NullReferenceException e) 
+                {
+                    Console.WriteLine("Classifiable information missing or Classifier email was not set", e);
+                    throw new NullReferenceException(@"Classifiable information missing or Classifier email was not set", e);
                 }
             }
             return null;
