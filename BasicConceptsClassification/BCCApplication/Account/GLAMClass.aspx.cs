@@ -46,12 +46,12 @@ namespace BCCApplication.Account
 
         protected void ClassNow_Click(object sender, EventArgs e)
         {
-
+            Server.Transfer("ClassOb.aspx", true);
         }
 
         protected void AddNew_Click(object sender, EventArgs e)
         {
-
+            Server.Transfer("ClassOb.aspx", true);
         }
     }
 }
