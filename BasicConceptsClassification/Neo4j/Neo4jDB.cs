@@ -212,14 +212,24 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Add a new Classifiable to the database.
+        /// Add a new Classifiable to the database. Returns null if 
         /// </summary>
         /// <exception cref="System.NullReferenceException">Thrown when there is insufficient
-        /// information for to add a Classifiable.</exception>
+        /// information for adding a Classifiable.</exception>
+        /// <exception cref="Exception">Thrown when not all the Terms in the ConceptString are in the
+        /// Classification.</exception>
         /// <param name="newClassifiable">New Classifiable to add. Must have a Classifier.</param>
         /// <returns>The new Classifiable from the Database for verification.</returns>
         public Classifiable addClassifiable(Classifiable newClassifiable)
         {
+            // Step 1: Check if there are proper terms
+            // TODO: Ummm decide on something else maybe?
+            if (countNumTermsExist(newClassifiable.conceptStr.terms) != newClassifiable.conceptStr.terms.Count)
+            {
+                throw new Exception("Some Terms are not in the Classification!");
+            }
+
+            // Step 2: Go ahead and (try to) add the Classifiable!
             Classifiable rtnClassifiable = new Classifiable();
 
             this.open();
@@ -341,7 +351,6 @@ namespace Neo4j
                             resConStr.terms.Add(tmp);
                         }
                     }
-                   
                     rtnClassifiable = query.classifiable;
                     rtnClassifiable.owner = newClassifiable.owner;
 
@@ -507,6 +516,46 @@ namespace Neo4j
                 }
             }
             return resColl;
+        }
+
+        /// <summary>
+        /// Given a list of Terms, return the number of terms that are in
+        /// the database.
+        /// </summary>
+        /// <returns>Number of Terms in the database from the given list.</returns>
+        public int countNumTermsExist(List<Term> tList)
+        {
+            if (tList.Count != 0)
+            {
+                this.open();
+  
+                if (client != null)
+                {
+                    var query = client.Cypher
+                        .Match("(t:Term)")
+                        .Where("t.rawTerm = \"\"");
+
+                    for (int i = 0; i < tList.Count; i++)
+                    {
+                        string tmp = String.Format("t.rawTerm = \"{0}\"", tList[i].rawTerm);
+                        query = query.OrWhere(tmp);
+                    }
+
+                    var res = query
+                        .With("ToInt(COUNT([t])) AS numMatched")
+                        .Return((numMatched) => new
+                        {
+                            counted = numMatched.As<int>(),
+                        })
+                        .Results.Single();
+
+                    if (query != null)
+                    {
+                        return res.counted;
+                    }
+                }
+            }
+            return 0;
         }
 
         /// <summary>

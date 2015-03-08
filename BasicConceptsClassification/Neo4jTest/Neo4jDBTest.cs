@@ -208,7 +208,6 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NeoException))]
         public void AddClassifiable_AlreadyExists_ThrowNeoException()
         {
             var conn = new Neo4jDB();
@@ -244,17 +243,25 @@ namespace Neo4jTest
 
             Classifiable result = conn.addClassifiable(newClassifiable);
             result.url = "anotherDummyUrl";
-            Classifiable result2 = conn.addClassifiable(result);
 
-            conn.deleteClassifiable(newClassifiable);
-            conn.deleteClassifiable(result2);
+            // Try adding another Classifiable, but with the same id. Should
+            // throw an exception.
+            try
+            {
+                Classifiable result2 = conn.addClassifiable(result);
+            }
+            catch (NeoException e)
+            {
+            }
+            conn.deleteClassifiable(result);
             conn.deleteClassifier(classifier);
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Exception), 
+            "Some Terms are not in the Classification!")]
         public void AddClassifiable_TermsDoNotExist()
         {
-            Assert.IsFalse(true);
 
             var conn = new Neo4jDB();
 
@@ -296,7 +303,6 @@ namespace Neo4jTest
         [TestMethod]
         public void AddClassifiable_WithNoTerms()
         {
-
             var conn = new Neo4jDB();
 
             GLAM glam = new GLAM("Sample", "someurl");
@@ -499,6 +505,36 @@ namespace Neo4jTest
                 Assert.IsTrue(test);
             }
              
+        }
+
+        [TestMethod]
+        public void CheckIfTermsExist()
+        {
+            var conn = new Neo4jDB();
+
+            Term termWooood = new Term
+            {
+                rawTerm = "wooody",
+            };
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            Term termFor = new Term
+            {
+                rawTerm = "for",
+            };
+
+            List<Term> terms = new List<Term> 
+            {
+                termWooood, termTool, termFor,
+            };
+
+            int resCount = conn.countNumTermsExist(terms);
+
+            Assert.AreEqual(2, resCount);
         }
 
         [TestMethod]
