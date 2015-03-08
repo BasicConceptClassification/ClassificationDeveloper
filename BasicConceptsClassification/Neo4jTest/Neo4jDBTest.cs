@@ -16,9 +16,9 @@ namespace Neo4jTest
         [TestMethod]
         public void Neo4jDB_OpenConnection_Successful()
         {
-             var TestConnection = new Neo4jDB();
-             TestConnection.open();
-             Assert.IsNotNull(TestConnection);
+            var TestConnection = new Neo4jDB();
+            TestConnection.open();
+            Assert.IsNotNull(TestConnection);
         }
 
         [TestMethod]
@@ -62,7 +62,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetClassiablesByName_ExistsOne() 
+        public void GetClassiablesByName_ExistsOne()
         {
             var conn = new Neo4jDB();
 
@@ -133,7 +133,7 @@ namespace Neo4jTest
                     termWood, termTool, termFor,
                 },
             };
-            
+
             ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr, ordered: true);
 
             Assert.IsNotNull(matchedClassifiables);
@@ -141,8 +141,8 @@ namespace Neo4jTest
             // Tests that results are in order of most matches in its own concept string
             int prevMatchCount = searchByConStr.terms.Count;
             int currMatchCount = 0;
-            Classifiable prevClassifiable = new Classifiable 
-            { 
+            Classifiable prevClassifiable = new Classifiable
+            {
                 name = "first",
             };
 
@@ -173,7 +173,7 @@ namespace Neo4jTest
                 prevMatchCount = currMatchCount;
                 prevClassifiable = classifiable;
                 currMatchCount = 0;
-            }  
+            }
         }
 
         [TestMethod]
@@ -208,7 +208,7 @@ namespace Neo4jTest
                 },
             };
 
-            
+
             ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr);
 
             Assert.IsNotNull(matchedClassifiables);
@@ -222,7 +222,7 @@ namespace Neo4jTest
                             classifiable.conceptStr.ToString().Contains(termFor.rawTerm);
                 Assert.IsTrue(test);
             }
-             
+
         }
 
         [TestMethod]
@@ -312,7 +312,7 @@ namespace Neo4jTest
             Assert.IsNotNull(biologyTerm);
 
             biologyTerm.subTerms = conn.getChildrenOfTerm(biologyTerm);
-            Assert.AreEqual(0,biologyTerm.subTerms.Count);
+            Assert.AreEqual(0, biologyTerm.subTerms.Count);
         }
 
         [TestMethod]
@@ -362,11 +362,11 @@ namespace Neo4jTest
 
             Term naturalSciencesTerm = conn.getTermByRaw(searchRawTerm);
 
-            Term naturalSciencesTree = conn.getBccFromTermWithDepth(naturalSciencesTerm, 
+            Term naturalSciencesTree = conn.getBccFromTermWithDepth(naturalSciencesTerm,
                                                                     MAX_DEPTH);
 
             Assert.AreEqual(searchRawTerm, naturalSciencesTree.rawTerm);
-            Assert.AreEqual(expectedNaturalSciencesSubTermStr.Count, 
+            Assert.AreEqual(expectedNaturalSciencesSubTermStr.Count,
                             naturalSciencesTree.subTerms.Count);
 
             // Expected results, not in a particular order.
@@ -378,7 +378,7 @@ namespace Neo4jTest
             //                  - Geology
             foreach (string rawSubTermStr in expectedNaturalSciencesSubTermStr)
             {
-                Term expectedSubTerm = new Term 
+                Term expectedSubTerm = new Term
                 {
                     rawTerm = rawSubTermStr,
                 };
@@ -387,7 +387,7 @@ namespace Neo4jTest
                 Assert.AreNotEqual(NOT_FOUND, index);
 
                 // Physics has Astronmy underneath it.
-                if (searchRawTerm == "Physics") 
+                if (searchRawTerm == "Physics")
                 {
                     Term astronomy = new Term
                     {
@@ -421,7 +421,7 @@ namespace Neo4jTest
             Assert.AreNotEqual(0, wavesParticlesRootD2.subTerms[0].subTerms.Count);
             Assert.AreEqual(0, wavesParticlesRootD2.subTerms[0].subTerms[0].subTerms.Count);
         }
-    
+
         [TestMethod]
         public void GetRootTerm_BccRoot_Exists()
         {
@@ -477,7 +477,26 @@ namespace Neo4jTest
             Term t1 = new Term();
             t1.id = "TEST_TERM_1";
             t1.rawTerm = "Foo";
-            t1.rawTerm = "foo";
+            t1.lower = "foo";
+            t1.subTerms = new List<Term>();
+
+            for (int i = 0; i < 3; i++)
+            {
+                Term subterm = new Term();
+                subterm.id = "CHILD" + i;
+                subterm.rawTerm = "Child" + i;
+                subterm.lower = "child" + i;
+                t1.subTerms.Add(subterm);
+            }
+
+            Assert.AreEqual<int>(4, conn.addTerm(t1, null));
+
+            // Cleanup the db changes we made.
+            foreach (Term subterm in t1.subTerms)
+            {
+                Assert.AreEqual<int>(1, conn.delTermFORCE(subterm));
+            }
+            Assert.AreEqual<int>(1, conn.delTermFORCE(t1));
         }
 
         public void TestDelTerm()

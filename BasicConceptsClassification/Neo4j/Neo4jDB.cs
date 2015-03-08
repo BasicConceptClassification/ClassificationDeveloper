@@ -633,92 +633,99 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Adds a new term to the database.
+        /// Adds a new term to the database and recursively adds its children, if any.
         /// </summary>
         /// <param name="newTerm">The new term to add.</param>
         /// <param name="parent">The target parent term, or null if adding to the root.</param>
-        /// <returns>The new term added (as retreived by the database) or null if no term was added.</returns>
-        public Term addTerm(Term newTerm, Term parent)
+        /// <returns>The number of nodes added.</returns>
+        public int addTerm(Term newTerm, Term parent)
         {
             this.open();
 
             if (client != null)
             {
-                var addTerm = client.Cypher
-                    .Create("(x:Term {id : 'PARAM1', rawTerm : 'PARAM2', lower : 'PARAM3'})")
-                    .WithParam("PARAM1", newTerm.id).WithParam("PARAM2", newTerm.rawTerm).WithParam("PARAM3", newTerm.lower)
-                    .Return(() => Return.As<Term>("x")).Results.First();
+                int result = 0;
 
-                if (addTerm != null)
+                if (parent != null)
                 {
-                    foreach (Term child in newTerm.subTerms)
-                    {
-                        var addChild = client.Cypher
-                            .Match("(a:Term),(b:Term)")
-                            .Where("a.id = PARAM1").WithParam("PARAM1", newTerm.id)
-                            .AndWhere("b.id = PARAM2").WithParam("PARAM2", child.id)
-                            .Create("(b)-[r:SUBTERM_OF]->(a)")
-                            .Return(() => Return.As<int>("count(r)")).Results.First();
+                    // Cypher can't bind objects with collections, so we need to strip it off the term.
+                    Term stripTerm = new Term();
+                    stripTerm.id = newTerm.id;
+                    stripTerm.rawTerm = newTerm.rawTerm;
+                    stripTerm.lower = newTerm.lower;
 
-                        if (addChild == 0)
+                    result += client
+                        .Cypher
+                        .Match("(a:Term)")
+                        .Where((Term a) => a.id == parent.id)
+                        .Create("(b:Term{addMe})<-[:SUBTERM_OF]-(a)")
+                        .WithParam("addMe", newTerm)
+                        .Return(() => Return.As<int>("count(b)"))
+                        .Results.DefaultIfEmpty(0).FirstOrDefault();
+
+                    if (result != 0 && newTerm.subTerms != null)
+                    {
+                        foreach (Term child in newTerm.subTerms)
                         {
-                            // For some reason, a relationship was not added.
-                            Console.Error.WriteLine("In Neo4jDB.addTerm, a child term could not be related to its parent."); // LINE 666 WHHHAAAAAAAAAT
+                            result += addTerm(child, newTerm);
                         }
-                    }
-
-                    if (parent != null)
-                    {
-                        // Link the parent.
-                        var addParent = client.Cypher
-                                .Match("(a:Term),(b:Term)")
-                                .Where("a.id = PARAM1").WithParam("PARAM1", parent.id)
-                                .AndWhere("b.id = PARAM2").WithParam("PARAM2", newTerm.id)
-                                .Create("(b)-[r:SUBTERM_OF]->(a)")
-                                .Return(() => Return.As<int>("count(r)")).Results.First();
-
-                        if (addParent == 0)
-                        {
-                            // The term was not given a parent, and will thus be added to the root.
-                            Console.Error.WriteLine("In Neo4jDB.addTerm, the added term could not be linked to its parent. Instead linking it to bccRoot.");
-                            _addTermToRoot(newTerm);
-                        }
-                    }
-                    else
-                    {
-                        _addTermToRoot(newTerm);
                     }
                 }
+                else
+                {
+                    result += _addTermToRoot(newTerm);
+                }
 
-                return addTerm;
+                return result;
             }
             else
-            { return null; }
+            { return 0; }
         }
 
         /// <summary>
-        /// Auxilliary function. Adds a term to the root node of the DB
+        /// Adds a term to BccRoot, and recursively adds the terms children, if any.
         /// </summary>
-        /// <param name="t">The term to add.</param>
-        protected internal void _addTermToRoot(Term t)
+        /// <param name="t"></param>
+        /// <returns></returns>
+        protected internal int _addTermToRoot(Term t)
         {
             this.open();
 
             if (client != null)
             {
-                var result = client.Cypher
-                        .Match("(a:BccRoot),(b:Term)")
-                        .Where("a.id = bccRoot")
-                        .AndWhere("b.id = PARAM1").WithParam("PARAM1", t.id)
-                        .Create("(b)-[r:SUBTERM_OF]->(a)")
-                        .Return(() => Return.As<int>("count(r)")).Results.First();
+                int result = 0;
 
-                if (result != 1)
+                // Cypher can't bind objects with collections, so we need to strip it off the term.
+                Term stripTerm = new Term();
+                stripTerm.id = t.id;
+                stripTerm.rawTerm = t.rawTerm;
+                stripTerm.lower = t.lower;
+
+                result += client.Cypher
+                        .Match("(a:BccRoot)")
+                        .Where("a.id = \"bccRoot\"")
+                        .Create("(:Term{addMe})-[r:SUBTERM_OF]->(a)")
+                        .WithParam("addMe", stripTerm)
+                        .Return(() => Return.As<int>("count(r)"))
+                        .Results.DefaultIfEmpty(0).FirstOrDefault();
+
+                if (result == 0)
                 {
                     // Something fucky happened.
                     Console.Error.WriteLine("In Neo4jDB._addTermToRoot, the added term could not be linked to the root node.");
                 }
+                else if (t.subTerms != null)
+                {
+                    foreach (Term child in t.subTerms)
+                    {
+                        result += addTerm(child, t);
+                    }
+                }
+
+                return result;
             }
+            else
+            { return 0; }
         }
 
         /// <summary>
@@ -768,70 +775,26 @@ namespace Neo4j
             return 0;
 
             // TODO
-
-            this.open();
-
-            if (client != null)
-            {
-                var checkChildren = client.Cypher
-                    .Match("(a:Term)-[:SUBTERM_OF]->(b:Term{id:PARAM1})")
-                    .WithParam("PARAM1", t.id)
-                    .Return(() => Return.As<int>("count(a)")).Results.First();
-
-                if (checkChildren != 0)
-                {
-                    return 0;
-                }
-            }
         }
 
         /// <summary>
-        /// Force-deletes a term and all of its relationships from the 
-        /// classification. It's parent term will inherit all of the deleted
-        /// term's children (each child is inherited by its grandparent).
+        /// Force-delete a given term and all relationships attached to it. Note that the only matching criteria is id.
         /// </summary>
         /// <param name="id">The ID of the term to delete.</param>
         /// <returns>The number of nodes affected by the operation. Specifically, the number of nodes and the number of relationships affected.</returns>
-        public int delTermDashF(string id)
+        public int delTermFORCE(Term t)
         {
             this.open();
 
             if (client != null)
             {
-                // Find all children of the target.
-                var orphans = client.Cypher
-                    .Match("(a:Term{id:PARAM1})<-[:SUBTERM_OF]-(b)")
-                    .Return(() => Return.As<Term>("b")).Results.ToList();
-
-                // Find the parent of the term. AFAIK, terms can only have one parent term.
-                var grandparent = client.Cypher
-                    .Match("(a:Term)<-[:SUBTERM_OF]-(b:Term{id:PARAM1})")
-                    .WithParam("PARAM1", id)
-                    .Return(() => Return.As<Term>("a")).Results.First();
-
-                foreach (Term orphan in orphans)
-                {
-                    // Add each orphan to the grandparent term
-                    var adopt = client.Cypher
-                        .Create("(a:Term)<-[:SUBTERM_OF]-(b:Term)")
-                        .Where("a.id = PARAM1").WithParam("PARAM1", grandparent.id)
-                        .AndWhere("b.id = PARAM2").WithParam("PARAM2", orphan.id);
-                }
-
-                // Delete the term and all its relationships
-                var destroy = client.Cypher
-                    .Match("(c:Term{id:PARAM1})-[r]-()")
-                    .WithParam("PARAM1", id)
-                    .Delete("c, r")
-                    .Return(() => Return.As<int>("count(c), count(r)")).Results.ToList();
-
-                int result = 0;
-                foreach (int i in destroy)
-                {
-                    result += i;
-                }
-
-                return result;
+                return client
+                    .Cypher
+                    .Match("(a:Term{id:{Param_ID}})-[r]-()")
+                    .WithParam("Param_ID", (t.id))
+                    .Delete("a, r")
+                    .Return(() => Return.As<int>("count(r)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
             }
             else
             {
