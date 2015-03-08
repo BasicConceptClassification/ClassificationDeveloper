@@ -114,5 +114,14 @@ namespace BCCLib
                 this.subTerms[this.subTerms.Count - 1].connectTermsFromList(trmList);
             }
         }
+
+        /// <summary>
+        /// Sorts subterms by lowercase alphabetical order.
+        /// </summary>
+        public void sortSubTerms()
+        {
+            var sorted_children = from element in this.subTerms orderby element.rawTerm.ToLower() select element;
+            this.subTerms = sorted_children.ToList();
+        }
     }
 }

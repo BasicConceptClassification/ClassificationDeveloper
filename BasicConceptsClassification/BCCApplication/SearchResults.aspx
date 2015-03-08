@@ -1,48 +1,22 @@
-﻿<%@ Page Title="Search" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="SearchResults.aspx.cs" Inherits="SearchResults" %>
-
-<script runat="server">
-    private void searchResultprint(object sender, EventArgs e)
-    {
-        
-    }
-</script>
+﻿<%@ Page Title="Search" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="True" Inherits="SearchResults" CodeBehind="SearchResults.aspx.cs" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <center><h1>Search Results</h1></center>
+        <center><h1>Search</h1></center>
         <br />
         <center>
-            <form action="SearchResults.aspx" method="get">
-                Search Results:
-                <input type="search" name="BCCSearch" placeholder ="[term1] [term2]"/>
-                <input type="button" onclick="location.href='SearchResults.aspx'" value='Search Again' />
-            </form>
-        </center>
+            Search Results:
+            <asp:TextBox ID="searching_textbox" runat="server" placeholder ="(term1),(term2),(term3)"/>
+            <asp:Button ID="btnclick" onclick="btnclick_Click" Text="Search" runat="server" />
             <br />
-        <span>
-            1. 
-            <b>Abrader</b> <br />
-            tool. for. smoothing. <br />
-            Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a> <br /><br />
-            2. 
-            <b>Adobe</b> <br />
-            clay. for. building. <br />
-            Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a> <br /><br />
-            3. 
-            <b>Adze Head</b> <br />
-            head. of. tool. for. carving. wood. <br />
-            Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a> <br /><br />
-            4. 
-            <b>Adze Blade</b> <br />
-            blade. of. tool. for. carving. wood. <br />
-            Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a> <br /><br />
-            5. 
-            <b>Antler Artifact</b> <br />
-            artiface. from. antler. <br />
-            Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a> <br /><br />
-        </span>
-    </div>
-    <div>
-
+            <asp:Button ID="name_sort" runat="server" Text="Sort by name" OnClick="name_sort_Click" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
+            <asp:Button ID="relev_sort" runat="server" OnClick="relev_sort_Click" Text="Sort by relecancy" />
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<asp:Button ID="order_sort" runat="server" OnClick="order_sort_Click" Text="Sort by order of terms" />
+            &nbsp;&nbsp;&nbsp;
+            <br />
+        </center>
+        <div id="SearchReCon" runat="server"></div>
     </div>
 </asp:Content>
+

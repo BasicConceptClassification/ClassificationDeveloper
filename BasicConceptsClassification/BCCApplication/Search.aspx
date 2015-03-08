@@ -1,130 +1,23 @@
-﻿<%@ Page Title="Search" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="true" CodeFile="Search.aspx.cs" Inherits="Search" %>
+﻿<%@ Page Title="Search" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="True" Inherits="Search" Codebehind="Search.aspx.cs" %>
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <center><h1>Search</h1></center>
+        <center><h1>Search Builder</h1></center>
         <p>Quick explanation on how to use with or w/out the buttons. For more information please go <a href="About.aspx" target="_self">about/help page</a>.</p>
         <br />
         <center>
-            <form action="SearchResults.aspx" method="get" target="_self">
-                Search:
-                <input type="search" name="BCCSearch" placeholder ="[term1] [term2]">
-                <input type="button" onclick="location.href = 'SearchResults.aspx'" value='Search' />
-            </form>
+            search:<asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
+            <asp:Button ID="Button1" runat="server" Text="Jump to Search page" OnClick="Button1_Click" />
         </center>
     </div>
     <br />
     <div id="listContainer">
-        <div class="listControl">
-            <a id="expandList">Expand All</a>
-            <a id="collapseList">Collapse All</a>
-        </div>
-        <ul id="expList">
-            <li>artiface
-                <ul>
-                    <li>from
-                        <ul>
-                            <li>antler
-                                <ul>
-                                    <li>
-                                        <b>Antler Artifact</b><br />
-                                        Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li>blade
-                <ul>
-                    <li>of
-                        <ul>
-                            <li>tool
-                                <ul>
-                                    <li>for
-                                        <ul>
-                                            <li>carving
-                                                <ul>
-                                                    <li>wood
-                                                        <ul>
-                                                            <li>
-                                                                <b>Adze Blade</b> <br />
-                                                                Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li>clay
-                <ul>
-                    <li>for
-                        <ul>
-                            <li>building
-                                <ul>
-                                    <li>
-                                        <b>Adobe</b> <br />
-                                        Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li>head
-                <ul>
-                    <li>of
-                        <ul>
-                            <li>tool
-                                <ul>
-                                    <li>for
-                                        <ul>
-                                            <li>carving
-                                                <ul>
-                                                    <li>wood
-                                                        <ul>
-                                                            <li>
-                                                                <b>Adze Head</b> <br />
-                                                                Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
-                                                            </li>
-                                                        </ul>
-                                                    </li>
-                                                </ul>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-            <li>tool
-                <ul>
-                    <li>for
-                        <ul>
-                            <li>smoothing
-                                <ul>
-                                    <li>
-                                        <b>Abrader</b> <br />
-                                        Source/Stored at: <a href="" target="_blank">http://www.someplace.com</a>
-                                    </li>
-                                </ul>
-                            </li>
-                        </ul>
-                    </li>
-                </ul>
-            </li>
-        </ul>
-        </div>
+        <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" OnSelectedNodeChanged="DataSet_SelectedNodeChanged">
+            <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
+            <NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
+            <ParentNodeStyle Font-Bold="False" />
+            <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" />
+         </asp:TreeView>
+    </div>
 </asp:Content>
