@@ -229,8 +229,9 @@ namespace Neo4j
                 // create relationship to the Classifier, split the ConStr into Terms and connect them.
                 // MERGE (o:Classifier{email:{em}})
                 // ON CREATE SET o.email ={em}
-                // CREATE UNIQUE (c:Classifiable {id:{cId}})<-[:OWNS]-(o)
+                // CREATE (c:Classifiable {id:{cId}})
                 // SET c.name="name-2",c.url = "url2", c.perm="perm2", c.status="status2"
+                // CREATE UNQIUE (c)<-[:OWNS]-(o)
                 // CREATE UNQIUE (c)-[:HAS_CONSTR]->(cs:Classifiable)
                 // SET cs.terms = "(new)(con)(str)"
                 // WITH c, cs, REPLACE(cs.terms, "(", "") AS trmStr
@@ -240,9 +241,8 @@ namespace Neo4j
 				//              WHERE x <> ""
 		  	    //          ) 
 		        //      ) AS t4
-                // MERGt:Term{lower:LOWER(t4)})
-                // ON CREATE SET t.rawTerm=t4, t.lower=Lower(t4)
-                // MERGE (cs)-[:HAS_TERM]->(t)
+                // MATCH (matchedT:Term{rawTerm:t4)})
+                // CREATE (cs)-[:HAS_TERM]->(t)
                 // WITH c, cs, COLLECT([matchedT.rawTerm]) AS ts
                 // RETURN c AS classifiable, ts AS terms
                 // NOTE: Owner isn't returned from the actual DB at this point
@@ -275,7 +275,7 @@ namespace Neo4j
                 }
 
                 // Just throw the exceptions as they happen...?
-                var query = buildQuery
+                buildQuery = buildQuery
                     .Merge("(o:Classifier{email:{em}})")
                     .OnCreate()
                     .Set("o.email ={em}")
@@ -283,24 +283,40 @@ namespace Neo4j
                     .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
                     .CreateUnique("(c)<-[:OWNS]-(o)")
                     .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
-                    .Set("cs.terms = {newConStr}")
-                    .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
+                    .Set("cs.terms = {newConStr}");
+
+                // Only go get terms if they exist...
+                if (newClassifiable.conceptStr.ToString() != "")
+                {
+                    buildQuery = buildQuery
+                        .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
                                 UNWIND ( FILTER
                                             ( x in
                                                 SPLIT( trmStr, "")"" )
                                                 WHERE x <> """"
                                             )
                                         ) AS t4")
-                    .Match("(matchedT:Term {rawTerm: t4})")
-                    .Merge("(cs)-[:HAS_TERM]->(matchedT)")
-                    .With("c, COLLECT([matchedT.rawTerm]) AS ts")
-                    .Return((c, ts) => new
-                    {
-                        classifiable = c.As<Classifiable>(),
-                        terms = ts.As<IEnumerable<string>>(),
-                        //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
-                    })
-                    .Results.ToList().Single();
+
+                        .Match("(matchedT:Term {rawTerm: t4})")
+                        .Create("(cs)-[:HAS_TERM]->(matchedT)")
+                        .With("c, COLLECT([matchedT.rawTerm]) AS ts");
+                }
+                else
+                {
+                    // If there are no terms, just make a list of strings with only "",
+                    // just to prevent writing two essentially the same queries.
+                    buildQuery = buildQuery 
+                        .With("c, COLLECT([\"\"]) AS ts");
+                }
+                         
+                var query = buildQuery.Return((c, ts) => new
+                        {
+                            classifiable = c.As<Classifiable>(),
+                            terms = ts.As<IEnumerable<string>>(),
+                            //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
+                        })
+                        .Results.ToList().Single();
+                    
 
                 if (query != null)
                 {
@@ -310,17 +326,20 @@ namespace Neo4j
                         terms = new List<Term>(),
                     };
 
-                    // Build the terms
-                    foreach (var t in query.terms)
+                    if (query.terms.ElementAt(0) != "")
                     {
-                        var tempData = JsonConvert.DeserializeObject<dynamic>(t);
-                        var tmp = new Term
+                        // Build the terms
+                        foreach (var t in query.terms)
                         {
-                            rawTerm = tempData[0]
-                        };
+                            var tempData = JsonConvert.DeserializeObject<dynamic>(t);
+                            var tmp = new Term
+                            {
+                                rawTerm = tempData[0]
+                            };
 
-                        tmp.subTerms = new List<Term>();
-                        resConStr.terms.Add(tmp);
+                            tmp.subTerms = new List<Term>();
+                            resConStr.terms.Add(tmp);
+                        }
                     }
                    
                     rtnClassifiable = query.classifiable;
@@ -339,19 +358,21 @@ namespace Neo4j
         /// <summary>
         /// Deletes a classifiable.
         /// </summary>
-        /// <param name="classifiable"></param>
+        /// <param name="classifiable">Classifiable to remove.</param>
         public void deleteClassifiable(Classifiable classifiable)
         {   
             this.open();
             if (client != null) {
-                // MATCH (:Classifier)-[r]-(a{id:"Neo4j-dummyiD"})-[r2:`HAS_CONSTR`]->(b)
-                // OPTIONAL MATCH (b)-[r3:HAS_TERM]->(t) 
-                // DELETE r, a, r2, b, r3
+                // MATCH (:Classifier)-[r:OWNS]->(c:Classifiable {id:"Neo4j-dummyiD"})
+                // OPTIONAL MATCH (c)-[r2:`HAS_CONSTR`]->(cs:ConceptString)
+                // OPTIONAL MATCH (cs)-[r3:HAS_TERM]->(:Term) 
+                // DELETE r3, r2, cs, r, c
                 client.Cypher
-                    .Match("(:Classifier)-[r]-(c:Classifiable {id:{cId}})")
-                    .OptionalMatch("(c)-[r1:HAS_CONSTR]->(cs:ConceptString)-[r2:HAS_TERM]->(:Term)")
+                    .Match("(:Classifier)-[r:OWNS]->(c:Classifiable {id:{cId}})")
+                    .OptionalMatch("(c)-[r1:HAS_CONSTR]->(cs:ConceptString)")
+                    .OptionalMatch("(cs)-[r2:HAS_TERM]->(:Term)")
                     .WithParam("cId", classifiable.id)
-                    .Delete("r, c, r1, cs, r2")
+                    .Delete("r2, r1, cs, r, c")
                     .ExecuteWithoutResults();
             }
         }

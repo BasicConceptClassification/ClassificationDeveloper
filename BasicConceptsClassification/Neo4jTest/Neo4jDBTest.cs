@@ -113,7 +113,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void AddClassifiable_Suceed()
+        public void AddClassifiable_Succeed()
         {
             var conn = new Neo4jDB();
 
@@ -246,7 +246,7 @@ namespace Neo4jTest
             result.url = "anotherDummyUrl";
             Classifiable result2 = conn.addClassifiable(result);
 
-            conn.deleteClassifiable(result);
+            conn.deleteClassifiable(newClassifiable);
             conn.deleteClassifiable(result2);
             conn.deleteClassifier(classifier);
         }
@@ -255,6 +255,75 @@ namespace Neo4jTest
         public void AddClassifiable_TermsDoNotExist()
         {
             Assert.IsFalse(true);
+
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing4@BCCNeo4j.com";
+
+            Term termTooool = new Term
+            {
+                rawTerm = "Tooool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTooool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName4",
+                name = "dummyName4",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+            
+            conn.deleteClassifiable(result);
+            conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        public void AddClassifiable_WithNoTerms()
+        {
+
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing5@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName5",
+                name = "dummyName5",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+            conn.deleteClassifiable(result);
+            conn.deleteClassifier(classifier);
         }
 
         [TestMethod]
