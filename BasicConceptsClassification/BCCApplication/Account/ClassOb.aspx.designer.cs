@@ -19,7 +19,7 @@ namespace BCCApplication.Account {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText ObName;
+        protected global::System.Web.UI.WebControls.TextBox ObName;
         
         /// <summary>
         /// ObURL control.
@@ -28,7 +28,7 @@ namespace BCCApplication.Account {
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText ObURL;
+        protected global::System.Web.UI.WebControls.TextBox ObURL;
         
         /// <summary>
         /// EditPerm control.
@@ -40,13 +40,13 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.RadioButtonList EditPerm;
         
         /// <summary>
-        /// ObjConceptString control.
+        /// ObConcept control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlInputText ObjConceptString;
+        protected global::System.Web.UI.WebControls.TextBox ObConcept;
         
         /// <summary>
         /// ObAddStatus control.

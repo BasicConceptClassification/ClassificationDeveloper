@@ -4,9 +4,11 @@
     <table style="width:100%;">
         <tr>
             <td>Name: 
-                <input id="ObName" type="text" runat="server"/></td>
+                <asp:TextBox ID="ObName" runat="server"></asp:TextBox>
+            </td>
             <td>URL: 
-                <input id="ObURL" type="text" runat="server"/></td>
+                <asp:TextBox ID="ObURL" runat="server"></asp:TextBox>
+            </td>
         </tr>
         <tr>
             <td>Edit Permissions 
@@ -16,14 +18,15 @@
                 </asp:RadioButtonList>
             </td>
             <td>Concept String: 
-                <input id="ObjConceptString" type="text" runat="server"/></td>
+                <asp:TextBox ID="ObConcept" runat="server"></asp:TextBox>
+            </td>
         </tr>
         <tr>
             <td>
                 <asp:Label ID="ObAddStatus" runat="server"></asp:Label>
             </td>
             <td>
-                <asp:Button ID="SubmitObj" runat="server" Text="Submit" /><br />
+                <asp:Button ID="SubmitObj" runat="server" Text="Submit" OnClick="SubmitObj_Click" /><br />
                 <br />
             </td>
         </tr>

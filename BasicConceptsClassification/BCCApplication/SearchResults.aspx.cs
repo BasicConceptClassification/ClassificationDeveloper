@@ -77,8 +77,9 @@ public partial class SearchResults : System.Web.UI.Page
 
         //string input_str = "[pig],[dog],[cat]";
         string Triminput_str = user_searching.Trim();
-        string sstring = Triminput_str.Replace("(", "");
+        string sstring = Triminput_str.Replace(")(", ",");
         sstring = sstring.Replace(")", "");
+        sstring = sstring.Replace("(", "");
         List<string> new_str = sstring.Split(',').ToList();
 
         List<Term> new_terms = new List<Term>();

@@ -16,6 +16,13 @@ namespace BCCApplication.Account
 
         protected void RadioButton1_CheckedChanged(object sender, EventArgs e)
         {
+            string url = ObURL.Text;
+            string name = ObName.Text;
+            string concept = ObConcept.Text;
+        }
+
+        protected void SubmitObj_Click(object sender, EventArgs e)
+        {
 
         }
     }
