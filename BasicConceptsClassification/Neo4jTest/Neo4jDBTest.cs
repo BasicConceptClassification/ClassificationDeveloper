@@ -527,8 +527,10 @@ namespace Neo4jTest
             Assert.AreEqual<int>(1, conn.addTerm(t1, null));
             Assert.AreEqual<int>(1, conn.addTerm(t2, null));
 
+            // Move t1 to be a subterm of t2
             Assert.AreEqual<int>(2, conn.moveTerm(t1, t2));
 
+            // Clean up the mess
             Assert.AreEqual<int>(2, conn.delTermFORCE(t1));
             Assert.AreEqual<int>(2, conn.delTermFORCE(t2));
         }

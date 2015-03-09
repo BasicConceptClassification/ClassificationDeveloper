@@ -649,10 +649,12 @@ namespace Neo4j
                 if (parent != null)
                 {
                     // Cypher can't bind objects with collections, so we need to strip it off the term.
-                    Term stripTerm = new Term();
-                    stripTerm.id = newTerm.id;
-                    stripTerm.rawTerm = newTerm.rawTerm;
-                    stripTerm.lower = newTerm.lower;
+                    Term stripTerm = new Term
+                    {
+                        id = newTerm.id,
+                        rawTerm = newTerm.rawTerm,
+                        lower = newTerm.rawTerm
+                    };
 
                     result += client
                         .Cypher
@@ -661,7 +663,7 @@ namespace Neo4j
                         .Create("(b:Term{addMe})<-[:SUBTERM_OF]-(a)")
                         .WithParam("addMe", newTerm)
                         .Return(() => Return.As<int>("count(b)"))
-                        .Results.DefaultIfEmpty(0).FirstOrDefault();
+                        .Results.DefaultIfEmpty(0).FirstOrDefault(); 
 
                     if (result != 0 && newTerm.subTerms != null)
                     {
@@ -683,10 +685,10 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Adds a term to BccRoot, and recursively adds the terms children, if any.
+        /// Adds a term to BccRoot and recursively adds the terms children, if any.
         /// </summary>
         /// <param name="t"></param>
-        /// <returns></returns>
+        /// <returns>The number of nodes added to the database (expect 1, plus one for each child).</returns>
         protected internal int _addTermToRoot(Term t)
         {
             this.open();
@@ -783,7 +785,11 @@ namespace Neo4j
         /// Safe-deletes a term from the database. The operation has no effect if the target has child terms.
         /// </summary>
         /// <param name="t">A term object representing the term to be added. Note that ID is the only matching criteria.</param>
-        /// <returns>The number of nodes affected by the operation.</returns>
+        /// <returns>The number of nodes affected by the operation. This will include:
+        ///     (a) The deleted node
+        ///     (b) Concept strings containing the deleted term
+        ///     (c) Classifiables with concept strings that contained the deleted term
+        /// </returns>
         public int delTerm(Term t)
         {
             return 0;
@@ -795,7 +801,7 @@ namespace Neo4j
         /// Force-delete a given term and all relationships attached to it - that is, the term and all its relationships are deleted and no checking is done.
         /// </summary>
         /// <param name="t">The term to be deleted. Note that the only matching criteria is id.</param>
-        /// <returns>The number of nodes and the number of relationships affected.</returns>
+        /// <returns>The number of nodes and the number of relationships deleted.</returns>
         public int delTermFORCE(Term t)
         {
             this.open();
