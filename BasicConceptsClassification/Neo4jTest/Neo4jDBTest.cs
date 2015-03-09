@@ -474,18 +474,23 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            Term t1 = new Term();
-            t1.id = "TEST_TERM_1";
-            t1.rawTerm = "Foo";
-            t1.lower = "foo";
-            t1.subTerms = new List<Term>();
+            Term t1 = new Term
+            {
+                id = "TEST_1",
+                rawTerm = "Test 1",
+                lower = "test 1",
+                subTerms = new List<Term>()
+            };
 
             for (int i = 0; i < 3; i++)
             {
-                Term subterm = new Term();
-                subterm.id = "CHILD" + i;
-                subterm.rawTerm = "Child" + i;
-                subterm.lower = "child" + i;
+                Term subterm = new Term
+                {
+                    id = "CHILD_" + i,
+                    rawTerm = "Child " + i,
+                    lower = "child " + i
+                };
+
                 t1.subTerms.Add(subterm);
             }
 
@@ -494,14 +499,38 @@ namespace Neo4jTest
             // Cleanup the db changes we made.
             foreach (Term subterm in t1.subTerms)
             {
-                Assert.AreEqual<int>(1, conn.delTermFORCE(subterm));
+                Assert.AreEqual<int>(2, conn.delTermFORCE(subterm));
             }
-            Assert.AreEqual<int>(1, conn.delTermFORCE(t1));
+            Assert.AreEqual<int>(2, conn.delTermFORCE(t1));
         }
 
-        public void TestDelTerm()
+        [TestMethod]
+        public void TestMoveTerm()
         {
+            var conn = new Neo4jDB();
 
+            // Create 2 terms.
+            Term t1 = new Term
+            {
+                id = "TEST_1",
+                rawTerm = "Test 1",
+                lower = "test 1"
+            };
+            Term t2 = new Term
+            {
+                id = "TEST_2",
+                rawTerm = "Test 2",
+                lower = "test 2"
+            };
+
+            // Add both to the root node.
+            Assert.AreEqual<int>(1, conn.addTerm(t1, null));
+            Assert.AreEqual<int>(1, conn.addTerm(t2, null));
+
+            Assert.AreEqual<int>(2, conn.moveTerm(t1, t2));
+
+            Assert.AreEqual<int>(2, conn.delTermFORCE(t1));
+            Assert.AreEqual<int>(2, conn.delTermFORCE(t2));
         }
     }
 }

@@ -729,44 +729,58 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// 
+        /// Move a term from one parent to another. If either the target or the new parent don't exist in the database, this operation has no effect.
         /// </summary>
         /// <param name="target">The term to move</param>
         /// <param name="newParent">The new target parent</param>
-        /// <returns>The number of nodes affected by the operation.</returns>
+        /// <returns>The number of nodes affected by the operation. You should expect a typical result of 2 (one relationship deleted, and one created).</returns>
         public int moveTerm(Term target, Term newParent)
         {
             this.open();
-
-            int result = 0;
 
             if (client != null)
             {
                 // Ensure that both the target and the new parent exist in the DB
                 var targetSearch = client.Cypher
-                    .Match("(a:Term{id:PARAM1})")
+                    .Match("(a:Term{id:{PARAM1}})")
                     .WithParam("PARAM1", target.id)
-                    .Return(() => Return.As<int>("count(a)")).Results.First();
-
-                // The specified target could not be found in the DB.
+                    .Return(() => Return.As<int>("count(a)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
                 if (targetSearch != 1) return 0;
 
                 var newParentSearch = client.Cypher
-                    .Match("(a:Term{id:PARAM1})")
+                    .Match("(a:Term{id:{PARAM1}})")
                     .WithParam("PARAM1", newParent.id)
-                    .Return(() => Return.As<int>("count(a)")).Results.First();
-
-                // The specified parent could not be found in the DB.
+                    .Return(() => Return.As<int>("count(a)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
                 if (newParentSearch != 1) return 0;
 
+                // Delete the old relationship
+                var deleteResult = client
+                    .Cypher
+                    .Match("(a:Term{id:{Param_ID}})-[r:SUBTERM_OF]-()")
+                    .WithParam("Param_ID", (target.id))
+                    .Delete("r")
+                    .Return(() => Return.As<int>("count(r)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
 
+                // Create the new relationship
+                var createResult = client
+                    .Cypher
+                    .Match("(a:Term), (b:Term)")
+                    .Where((Term a) => a.id == target.id)
+                    .AndWhere((Term b) => b.id == newParent.id)
+                    .Create("(a)-[r:SUBTERM_OF]->(b)")
+                    .Return(() => Return.As<int>("count(r)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
+
+                return deleteResult + createResult;
             }
-            return result;
+            else { return 0; }
         }
 
         /// <summary>
-        /// Safe-deletes a term from the database. The operation has no effect
-        /// if the target has child terms.
+        /// Safe-deletes a term from the database. The operation has no effect if the target has child terms.
         /// </summary>
         /// <param name="t">A term object representing the term to be added. Note that ID is the only matching criteria.</param>
         /// <returns>The number of nodes affected by the operation.</returns>
@@ -778,10 +792,10 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Force-delete a given term and all relationships attached to it. Note that the only matching criteria is id.
+        /// Force-delete a given term and all relationships attached to it - that is, the term and all its relationships are deleted and no checking is done.
         /// </summary>
-        /// <param name="id">The ID of the term to delete.</param>
-        /// <returns>The number of nodes affected by the operation. Specifically, the number of nodes and the number of relationships affected.</returns>
+        /// <param name="t">The term to be deleted. Note that the only matching criteria is id.</param>
+        /// <returns>The number of nodes and the number of relationships affected.</returns>
         public int delTermFORCE(Term t)
         {
             this.open();
@@ -790,10 +804,10 @@ namespace Neo4j
             {
                 return client
                     .Cypher
-                    .Match("(a:Term{id:{Param_ID}})-[r]-()")
+                    .Match("(a:Term{id:{Param_ID}})-[r]-(), (b:Term{id:{Param_ID}})")
                     .WithParam("Param_ID", (t.id))
-                    .Delete("a, r")
-                    .Return(() => Return.As<int>("count(r)"))
+                    .Delete("a, b, r")
+                    .Return(() => Return.As<int>("count(b) + count(r)"))
                     .Results.DefaultIfEmpty(0).FirstOrDefault();
             }
             else
