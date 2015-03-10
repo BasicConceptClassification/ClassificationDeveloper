@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 using BCCLib;
 using Neo4j;
+using System.Web.Security;
 
 namespace BCCApplication.Account
 {
@@ -61,16 +62,32 @@ namespace BCCApplication.Account
                 terms = new_terms,
 
             };
+            //--------------------------------------------------------------
 
+            GLAM gl = new GLAM("UA", "www.ualberta.ca");
+
+            Classifier class_fier = new Classifier(gl);
+            class_fier.name = Membership.GetUser(User.Identity.Name).UserName;
+            class_fier.email = Membership.GetUser(User.Identity.Name).Email;
+
+            adding_classifiable.id = "100";
             adding_classifiable.name = name;
             adding_classifiable.conceptStr = add_concept;
             adding_classifiable.url = url;
             adding_classifiable.perm = "None";
+            adding_classifiable.status = "classified";
+            adding_classifiable.owner = class_fier;
+
+            var conn = new Neo4jDB();
+            Classifiable result = conn.addClassifiable(adding_classifiable);
+
+
             //adding_classifiable.owner = "Temp";
 
 
             //adding_classifiable.conceptStr = concept;
-
+            conn.deleteClassifiable(result);
+            conn.deleteClassifier(class_fier);
         }
 
 
