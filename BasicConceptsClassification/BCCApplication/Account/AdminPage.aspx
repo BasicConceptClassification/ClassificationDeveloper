@@ -17,11 +17,21 @@
                     </td>
                 </tr>
                 <tr>
-                    <td>
-
+                    <td id="Datalist1">
+                         <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" OnSelectedNodeChanged="DataSet_SelectedNodeChanged">
+                            <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
+                            <NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
+                            <ParentNodeStyle Font-Bold="False" />
+                            <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" />
+                         </asp:TreeView>
                     </td>
                     <td>
-
+                        <ul id="control">
+                            <li><a runat="server">Add</a></li>
+                            <li><a runat="server">Move</a></li>
+                            <li><a runat="server">Rename</a></li>
+                            <li><a runat="server">Delete</a></li>
+                        </ul>
                     </td>
                 </tr>
             </table>
