@@ -284,9 +284,10 @@ namespace Neo4j
                     buildQuery = buildQuery
                         .WithParams(new
                         {
-                            cId = newClassifiable.owner.getOrganizationName() +
-                                "_" +
-                                newClassifiable.name,
+                            //cId = newClassifiable.owner.getOrganizationName() +
+                            //    "_" +
+                            //    newClassifiable.name,
+                            cId = newClassifiable.id,
                             cName = newClassifiable.name,
                             cUrl = newClassifiable.url,
                             cPerm = newClassifiable.perm,
