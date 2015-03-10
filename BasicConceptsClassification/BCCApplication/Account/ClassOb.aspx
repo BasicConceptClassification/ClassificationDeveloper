@@ -27,6 +27,7 @@
             </td>
             <td>
                 <asp:Button ID="SubmitObj" runat="server" Text="Submit" OnClick="SubmitObj_Click" /><br />
+                <asp:ListBox ID="ListBox1" runat="server" Height="149px" Width="234px"></asp:ListBox>
                 <br />
             </td>
         </tr>
