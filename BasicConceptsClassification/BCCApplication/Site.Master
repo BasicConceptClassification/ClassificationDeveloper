@@ -27,7 +27,7 @@
         <header>
             <div class="content-wrapper">
                 <div class="float-left">
-                    <p class="site-title"><a runat="server" href="~/HomePage">Basic Concepts Classification</a></p>
+                    <p class="site-title"><a runat="server" href="~/">Basic Concepts Classification</a></p>
                 </div>
                 <div class="float-right">
                     <section id="login">
@@ -68,7 +68,7 @@
                     </section>
                     <nav>
                         <ul id="menu">
-                            <li><a runat="server" href="~/HomePage">Home</a></li>
+                            <li><a runat="server" href="~/Home">Home</a></li>
                             <li><a runat="server" href="~/Search">Search Aid</a></li>
                             <li><a runat="server" href="~/Classification">The Classification</a></li>
                             <li><a runat="server" href="~/About">Help/About</a></li>
