@@ -42,17 +42,36 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Gets a Classifiables by id
+        /// Delete a Classifier from the GraphDB.
+        /// <para>Mostly for unit testing puposes. Will only delete if has no Classifiables.</para>
         /// </summary>
-        /// <param name="id">The id of the Classifiable</param>
-        /// <returns>A Classifiable with the given id.</returns>
-        public Classifiable getClassifiableById(int id)
+        public void deleteClassifier(Classifier classifierToDel)
         {
             this.open();
             if (client != null)
             {
-                string searchId = id.ToString();
+                // MATCH (:Classifier)-[r]-(a{id:"Neo4j-dummyiD"})-[r2:`HAS_CONSTR`]->(b)
+                // OPTIONAL MATCH (b)-[r3:HAS_TERM]->(t) 
+                // DELETE r, a, r2, b, r3
+                client.Cypher
+                    .Match("(o:Classifier{email: {em} })")
+                    .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
+                    .WithParam("em", classifierToDel.email)
+                    .Delete("o,r")
+                    .ExecuteWithoutResults();
+            }
+        }
 
+        /// <summary>
+        /// Gets a Classifiables by id
+        /// </summary>
+        /// <param name="id">The id of the Classifiable</param>
+        /// <returns>A Classifiable with the given id.</returns>
+        public Classifiable getClassifiableById(string id)
+        {
+            this.open();
+            if (client != null)
+            {
                 // Query:
                 // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
                 // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
@@ -62,7 +81,7 @@ namespace Neo4j
                 var query = client.Cypher
                     .Match("(c:Classifiable{id:{id}})-[:HAS_CONSTR]->(cs)")
                     .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
-                    .WithParam("id", searchId)
+                    .WithParam("id", id)
                     .Return((c, t) => new
                     {
                         classifiable = c.As<Classifiable>(),
@@ -210,6 +229,194 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Add a new Classifiable to the database. Returns null if 
+        /// </summary>
+        /// <exception cref="System.NullReferenceException">Thrown when there is insufficient
+        /// information for adding a Classifiable.</exception>
+        /// <exception cref="Exception">Thrown when not all the Terms in the ConceptString are in the
+        /// Classification.</exception>
+        /// <param name="newClassifiable">New Classifiable to add. Must have a Classifier.</param>
+        /// <returns>The new Classifiable from the Database for verification.</returns>
+        public Classifiable addClassifiable(Classifiable newClassifiable)
+        {
+            // Step 1: Check if there are proper terms
+            // TODO: Ummm decide on something else maybe?
+            if (countNumTermsExist(newClassifiable.conceptStr.terms) != newClassifiable.conceptStr.terms.Count)
+            {
+                throw new Exception("Some Terms are not in the Classification!");
+            }
+
+            // Step 2: Go ahead and (try to) add the Classifiable!
+            Classifiable rtnClassifiable = new Classifiable();
+
+            this.open();
+            if (client != null)
+            {
+                // Query: Merge classifier based on email, create new Classifiable and 
+                // create relationship to the Classifier, split the ConStr into Terms and connect them.
+                // MERGE (o:Classifier{email:{em}})
+                // ON CREATE SET o.email ={em}
+                // CREATE (c:Classifiable {id:{cId}})
+                // SET c.name="name-2",c.url = "url2", c.perm="perm2", c.status="status2"
+                // CREATE UNQIUE (c)<-[:OWNS]-(o)
+                // CREATE UNQIUE (c)-[:HAS_CONSTR]->(cs:Classifiable)
+                // SET cs.terms = "(new)(con)(str)"
+                // WITH c, cs, REPLACE(cs.terms, "(", "") AS trmStr
+                //      UNWIND ( FILTER
+                //          ( x in 
+                //              SPLIT( trmStr, ")" ) 
+                //              WHERE x <> ""
+                //          ) 
+                //      ) AS t4
+                // MATCH (matchedT:Term{rawTerm:t4)})
+                // CREATE (cs)-[:HAS_TERM]->(t)
+                // WITH c, cs, COLLECT([matchedT.rawTerm]) AS ts
+                // RETURN c AS classifiable, ts AS terms
+                // NOTE: Owner isn't returned from the actual DB at this point
+
+                // The query is built and executed in stages to check for proper parameters,
+                // id is unique, etc.
+                var buildQuery = client.Cypher;
+
+                // Try to see if we (generally) have valid non null parmeters
+                try
+                {
+                    buildQuery = buildQuery
+                        .WithParams(new
+                        {
+                            cId = newClassifiable.owner.getOrganizationName() +
+                                "_" +
+                                newClassifiable.name,
+                            cName = newClassifiable.name,
+                            cUrl = newClassifiable.url,
+                            cPerm = newClassifiable.perm,
+                            cStatus = newClassifiable.status,
+                            em = newClassifiable.owner.email,
+                            newConStr = newClassifiable.conceptStr.ToString()
+                        });
+                }
+                catch (NullReferenceException e)
+                {
+                    Console.WriteLine("Classifiable information missing or Classifier email was not set", e);
+                    throw new NullReferenceException(@"Classifiable information missing or Classifier email was not set", e);
+                }
+
+                // Just throw the exceptions as they happen...?
+                buildQuery = buildQuery
+                    .Merge("(o:Classifier{email:{em}})")
+                    .OnCreate()
+                    .Set("o.email ={em}")
+                    .Create("(c:Classifiable {id:{cId}})")
+                    .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
+                    .CreateUnique("(c)<-[:OWNS]-(o)")
+                    .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
+                    .Set("cs.terms = {newConStr}");
+
+                // Only go get terms if they exist...
+                if (newClassifiable.conceptStr.ToString() != "")
+                {
+                    buildQuery = buildQuery
+                        .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
+                                UNWIND ( FILTER
+                                            ( x in
+                                                SPLIT( trmStr, "")"" )
+                                                WHERE x <> """"
+                                            )
+                                        ) AS t4")
+
+                        .Match("(matchedT:Term {rawTerm: t4})")
+                        .Create("(cs)-[:HAS_TERM]->(matchedT)")
+                        .With("c, COLLECT([matchedT.rawTerm]) AS ts");
+                }
+                else
+                {
+                    // If there are no terms, just make a list of strings with only "",
+                    // just to prevent writing two essentially the same queries.
+                    buildQuery = buildQuery
+                        .With("c, COLLECT([\"\"]) AS ts");
+                }
+
+                var query = buildQuery.Return((c, ts) => new
+                {
+                    classifiable = c.As<Classifiable>(),
+                    terms = ts.As<IEnumerable<string>>(),
+                    //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
+                })
+                        .Results.ToList().Single();
+
+
+                if (query != null)
+                {
+                    // Construct the Concept String from results
+                    ConceptString resConStr = new ConceptString
+                    {
+                        terms = new List<Term>(),
+                    };
+
+                    if (query.terms.ElementAt(0) != "")
+                    {
+                        // Build the terms
+                        foreach (var t in query.terms)
+                        {
+                            var tempData = JsonConvert.DeserializeObject<dynamic>(t);
+                            var tmp = new Term
+                            {
+                                rawTerm = tempData[0]
+                            };
+
+                            tmp.subTerms = new List<Term>();
+                            resConStr.terms.Add(tmp);
+                        }
+                    }
+                    rtnClassifiable = query.classifiable;
+                    rtnClassifiable.owner = newClassifiable.owner;
+
+                    // Reverse for some reason
+                    resConStr.terms.Reverse();
+                    rtnClassifiable.conceptStr = resConStr;
+
+                    return rtnClassifiable;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Deletes a classifiable.
+        /// </summary>
+        /// <param name="classifiable">Classifiable to remove.</param>
+        public void deleteClassifiable(Classifiable classifiable)
+        {
+            this.open();
+            if (client != null)
+            {
+                // MATCH (:Classifier)-[r:OWNS]->(c:Classifiable {id:"Neo4j-dummyiD"})
+                // OPTIONAL MATCH (c)-[r2:`HAS_CONSTR`]->(cs:ConceptString)
+                // OPTIONAL MATCH (cs)-[r3:HAS_TERM]->(:Term) 
+                // DELETE r3, r2, cs, r, c
+                client.Cypher
+                    .Match("(:Classifier)-[r:OWNS]->(c:Classifiable {id:{cId}})")
+                    .OptionalMatch("(c)-[r1:HAS_CONSTR]->(cs:ConceptString)")
+                    .OptionalMatch("(cs)-[r2:HAS_TERM]->(:Term)")
+                    .WithParam("cId", classifiable.id)
+                    .Delete("r2, r1, cs, r, c")
+                    .ExecuteWithoutResults();
+            }
+        }
+
+        /// <summary>
+        /// Not finished. Will do as name implies.
+        /// </summary>
+        /// <param name="updatedClassifiable"></param>
+        /// <returns></returns>
+        public Classifiable updateClassifiable(Classifiable updatedClassifiable)
+        {
+            //.OnMatch()
+            // .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
+            return null;
+        }
+
+        /// <summary>
         /// Queries the database to return Classifiables based on a ConceptString.
         /// Use the limit and skip parameters to page the results. 
         /// </summary>
@@ -349,6 +556,46 @@ namespace Neo4j
 
             }
             return resColl;
+        }
+
+        /// <summary>
+        /// Given a list of Terms, return the number of terms that are in
+        /// the database.
+        /// </summary>
+        /// <returns>Number of Terms in the database from the given list.</returns>
+        public int countNumTermsExist(List<Term> tList)
+        {
+            if (tList.Count != 0)
+            {
+                this.open();
+
+                if (client != null)
+                {
+                    var query = client.Cypher
+                        .Match("(t:Term)")
+                        .Where("t.rawTerm = \"\"");
+
+                    for (int i = 0; i < tList.Count; i++)
+                    {
+                        string tmp = String.Format("t.rawTerm = \"{0}\"", tList[i].rawTerm);
+                        query = query.OrWhere(tmp);
+                    }
+
+                    var res = query
+                        .With("ToInt(COUNT([t])) AS numMatched")
+                        .Return((numMatched) => new
+                        {
+                            counted = numMatched.As<int>(),
+                        })
+                        .Results.Single();
+
+                    if (query != null)
+                    {
+                        return res.counted;
+                    }
+                }
+            }
+            return 0;
         }
 
         /// <summary>

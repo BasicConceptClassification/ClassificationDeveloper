@@ -7,6 +7,18 @@ namespace BCCLib
 {
     public class Classifiable
     {
+        public enum Persmission
+        {
+            GLAM,
+            OwnerOnly,
+        };
+
+        public enum Status
+        {
+            Classified,
+            Unclassified,
+        };
+
         /// <summary>
         /// A unique Id of a Classifiable.
         /// </summary>
@@ -47,6 +59,30 @@ namespace BCCLib
         /// A Classifier that has added the Classifiable.
         /// </summary>
         public Classifier owner
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// To set/check permissions of a Classifiable.
+        /// <para>
+        /// Would like these to be enums once pulling that format from the DB is better?
+        /// </para>
+        /// </summary>
+        public string perm
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// Status of whether a Classifiable is classified or not.
+        /// <para>
+        /// Would like these to be enums once pulling that format from the DB is better?
+        /// </para>
+        /// </summary>
+        public string status
         {
             get;
             set;

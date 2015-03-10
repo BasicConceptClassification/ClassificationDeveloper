@@ -22,11 +22,19 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void DeleteClassifier_Successful()
+        {
+            // TODO: ATM it's tested as clean up a cleanup function when adding 
+            // a classifiable... 
+            Assert.IsFalse(true);
+        }
+
+        [TestMethod]
         public void GetClassifiableById_IsClassified_IdExists()
         {
             var conn = new Neo4jDB();
 
-            int searchById = 2;
+            String searchById = "2";
             Classifiable classifiedWithGoodId = conn.getClassifiableById(searchById);
 
             Assert.IsNotNull(classifiedWithGoodId);
@@ -41,7 +49,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            int searchById = 14;
+            String searchById = "14";
             Classifiable notClassifiedWithGoodId = conn.getClassifiableById(searchById);
 
             Assert.IsNotNull(notClassifiedWithGoodId);
@@ -55,7 +63,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            int searchById = 909090;
+            String searchById = "909090";
             Classifiable doesNotExistClassifiable = conn.getClassifiableById(searchById);
 
             Assert.IsNull(doesNotExistClassifiable);
@@ -100,6 +108,279 @@ namespace Neo4jTest
                 Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
                 Assert.AreEqual("", unclassified.conceptStr.ToString());
             }
+        }
+
+
+        [TestMethod]
+        public void AddClassifiable_Succeed()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing1@BCCNeo4j.com";
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName1",
+                name = "dummyName1",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+            Assert.AreEqual(newClassifiable.id, result.id);
+            Assert.AreEqual(newClassifiable.name, result.name);
+            Assert.AreEqual(newClassifiable.url, result.url);
+            Assert.AreEqual(newClassifiable.perm, result.perm);
+            Assert.AreEqual(newClassifiable.status, result.status);
+            Assert.AreEqual(newClassifiable.owner.email, result.owner.email);
+
+            Assert.AreEqual(newClassifiable.conceptStr.ToString(),
+                result.conceptStr.ToString());
+
+            Assert.AreEqual(newClassifiable.conceptStr.terms.Count,
+                            result.conceptStr.terms.Count);
+
+            for (int i = 0; i < newClassifiable.conceptStr.terms.Count; i++)
+            {
+                Assert.AreEqual(newClassifiable.conceptStr.terms[i].ToString(),
+                                result.conceptStr.terms[i].ToString());
+            }
+
+            conn.deleteClassifiable(result);
+            conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(NullReferenceException),
+            "Classifiable information missing or Classifier email was not seted.")]
+        public void AddClassifiable_NoClassifier_ThrowNullReferenceException()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName2",
+                name = "dummyName2",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+        }
+
+        [TestMethod]
+        public void AddClassifiable_AlreadyExists_ThrowNeoException()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing3@BCCNeo4j.com";
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName3",
+                name = "dummyName3",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+            result.url = "anotherDummyUrl";
+
+            // Try adding another Classifiable, but with the same id. Should
+            // throw an exception.
+            try
+            {
+                Classifiable result2 = conn.addClassifiable(result);
+            }
+            catch (Exception e)
+            {
+            }
+            conn.deleteClassifiable(result);
+            conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(Exception),
+            "Some Terms are not in the Classification!")]
+        public void AddClassifiable_TermsDoNotExist()
+        {
+
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing4@BCCNeo4j.com";
+
+            Term termTooool = new Term
+            {
+                rawTerm = "Tooool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTooool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName4",
+                name = "dummyName4",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+            conn.deleteClassifiable(result);
+            conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        public void AddClassifiable_WithNoTerms()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing5@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName5",
+                name = "dummyName5",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+            conn.deleteClassifiable(result);
+            conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        public void DeleteClassifiable_Suceed()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample", "someurl");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingToDel@BCCNeo4j.com";
+
+            Term termWood = new Term
+            {
+                rawTerm = "wood",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termWood, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyNameToDelete",
+                name = "dummyNameToDelete",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+            Assert.AreEqual(newClassifiable.id, result.id);
+
+            conn.deleteClassifiable(result);
+
+            Classifiable isGone = conn.getClassifiableById(newClassifiable.id);
+            Assert.IsNull(isGone);
+
+            conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        public void DeleteClassifiable_DoesNotExist()
+        {
+            Assert.IsFalse(true);
         }
 
         [TestMethod]
@@ -258,7 +539,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            string rootRaw = "ROOT TERM";
+            string rootRaw = "Top Object";
             int NOT_FOUND = -1;
 
             // These are the rawTerms that are one depth away from the root.

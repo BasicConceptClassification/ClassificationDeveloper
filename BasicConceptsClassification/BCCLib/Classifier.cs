@@ -18,10 +18,21 @@ namespace BCCLib
             set;
         }
 
+        public string email
+        {
+            get;
+            set;
+        }
+
         protected GLAM organization
         {
             get;
             set;
+        }
+
+        public string getOrganizationName()
+        {
+            return organization.ToString();
         }
 
         public override string ToString()
