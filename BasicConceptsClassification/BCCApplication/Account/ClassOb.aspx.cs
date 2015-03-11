@@ -8,8 +8,6 @@ using BCCLib;
 using Neo4j;
 using System.Web.Security;
 
-using System.Diagnostics;
-
 namespace BCCApplication.Account
 {
     public partial class ClassOb : System.Web.UI.Page
@@ -31,12 +29,6 @@ namespace BCCApplication.Account
             string input_name = ObName.Text;
             string input_concept = ObConcept.Text;
 
-            // DEBUGGING
-            Debug.WriteLine(String.Format("Name: {0}, ConceptString: {1}, URL: {2}", 
-                input_name, input_concept, input_url));
-
-            var conn = new Neo4jDB();
-
             // create a temp GALM for testing
             // TODO: fetch proper GLAM
             GLAM gl = new GLAM("UA", "www.ualberta.ca");
@@ -46,12 +38,8 @@ namespace BCCApplication.Account
             classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = "somewhere@com";
 
-            // DEBUG
-            Debug.WriteLine(String.Format("Classifier name: {0}, Classifier email: {1},", 
-                classifier.name, classifier.email));
-
             // TODO: either make a constructor for ConceptString to take (this)(format) and have it parse
-            // it out so we don't have to see this parsing every single time...
+            // it out so we don't have to see this parsing every single time AND create terms from it?
             //split the input concept string from (xx)(xx)(xx) to a list without () 
             string Triminput_str = input_concept.Trim();
             string sstring = Triminput_str.Replace(")(", ",");
@@ -75,10 +63,11 @@ namespace BCCApplication.Account
                 terms = new_terms,
             };
 
-            // DEBUG
-            Debug.WriteLine(String.Format("ConStr extracted out: {0}", add_concept.ToString()));
-
-            // TODO: FETCH PROPER VALUES FORM WEBPAGE
+            // TODO: GET PROPER VALUES:
+            // id - created by "<GLAM_NAME>_<CLASSIFIABLE_NAME>
+            // perm - get from the radio button!
+            // status - look at ConStr and if == "" then it's Unclassified,
+            // or tell Bronte to make addClassifiable deal with it...
             Classifiable newClassifiable = new Classifiable
             {
                 id = "10001",
@@ -91,6 +80,8 @@ namespace BCCApplication.Account
             };
 
             Classifiable result = new Classifiable();
+
+            var conn = new Neo4jDB();
 
             try
             {
@@ -105,7 +96,7 @@ namespace BCCApplication.Account
                     // }
                     // catch (Exception ex)
                     // {
-                    //     // do something 
+                    //     // do something about cannot commit transaction...
                     // }
 
                     // try
@@ -114,13 +105,14 @@ namespace BCCApplication.Account
                     // }
                     // catch (Exception ex)
                     // {
-                    //     // do something 
+                    //     // do something about cannot commit transaction...
                     // }
                 }
 
             }
             catch (Exception ex)
             {
+                // Exceptions: Unique id already exists, null object (not all data filled in)
                 // Do some exception handling based on Exception type ...learn how to do custom exceptions?
                 Debug.WriteLine(ex.Message);
             }           
