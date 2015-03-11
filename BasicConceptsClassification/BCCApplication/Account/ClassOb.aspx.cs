@@ -8,6 +8,8 @@ using BCCLib;
 using Neo4j;
 using System.Web.Security;
 
+using System.Diagnostics;
+
 namespace BCCApplication.Account
 {
     public partial class ClassOb : System.Web.UI.Page
@@ -29,14 +31,27 @@ namespace BCCApplication.Account
             string input_name = ObName.Text;
             string input_concept = ObConcept.Text;
 
+            // DEBUGGING
+            Debug.WriteLine(String.Format("Name: {0}, ConceptString: {1}, URL: {2}", 
+                input_name, input_concept, input_url));
 
             var conn = new Neo4jDB();
 
-            //create a temp GALM for testing
+            // create a temp GALM for testing
+            // TODO: fetch proper GLAM
             GLAM gl = new GLAM("UA", "www.ualberta.ca");
-            Classifier class_fier = new Classifier(gl);
-            class_fier.email = "www@ualberta.ca";
 
+            // TODO: Fetch email properly
+            Classifier classifier = new Classifier(gl);
+            classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
+            classifier.email = "somewhere@com";
+
+            // DEBUG
+            Debug.WriteLine(String.Format("Classifier name: {0}, Classifier email: {1},", 
+                classifier.name, classifier.email));
+
+            // TODO: either make a constructor for ConceptString to take (this)(format) and have it parse
+            // it out so we don't have to see this parsing every single time...
             //split the input concept string from (xx)(xx)(xx) to a list without () 
             string Triminput_str = input_concept.Trim();
             string sstring = Triminput_str.Replace(")(", ",");
@@ -45,24 +60,6 @@ namespace BCCApplication.Account
             //new_str is the result list 
             List<string> new_str = sstring.Split(',').ToList();
 
-
-
-            //maybe will be used just leave it.
-            //-------------------------------------------------------
-           // List<string> result_needs = new List<string>();  
-            // foreach (string things in new_str)
-           // {
-           //     result_needs.Add("(" + things + ")");
-           // }
-
-          //  foreach (string things in result_needs)
-          //  {
-          //      ListBox1.Items.Add(things);
-          //  }
-            //------------------------------------------------------------
-            
-
-
             //convert the string list to the term list
             List<Term> new_terms = new List<Term>();
 
@@ -70,34 +67,18 @@ namespace BCCApplication.Account
             {
                 //change to terms
                 Term terterma = new Term { rawTerm = things, };
-                //ListBox1.Items.Add(things);
                 new_terms.Add(terterma);
             }
 
             ConceptString add_concept = new ConceptString
             {
                 terms = new_terms,
-
             };
 
-           
-            //--------------------------------------------------------------
-            //using for get the current user information but not works right now
-            /*
-            string test_name = Membership.GetUser(User.Identity.Name).UserName;
-            string test_email = Membership.GetUser(User.Identity.Name).Email;
-            ListBox1.Items.Add(test_email);
-            ListBox1.Items.Add(test_name);
-            */
-            //------------------------------------------------------
+            // DEBUG
+            Debug.WriteLine(String.Format("ConStr extracted out: {0}", add_concept.ToString()));
 
-
-
-            //temp testing user infor
-            class_fier.name = "Tony";//Membership.GetUser(User.Identity.Name).UserName;
-            class_fier.email ="forfun@ualberta.ca";// Membership.GetUser(User.Identity.Name).Email;
-
-
+            // TODO: FETCH PROPER VALUES FORM WEBPAGE
             Classifiable newClassifiable = new Classifiable
             {
                 id = "10001",
@@ -105,59 +86,44 @@ namespace BCCApplication.Account
                 url = input_url,
                 perm = Classifiable.Persmission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
-                owner = class_fier,
+                owner = classifier,
                 conceptStr = add_concept,
             };
-            //adding_classifiable.id = "10001";
-           // adding_classifiable.name = name;
-            //adding_classifiable.conceptStr = add_concept;
-           // adding_classifiable.url = url;
-           // adding_classifiable.perm = "None";
-           // adding_classifiable.status = "classified";
-           // adding_classifiable.owner = class_fier;
-            /*
-            ListBox1.Items.Add(adding_classifiable.id);
-            ListBox1.Items.Add(adding_classifiable.name);
-            //ListBox1.Items.Add(adding_classifiable.conceptStr.ToString);
-            //List<string> tttest = adding_classifiable.conceptStr.T;
-            ListBox1.Items.Add(adding_classifiable.conceptStr.ToString());
-            ListBox1.Items.Add(adding_classifiable.perm);
-            ListBox1.Items.Add(adding_classifiable.status);
-            ListBox1.Items.Add(adding_classifiable.owner.name);
-            ListBox1.Items.Add(adding_classifiable.id);
-             */
 
-            //-------------------------------------------------------------------
-            //searching the things what we just add in to the data base
-            Classifiable result = conn.addClassifiable(newClassifiable);
+            Classifiable result = new Classifiable();
 
-            string searchById = "10001";
+            try
+            {
+                result = conn.addClassifiable(newClassifiable);
 
-            Classifiable classifiedWithGoodId = conn.getClassifiableById(searchById);
-            //ListBox1.Items.Add(conn.countNumTermsExist(adding_classifiable.conceptStr.terms));
-            //ListBox1.Items.Add(classifiedWithGoodId.id);
-            //ListBox1.Items.Add(classifiedWithGoodId.name);
-            //ListBox1.Items.Add(adding_classifiable.conceptStr.ToString);
-            //List<string> tttest = adding_classifiable.conceptStr.T;
-            
+                if (result != null)
+                {
+                    //delete the testing stuff
+                    // try
+                    // {
+                    // conn.deleteClassifiable(result);
+                    // }
+                    // catch (Exception ex)
+                    // {
+                    //     // do something 
+                    // }
 
-            //----------------------------------------------------------------------
-            // display the result.
-            ListBox1.Items.Add(classifiedWithGoodId.conceptStr.ToString());
-            ListBox1.Items.Add(classifiedWithGoodId.perm);
-            ListBox1.Items.Add(classifiedWithGoodId.status);
-            ListBox1.Items.Add(classifiedWithGoodId.owner.name);
-            ListBox1.Items.Add(classifiedWithGoodId.id);
-            //adding_classifiable.owner = "Temp";
+                    // try
+                    // {
+                    // conn.deleteClassifier(classifier);
+                    // }
+                    // catch (Exception ex)
+                    // {
+                    //     // do something 
+                    // }
+                }
 
-
-            //adding_classifiable.conceptStr = concept;
-            //delete the testing stuff.
-            conn.deleteClassifiable(result);
-            conn.deleteClassifier(class_fier);
-           
+            }
+            catch (Exception ex)
+            {
+                // Do some exception handling based on Exception type ...learn how to do custom exceptions?
+                Debug.WriteLine(ex.Message);
+            }           
         }
-
-
     }
 }
