@@ -55,7 +55,7 @@ namespace BCCApplication.Account
           //  {
           //      ListBox1.Items.Add(things);
           //  }
-
+            /*
             List<Term> new_terms = new List<Term>();
 
             foreach (String things in new_str)
@@ -70,6 +70,19 @@ namespace BCCApplication.Account
             {
                 terms = new_terms,
 
+            };*/
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
             };
             //--------------------------------------------------------------
 
@@ -93,7 +106,7 @@ namespace BCCApplication.Account
                 perm = Classifiable.Persmission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = class_fier,
-                conceptStr = add_concept,
+                conceptStr = conStr,
             };
             //adding_classifiable.id = "10001";
            // adding_classifiable.name = name;
