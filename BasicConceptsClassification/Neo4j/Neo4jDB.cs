@@ -241,11 +241,13 @@ namespace Neo4j
         {
             // Step 1: Check if there are proper terms
             // TODO: Ummm decide on something else maybe?
+            //
+            
             if (countNumTermsExist(newClassifiable.conceptStr.terms) != newClassifiable.conceptStr.terms.Count)
             {
                 throw new Exception("Some Terms are not in the Classification!");
             }
-
+            
             // Step 2: Go ahead and (try to) add the Classifiable!
             Classifiable rtnClassifiable = new Classifiable();
 
