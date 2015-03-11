@@ -8,6 +8,8 @@ using BCCLib;
 using Neo4j;
 using System.Web.Security;
 
+using System.Diagnostics;
+
 namespace BCCApplication.Account
 {
     public partial class ClassOb : System.Web.UI.Page
@@ -70,7 +72,7 @@ namespace BCCApplication.Account
             // or tell Bronte to make addClassifiable deal with it...
             Classifiable newClassifiable = new Classifiable
             {
-                id = "10001",
+                id = classifier.name + "_" + input_name,
                 name = input_name,
                 url = input_url,
                 perm = Classifiable.Persmission.GLAM.ToString(),
