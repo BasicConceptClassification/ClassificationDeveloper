@@ -127,10 +127,72 @@
                             </div>
                         </div>
                         <div class="menudiv">
-                            <div id="con_one_1"><p>Hello</p></div>
-                            <div id="con_one_2" style="display:none"><p>ni hao</p></div>
-                            <div id="con_one_3" style="display:none"><p>CAo</p></div>
-                            <div id="con_one_4" style="display:none"><p>WORI</p></div>
+                            <div id="con_one_1">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <p>New Term Name:</p>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="NewTermTextBox" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p>Put Term Under:</p>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="ParentTermTextBox" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:Button ID="AddUpdateButton" runat="server" Text="Update" OnClick="AddUpdateButton_Click" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td />
+                                        <td />
+                                        <td>
+                                            <asp:Button ID="AddAddButton" runat="server" Text="ADD" OnClick="AddAddButton_Click" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="con_one_2" style="display:none">
+ <table>
+                                    <tr>
+                                        <td>
+                                            <p>Move Term:</p>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="MoveTermTextBox" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:Button ID="MoveUpdateButton1" runat="server" Text="Update" OnClick="MoveUpdateButton1_Click" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p>To Go Under Term:</p>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="MoveTermUnderTextBox" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:Button ID="MoveUpdateButton2" runat="server" Text="Update" OnClick="MoveUpdateButton2_Click" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td />
+                                        <td />
+                                        <td>
+                                            <asp:Button ID="MoveAddButton" runat="server" Text="ADD" OnClick="MoveAddButton_Click" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                            <div id="con_one_3" style="display:none"><p>Hello</p></div>
+                            <div id="con_one_4" style="display:none"><p>Ni Hao</p></div>
                         </div>
                     </td>
                 </tr>
