@@ -159,7 +159,7 @@
                                 </table>
                             </div>
                             <div id="con_one_2" style="display:none">
- <table>
+                                <table>
                                     <tr>
                                         <td>
                                             <p>Move Term:</p>
