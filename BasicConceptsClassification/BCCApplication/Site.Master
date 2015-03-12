@@ -54,6 +54,7 @@
                             </RoleGroups>
                             <AnonymousTemplate>
                                 <ul>
+                                    <li><a id="registerLink" runat="server" href="~/Account/Register">Register</a></li>
                                     <li><a id="loginLink" runat="server" href="~/Account/Login">Log in</a></li>
                                 </ul>
                             </AnonymousTemplate>

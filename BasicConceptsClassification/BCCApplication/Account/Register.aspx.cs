@@ -16,12 +16,25 @@ namespace BCCApplication.Account
 {
     public partial class Register : Page
     {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            if (User.IsInRole(RoleActions.ROLE_ADMIN))
+            {
+                ClassifierCheckBox.Visible = true;
+            }
+            else
+            {
+                ClassifierCheckBox.Visible = false;
+            }
+        }
+
         protected void CreateUser_Click(object sender, EventArgs e)
         {
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var signInManager = Context.GetOwinContext().Get<ApplicationSignInManager>();
             var user = new ApplicationUser() { UserName = Username.Text, Email = Email.Text };
             IdentityResult IdUserResult = manager.Create(user, Password.Text);
+            
             if (IdUserResult.Succeeded)
             {
                 // For more information on how to enable account confirmation and password reset please visit http://go.microsoft.com/fwlink/?LinkID=320771
@@ -29,7 +42,7 @@ namespace BCCApplication.Account
                 //string callbackUrl = IdentityHelper.GetUserConfirmationRedirectUrl(code, user.Id, Request);
                 //manager.SendEmail(user.Id, "Confirm your account", "Please confirm your account by clicking <a href=\"" + callbackUrl + "\">here</a>.");
 
-                if(ClassifierCheckBox.Checked)
+                if (ClassifierCheckBox.Checked && User.IsInRole(RoleActions.ROLE_ADMIN))
                 {
                     // Load the role manager and add the user to the classifiers.
                     Logic.ApplicationDbContext context = new ApplicationDbContext();
@@ -51,7 +64,7 @@ namespace BCCApplication.Account
             }
             else
             {
-                //ErrorMessage.Text = result.Errors.FirstOrDefault();
+                ErrorMessage.Text = IdUserResult.Errors.FirstOrDefault();
             }
         }
     }
