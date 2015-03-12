@@ -60,6 +60,8 @@ namespace BCCApplication.Account
                     }
                 }
 
+                signInManager.PasswordSignIn(Username.Text, Password.Text, true, false);
+
                 IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
             }
             else

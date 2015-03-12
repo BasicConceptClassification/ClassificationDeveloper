@@ -36,7 +36,9 @@
                                 <asp:RoleGroup Roles="Administrator">
                                     <ContentTemplate>
                                         <p>
-                                            Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account"><asp:LoginName runat="server" CssClass="username" /></a>!
+                                            Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account">
+                                                <asp:LoginName runat="server" CssClass="username" />
+                                            </a>!
                                             <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                             <a id="a1" runat="server" href="~/Roles/Admin/Administration">Administration Tools</a>
                                         </p>
@@ -45,7 +47,9 @@
                                 <asp:RoleGroup Roles="Classifier">
                                     <ContentTemplate>
                                         <p>
-                                            Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account"><asp:LoginName runat="server" CssClass="username" /></a>!
+                                            Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account">
+                                                <asp:LoginName runat="server" CssClass="username" />
+                                            </a>!
                                             <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                             <a id="a1" runat="server" href="~/Roles/Classification/Classification">Classification Tools</a>
                                         </p>
@@ -60,7 +64,9 @@
                             </AnonymousTemplate>
                             <LoggedInTemplate>
                                 <p>
-                                    Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account"><asp:LoginName runat="server" CssClass="username" /></a>!
+                                    Hello, <a runat="server" class="username" href="~/Account/Manage" title="Manage your account">
+                                        <asp:LoginName runat="server" CssClass="username" />
+                                    </a>!
                                     <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                 </p>
                             </LoggedInTemplate>
