@@ -11,7 +11,7 @@
             <br />
             <asp:Button ID="name_sort" runat="server" Text="Sort by name" OnClick="name_sort_Click" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;
-            <asp:Button ID="relev_sort" runat="server" OnClick="relev_sort_Click" Text="Sort by relecancy" />
+            <asp:Button ID="relev_sort" runat="server" OnClick="relev_sort_Click" Text="Sort by relevancy" />
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp; &nbsp;&nbsp;&nbsp;<asp:Button ID="order_sort" runat="server" OnClick="order_sort_Click" Text="Sort by order of terms" />
             &nbsp;&nbsp;&nbsp;
             <br />

@@ -249,18 +249,21 @@
     </Compile>
     <Compile Include="Account\AdminPage.aspx.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Account\AdminPage.aspx.designer.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\ClassOb.aspx.cs">
       <DependentUpon>ClassOb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Account\ClassOb.aspx.designer.cs">
       <DependentUpon>ClassOb.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\GLAMClass.aspx.cs">
       <DependentUpon>GLAMClass.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Account\GLAMClass.aspx.designer.cs">
       <DependentUpon>GLAMClass.aspx</DependentUpon>

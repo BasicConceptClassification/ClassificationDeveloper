@@ -14,7 +14,7 @@
             <td>Edit Permissions 
                 <asp:RadioButtonList ID="EditPerm" runat="server" Font-Size="X-Small" RepeatColumns="2">
                     <asp:ListItem>Only Me</asp:ListItem>
-                    <asp:ListItem>Anyone in my Institution</asp:ListItem>
+                    <asp:ListItem Selected="True">Anyone in my Institution</asp:ListItem>
                 </asp:RadioButtonList>
             </td>
             <td>Concept String: 

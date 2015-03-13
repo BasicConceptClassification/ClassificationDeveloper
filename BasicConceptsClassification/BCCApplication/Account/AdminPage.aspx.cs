@@ -15,7 +15,10 @@ namespace BCCApplication.Account
 		protected void Page_Load(object sender, EventArgs e)
         {
 		// Testing purposes, only loading from BccRoot with a small depth
+            
             int expandDepth = 2;
+            DataSet.Nodes.Clear();
+
 
             // Fetch BCC from the DB
             var dbConn = new Neo4jDB();
@@ -60,6 +63,62 @@ namespace BCCApplication.Account
                 currentNode.ChildNodes.Add(generateBccTree(childTerm, currentNode));
             }
             return currentNode;
+        }
+        protected void AddUpdateButton_Click(object sender, EventArgs e)
+        {
+
+
+        }
+        protected void AddAddButton_Click(object sender, EventArgs e)
+        {
+            /*
+            string new_term_string = NewTermTextBox.Text;
+            var conn = new Neo4jDB();
+            Term new_term = new Term
+            {
+                id = new_term_string,
+                rawTerm = new_term_string,
+                lower = new_term_string.ToLower()
+            };
+            conn.addTerm(new_term, null);
+             */
+           /*
+            string new_term_string = NewTermTextBox.Text;
+            string parent_term = ParentTermTextBox.Text;
+            var conn = new Neo4jDB();
+            Term searching_term = conn.getTermByRaw(parent_term);
+            Term new_term = new Term
+            {
+                id = new_term_string,
+                rawTerm = new_term_string,
+                lower = new_term_string.ToLower()
+            };
+
+            conn.addTerm(new_term, null);
+            conn.moveTerm(new_term, searching_term);
+            */
+
+        }
+        protected void MoveUpdateButton1_Click(object sender, EventArgs e)
+        {
+
+
+        }
+        protected void MoveUpdateButton2_Click(object sender, EventArgs e)
+        {
+
+
+        }
+        protected void MoveAddButton_Click(object sender, EventArgs e)
+        {
+            /*
+            string move_term1 = MoveTermTextBox.Text;
+            string move_term2 = MoveTermUnderTextBox.Text;
+            var conn = new Neo4jDB();
+            Term result_1 = conn.getTermByRaw(move_term1);
+            Term result_2 = conn.getTermByRaw(move_term2);
+            conn.moveTerm(result_1, result_2);
+            */
         }
 	}
 }
