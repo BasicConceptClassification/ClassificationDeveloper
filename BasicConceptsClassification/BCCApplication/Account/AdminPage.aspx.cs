@@ -82,7 +82,7 @@ namespace BCCApplication.Account
             };
             conn.addTerm(new_term, null);
              */
-           
+           /*
             string new_term_string = NewTermTextBox.Text;
             string parent_term = ParentTermTextBox.Text;
             var conn = new Neo4jDB();
@@ -96,7 +96,7 @@ namespace BCCApplication.Account
 
             conn.addTerm(new_term, null);
             conn.moveTerm(new_term, searching_term);
-            
+            */
 
         }
         protected void MoveUpdateButton1_Click(object sender, EventArgs e)
@@ -111,14 +111,14 @@ namespace BCCApplication.Account
         }
         protected void MoveAddButton_Click(object sender, EventArgs e)
         {
-            
+            /*
             string move_term1 = MoveTermTextBox.Text;
             string move_term2 = MoveTermUnderTextBox.Text;
             var conn = new Neo4jDB();
             Term result_1 = conn.getTermByRaw(move_term1);
             Term result_2 = conn.getTermByRaw(move_term2);
             conn.moveTerm(result_1, result_2);
-            
+            */
         }
 	}
 }
