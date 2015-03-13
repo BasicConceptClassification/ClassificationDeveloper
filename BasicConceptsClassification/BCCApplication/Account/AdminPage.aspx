@@ -2,19 +2,20 @@
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
     <style type="text/css">
-        *{list-style:none;margin:0;padding:0;overflow:hidden}
 
-        .tab1{width:401px;border-top:#A8C29F solid 1px;border-bottom:#A8C29F solid 1px;margin:50px 200px;}
-
-        .menu{width:400px;background:#eee;height:28px;border-right:#A8C29F solid 1px;border-bottom:#A8C29F solid 1px;}
-
-        li{float:left;width:99px;text-align:center;line-height:28px;height:28px;cursor:pointer;border-left:#A8C29F solid 1px;color:#666;font-size:14px;overflow:hidden}
-
-        .menudiv{width:399px;height:300px;border-left:#A8C29F solid 1px;border-right:#A8C29F solid 1px;border-top:0;background:#fefefe}
-
-        .menudiv div{padding:15px;line-height:28px;}
-
-        .off{background:#E0E2EB;color:#336699;font-weight:bold}
+        .horizontal li
+        {
+            float:left;
+            width:99px;
+            text-align:center;
+            line-height:28px;
+            height:28px;
+            cursor:pointer;
+            border-left:#A8C29F solid 1px;
+            color:#666;
+            font-size:14px;
+            overflow:hidden;
+        }
 
     </style>
     <script type="text/javascript">
@@ -95,19 +96,19 @@
         <div>
             <table style="width:100%">
                 <tr>
-                    <td>
+                    <td colspan="8">
                         <center>
                             <h1>The Classification</h1>
                         </center>
                     </td>
                 </tr>
                 <tr>
-                    <td>
+                    <td colspan="8">
                         <p>You can edit the Classification by doing the following....</p>
                     </td>
                 </tr>
                 <tr>
-                    <td id="Datalist1">
+                    <td rowspan="5" colspan="4" id="Datalist1">
                          <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" OnSelectedNodeChanged="DataSet_SelectedNodeChanged">
                             <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
                             <NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
@@ -115,10 +116,10 @@
                             <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" />
                          </asp:TreeView>
                     </td>
-                    <td>
-                        <div class="tab1" id="tab1">
-                            <div class="menu">
-                                <ul>
+                    <td colspan="4">
+                        <div id="tab1">
+                            <div>
+                                <ul class="horizontal">
                                     <li id="one1" onclick="setTab('one',1)">ADD</li>
                                     <li id="one2" onclick="setTab('one',2)">MOVE</li>
                                     <li id="one3" onclick="setTab('one',3)">RENAME</li>
@@ -126,7 +127,11 @@
                                 </ul>
                             </div>
                         </div>
-                        <div class="menudiv">
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="4" rowspan="4">
+                        <div>
                             <div id="con_one_1">
                                 <table>
                                     <tr>
