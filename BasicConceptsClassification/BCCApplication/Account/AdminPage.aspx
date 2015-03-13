@@ -17,6 +17,13 @@
             overflow:hidden;
         }
 
+        .horizontal {
+            width: 426px;
+        }
+        .auto-style1 {
+            width: 268435520px;
+        }
+
     </style>
     <script type="text/javascript">
         function setTab(name, cursel) {
@@ -108,13 +115,15 @@
                     </td>
                 </tr>
                 <tr>
-                    <td rowspan="5" colspan="4" id="Datalist1">
+                    <td rowspan="5" colspan="4" id="Datalist1" class="auto-style1">
+                        <div style="width:512px">
                          <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" OnSelectedNodeChanged="DataSet_SelectedNodeChanged">
                             <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
                             <NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
                             <ParentNodeStyle Font-Bold="False" />
                             <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" />
                          </asp:TreeView>
+                            </div>
                     </td>
                     <td colspan="4">
                         <div id="tab1">
