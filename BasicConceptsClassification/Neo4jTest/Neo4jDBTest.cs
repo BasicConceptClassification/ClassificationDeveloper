@@ -484,8 +484,6 @@ namespace Neo4jTest
         [TestMethod]
         public void DeleteClassifiable_Suceed()
         {
-            var conn = new Neo4jDB();
-
             GLAM glam = new GLAM("Sample");
 
             Classifier classifier = new Classifier(glam);
@@ -515,9 +513,43 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
+            var conn = new Neo4jDB();
             Classifiable result = conn.addClassifiable(newClassifiable);
 
-            Assert.AreEqual(newClassifiable.id, result.id);
+            conn.deleteClassifiable(result);
+
+            Classifiable isGone = conn.getClassifiableById(newClassifiable.id);
+            Assert.IsNull(isGone);
+
+            conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        public void DeleteClassifiable_NoTerms_Succeed()
+        {
+            GLAM glam = new GLAM("Sample");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingToDel02@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyNameToDelete02",
+                name = "dummyNameToDelete02",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            var conn = new Neo4jDB();
+            Classifiable result = conn.addClassifiable(newClassifiable);
 
             conn.deleteClassifiable(result);
 
@@ -530,7 +562,38 @@ namespace Neo4jTest
         [TestMethod]
         public void DeleteClassifiable_DoesNotExist()
         {
-            Assert.IsFalse(true);
+            GLAM glam = new GLAM("Sample");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingToDel03@BCCNeo4j.com";
+
+            Term termWood = new Term
+            {
+                rawTerm = "wood",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termWood, 
+                }
+            };
+
+            Classifiable classifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyNameToDelete03",
+                name = "dummyNameToDelete03",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            var conn = new Neo4jDB();
+
+            conn.deleteClassifiable(classifiable);
         }
 
         [TestMethod]
