@@ -48,10 +48,37 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void GetClassifier_Exists()
+        {
+            Assert.IsTrue(false);
+        }
+
+        [TestMethod]
+        public void GetClassifier_DoesNotExist()
+        {
+            Assert.IsTrue(false);
+        }
+
+        [TestMethod]
         public void DeleteClassifier_Successful()
         {
-            // TODO: ATM it's tested as clean up a cleanup function when adding 
-            // a classifiable... 
+            GLAM glam = new GLAM("US National Parks Service",
+                "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "userDeleteMe@USNationalParks.com";
+
+            var conn = new Neo4jDB();
+
+            Classifier addedClassifier = conn.addClassifier(classifier);
+
+            Assert.IsNotNull(addedClassifier);
+            Assert.AreEqual(classifier.email, addedClassifier.email);
+            Assert.AreEqual(glam.name, addedClassifier.getOrganizationName());
+
+            conn.deleteClassifier(addedClassifier);
+
+            // Need to write getClassifier(string email) or something.
             Assert.IsFalse(true);
         }
 
@@ -74,7 +101,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            String searchById = "2";
+            String searchById = "US National Parks Service_Adze Blade";
             Classifiable classifiedWithGoodId = conn.getClassifiableById(searchById);
 
             Assert.IsNotNull(classifiedWithGoodId);
@@ -89,7 +116,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            String searchById = "14";
+            String searchById = "US National Parks Service_Atlatl Foreshaft";
             Classifiable notClassifiedWithGoodId = conn.getClassifiableById(searchById);
 
             Assert.IsNotNull(notClassifiedWithGoodId);
