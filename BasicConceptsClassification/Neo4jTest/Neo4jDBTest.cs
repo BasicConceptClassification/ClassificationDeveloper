@@ -22,6 +22,32 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void AddClassiier_Successful()
+        {
+            GLAM glam = new GLAM("US National Parks Service",
+                "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "user99@USNationalParks.com";
+            
+            var conn = new Neo4jDB();
+
+            Classifier addedClassifier = conn.addClassifier(classifier);
+
+            Assert.IsNotNull(addedClassifier);
+            Assert.AreEqual(classifier.email, addedClassifier.email);
+            Assert.AreEqual(glam.name, addedClassifier.getOrganizationName());
+
+            conn.deleteClassifier(addedClassifier);
+        }
+
+        [TestMethod]
+        public void AddClassifier_AlreadyExists_ThrowException()
+        {
+            Assert.IsTrue(false);
+        }
+
+        [TestMethod]
         public void DeleteClassifier_Successful()
         {
             // TODO: ATM it's tested as clean up a cleanup function when adding 

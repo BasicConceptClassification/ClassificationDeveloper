@@ -42,6 +42,57 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Add a new Classifier. Will create a new GLAM if the one provided 
+        /// does not currently exist
+        /// </summary>
+        /// <param name="newClassifier"></param>
+        public Classifier addClassifier(Classifier newClassifier)
+        {
+            this.open();
+            if (client != null)
+            {
+                // Query:
+                // MERGE (g:GLAM {name: "glamName"})
+                // CREATE (c:Classifier)
+                // SET c.email = {email}
+                // CREATE (c)-[:ASSOCIATED_WITH]->(g)
+                // RETURN c AS addedClassifier
+                var query = client.Cypher
+                    .Merge("(g:GLAM {name: {glamName} })")
+                    .WithParam("glamName", newClassifier.getOrganizationName())
+                    .Create("(c:Classifier {email: {email}})")
+                    .WithParam("email", newClassifier.email)
+                    .Create("(c)-[:ASSOCIATED_WITH]->(g)")
+                    .With("c.email as newEmail, g.name AS gName, g.homeUrl AS gUrl")
+                    .Return((newEmail, gName, gUrl) => new
+                    {
+                        classifierEmail = newEmail.As<string>(),
+                        glamName = gName.As<string>(),
+                        glamUrl = gUrl.As<string>(),
+                    })
+                    .Results.Single();
+                  
+                if (query != null)
+                {          
+                    var rtnGlam = new GLAM(query.glamName, query.glamUrl);
+                    Classifier rtnClassifier = new Classifier(rtnGlam);
+                    rtnClassifier.email = query.classifierEmail;
+                    return rtnClassifier;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Get Classifier by email.
+        /// </summary>
+        /// <param name="email"></param>
+        public Classifier getClassifier(String email)
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Delete a Classifier from the GraphDB.
         /// <para>Mostly for unit testing puposes. Will only delete if has no Classifiables.</para>
         /// </summary>
@@ -50,9 +101,9 @@ namespace Neo4j
             this.open();
             if (client != null)
             {
-                // MATCH (:Classifier)-[r]-(a{id:"Neo4j-dummyiD"})-[r2:`HAS_CONSTR`]->(b)
-                // OPTIONAL MATCH (b)-[r3:HAS_TERM]->(t) 
-                // DELETE r, a, r2, b, r3
+                // MATCH (o:Classifier {email: {em} })
+                // OPTIONAL MATCH (o)-[r:ASSOCIATED_WITH]->(:GLAM)
+                // DELETE o,r
                 client.Cypher
                     .Match("(o:Classifier{email: {em} })")
                     .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
@@ -232,7 +283,7 @@ namespace Neo4j
                         classifiable = c.As<Classifiable>(),
                     })
                     .Union()
-                    .OptionalMatch("(c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)")
+                    .OptionalMatch("(c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
                     .Where("g.name = {classifierGlam}").WithParam("classifierGlam", classifier.getOrganizationName())
                     .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
                     .AndWhere("c2.status = {status}")
