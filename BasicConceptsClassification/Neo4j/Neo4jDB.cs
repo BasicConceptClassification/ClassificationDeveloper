@@ -318,6 +318,70 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Get the classifier's recently classified classifiables.
+        /// </summary>
+        /// <param name="classifier">Classifier who owns the classifiables returned.</param>
+        /// <returns>Classifiables.</returns>
+        public ClassifiableCollection getRecentlyClassified(Classifier classifier)
+        {
+            ClassifiableCollection resColl = new ClassifiableCollection
+            {
+                data = new List<Classifiable>(),
+            };
+
+            this.open();
+            if (client != null)
+            {
+                // Query 
+                // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
+                // WHERE c.status = "Classified"
+                // RETURN c AS classifiable
+                // UNION
+                // OPTIONAL MATCH (c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)
+                // WHERE g.name = "US National Parks Service"
+                // AND c2.perm = "GLAM"
+                // AND c2.status = "Unclassified"
+                // RETURN c2 AS classifiable
+                var query = client.Cypher
+                    .Match("(o:Classifier)")
+                    .OptionalMatch("(c:Classifiable)<-[:OWNS]-(o)")
+                    .Where("c.status = {status}").WithParam("status", Classifiable.Status.Classified)
+                    .Return((c) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                    })
+                    .Union()
+                    .OptionalMatch("(c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
+                    .Where("g.name = {classifierGlam}").WithParam("classifierGlam", classifier.getOrganizationName())
+                    .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
+                    .AndWhere("c2.status = {status}")
+                    .Return((c2) => new
+                    {
+                        classifiable = c2.As<Classifiable>(),
+                    })
+                    .Results.ToList();
+
+                if (query != null)
+                {
+                    foreach (var res in query)
+                    {
+                        // if the union has no data, returns as null,
+                        // so need to check that we actually have a result
+                        if (res.classifiable != null)
+                        {
+                            res.classifiable.conceptStr = new ConceptString
+                            {
+                                terms = new List<Term>(),
+                            };
+                            resColl.data.Add(res.classifiable);
+                        }
+                    }
+                }
+            }
+            return resColl;
+        }
+
+        /// <summary>
         /// Get all the Classifiables that are not classified.
         /// <para>Classifiables returned are not associated with whoever
         /// added them.</para>
@@ -345,7 +409,8 @@ namespace Neo4j
                 // AND c2.status = "Unclassified"
                 // RETURN c2 AS classifiable
                 var query = client.Cypher
-                    .Match("(c:Classifiable)<-[:OWNS]-(o:Classifier)")
+                    .Match("(o:Classifier)")
+                    .OptionalMatch("(c:Classifiable)<-[:OWNS]-(o)")
                     .Where("c.status = {status}").WithParam("status", Classifiable.Status.Unclassified)
                     .Return((c) => new
                     {
