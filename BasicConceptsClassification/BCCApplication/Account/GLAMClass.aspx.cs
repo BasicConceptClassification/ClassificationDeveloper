@@ -5,34 +5,87 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+using BCCLib;
+using Neo4j;
+using System.Diagnostics;
+
 namespace BCCApplication.Account
 {
     public partial class GLAMClass : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Dealing with list of recently added terms hooked up to respective Classifier
-            int numRecAdd = 7;     //have read number of unclassified objects
-            for (int i = 0; i < numRecAdd; i++)
+            var dbConn = new Neo4jDB();
+
+            // Realized I still don't know how to fetch Glam and classifier somehow...
+            GLAM g = new GLAM("National Gallery (US)");
+
+            Classifier currentClassifier = new Classifier(g);
+            currentClassifier.email = "user2@NationalGalleryUS.com";
+            
+            GenerateTermUpdates();
+
+            GenerateRecentlyClassified(dbConn, currentClassifier);
+
+            GenerateUnclassified(dbConn, currentClassifier);
+        }
+
+        protected void GenerateTermUpdates()
+        {
+            // TODO: Need to turn this into a notification system?
+            try
             {
-                String RecAddT = "New Term " + i+1;          // change to read actual recently added string
-                RecAddedTerms.Items.Add(new ListItem(RecAddT));
+                // Dealing with list of recently added terms hooked up to respective Classifier
+                int numRecAdd = 7;     //have read number of unclassified objects
+                for (int i = 0; i < numRecAdd; i++)
+                {
+                    String RecAddT = "New Term " + i + 1;          // change to read actual recently added string
+                    RecAddedTerms.Items.Add(new ListItem(RecAddT));
+                }
             }
-
-
-            // Dealing with list of recently classified terms hooked up to respective Classifier
-            int numRecClass = 7;     //have read number of unclassified objects
-            for (int i = 0; i < numRecClass; i++)
+            catch
             {
-                String RecClassT = "Recently Classified Term " + i+1;          // change to read actual recently classified string
+                // Some sort of notification?
+                String RecAddT = "Sorry, server is having issues!";
+                RecAddedTerms.Items.Add(new ListItem(RecAddT));          
+            }
+        }
+
+        protected void GenerateRecentlyClassified(Neo4jDB conn, Classifier classifier)
+        {
+            try
+            {
+                ClassifiableCollection classifiables = conn.getRecentlyClassified(classifier);
+                for (int i = 0; i < classifiables.data.Count; i++)
+                {
+                    String RecClassT = classifiables.data[i].name;
+                    RecClassTerms.Items.Add(new ListItem(RecClassT));
+                }
+            }
+            catch
+            {
+                // Some sort of notification?
+                String RecClassT = "Sorry, server is having issues!";
                 RecClassTerms.Items.Add(new ListItem(RecClassT));
             }
 
+        }
 
-            // Dealing with list of unclassified objects hooked up to respective Classifier
-            int numUnClass = 7;     //have read number of unclassified objects
-            for (int i = 0; i < numUnClass; i++) {
-                String unClassified = "Unclassified " + i+1;          // change to read actual unclassified string
+        protected void GenerateUnclassified(Neo4jDB conn, Classifier classifier)
+        {
+            try
+            {
+                ClassifiableCollection classifiables = conn.getAllUnclassified(classifier);
+                for (int i = 0; i < classifiables.data.Count; i++)
+                {
+                    String unClassified = classifiables.data[i].name;
+                    UnClassList.Items.Add(new ListItem(unClassified));
+                }
+            }
+            catch
+            {
+                // Some sort of notification?
+                String unClassified = "Sorry, server is having issues!"; 
                 UnClassList.Items.Add(new ListItem(unClassified));
             }
         }
