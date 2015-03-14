@@ -63,6 +63,20 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Might need.
+        /// </summary>
+        /// <param name="classifierEmail"></param>
+        public GLAM getGlamOfClassifier(String classifierEmail)
+        {
+            return null;
+        }
+
+        public List<GLAM> getAllGlams()
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Gets a Classifiables by id
         /// </summary>
         /// <param name="id">The id of the Classifiable</param>
@@ -189,9 +203,8 @@ namespace Neo4j
         /// added them.</para>
         /// </summary>
         /// <returns>A ClassifiableCollection with Classifiables that have
-        /// not been classified. If all have been classified then the 
-        /// the collection will be empty.</returns>
-        public ClassifiableCollection getAllUnClassified()
+        /// not been classified. Does not return the owner or concept string.</returns>
+        public ClassifiableCollection getAllUnclassified(Classifier classifier)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
             {
@@ -202,26 +215,48 @@ namespace Neo4j
             if (client != null)
             {
                 // Query 
-                // MATCH (c:Classifiable)-[:`HAS_CONSTR`]->(cs:ConceptString {terms:""}) 
-                // RETURN c, cs
+                // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
+                // WHERE c.status = "Unclassified"
+                // RETURN c AS classifiable
+                // UNION
+                // OPTIONAL MATCH (c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)
+                // WHERE g.name = "US National Parks Service"
+                // AND c2.perm = "GLAM"
+                // AND c2.status = "Unclassified"
+                // RETURN c2 AS classifiable
                 var query = client.Cypher
-                    .Match("(c:Classifiable)-[:`HAS_CONSTR`]->(cs:ConceptString {terms:\"\"})")
+                    .Match("(c:Classifiable)<-[:OWNS]-(o:Classifier)")
+                    .Where("c.status = {status}").WithParam("status", Classifiable.Status.Unclassified)
                     .Return((c) => new
                     {
                         classifiable = c.As<Classifiable>(),
                     })
+                    .Union()
+                    .OptionalMatch("(c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)")
+                    .Where("g.name = {classifierGlam}").WithParam("classifierGlam", classifier.getOrganizationName())
+                    .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
+                    .AndWhere("c2.status = {status}")
+                    .Return((c2) => new
+                    {
+                        classifiable = c2.As<Classifiable>(),
+                    })
                     .Results.ToList();
 
+                
                 if (query != null)
                 {
                     foreach (var res in query)
                     {
-                        res.classifiable.conceptStr = new ConceptString
+                        // if the union has no data, returns as null,
+                        // so need to check that we actually have a result
+                        if (res.classifiable != null)
                         {
-                            terms = new List<Term>(),
-                        };
-
-                        resColl.data.Add(res.classifiable);
+                            res.classifiable.conceptStr = new ConceptString
+                            {
+                                terms = new List<Term>(),
+                            };
+                            resColl.data.Add(res.classifiable);
+                        }
                     }
                 }
             }

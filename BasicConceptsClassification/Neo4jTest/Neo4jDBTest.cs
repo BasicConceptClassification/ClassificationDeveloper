@@ -30,6 +30,20 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void GetGlamOfClassifier_Success()
+        {
+            //getGlamOfClassifier("someemail@somewhere.com");
+            Assert.IsFalse(true);
+        }
+
+        [TestMethod]
+        public void GetAllGlams_Success()
+        {
+            // getAllGlams();
+            Assert.IsFalse(true);
+        }
+
+        [TestMethod]
         public void GetClassifiableById_IsClassified_IdExists()
         {
             var conn = new Neo4jDB();
@@ -97,12 +111,24 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetAllUnClassified_Exists()
+        public void GetAllUnclassified_YourOwn_Exists()
         {
+            GLAM glam = new GLAM("US National Parks Service", 
+                "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "user1@USNationalParks.com";
+
             var conn = new Neo4jDB();
 
-            ClassifiableCollection unclassifieds = conn.getAllUnClassified();
+            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier);
 
+            // TODO: fix: Bad test without sample data, but will do for now
+            Assert.AreNotEqual(0, unclassifieds.data.Count);
+
+            // check cases:
+            // not all may have a null constr
+            // some may not have a ConceptString
             foreach (var unclassified in unclassifieds.data)
             {
                 Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
@@ -110,6 +136,43 @@ namespace Neo4jTest
             }
         }
 
+        [TestMethod]
+        public void GetAllUnclassified_NotYours_Exists()
+        {
+            GLAM glam = new GLAM("US National Parks Service",
+               "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "user2@USNationalParks.com";
+
+            var conn = new Neo4jDB();
+
+            Assert.IsFalse(true);
+
+            //conn.addClassifier(classifier);
+
+            //ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier);
+
+            // TODO: fix: Bad test without sample data, but will do for now
+            //Assert.AreNotEqual(0, unclassifieds.data.Count);
+
+            // check cases:
+            // not all may have a null constr
+            // some may not have a ConceptString
+            //foreach (var unclassified in unclassifieds.data)
+            //{
+            //    Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
+            //    Assert.AreEqual("", unclassified.conceptStr.ToString());
+            //}
+        }
+
+        [TestMethod]
+        public void GetAllUnclassified_OtherTypes()
+        {
+            // We have new status types to worry about; pending, need help(?),
+            // etc. ATM the function only gets those with status of "Unclassified".
+            Assert.IsTrue(false);
+        }
 
         [TestMethod]
         public void AddClassifiable_Succeed()
