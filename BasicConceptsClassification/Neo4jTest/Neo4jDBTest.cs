@@ -269,6 +269,20 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void GettAllUnclassified_HasNone()
+        {
+            GLAM glam = new GLAM("NonExisting");
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "userDoNotExist@USNationalParks.com";
+
+            var conn = new Neo4jDB();
+
+            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier);
+
+            Assert.AreEqual(0, unclassifieds.data.Count);
+        }
+
+        [TestMethod]
         public void AddClassifiable_Succeed()
         {
             var conn = new Neo4jDB();
