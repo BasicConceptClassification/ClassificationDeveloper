@@ -33,7 +33,7 @@ namespace BCCApplication.Account
 
             // create a temp GALM for testing
             // TODO: fetch proper GLAM
-            GLAM gl = new GLAM("UA", "www.ualberta.ca");
+            GLAM gl = new GLAM("UA");
 
             // TODO: Fetch email properly
             Classifier classifier = new Classifier(gl);

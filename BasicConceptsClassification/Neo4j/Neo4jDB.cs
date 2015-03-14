@@ -74,7 +74,7 @@ namespace Neo4j
                   
                 if (query != null)
                 {          
-                    var rtnGlam = new GLAM(query.glamName, query.glamUrl);
+                    var rtnGlam = new GLAM(query.glamName);
                     Classifier rtnClassifier = new Classifier(rtnGlam);
                     rtnClassifier.email = query.classifierEmail;
                     return rtnClassifier;
@@ -86,9 +86,42 @@ namespace Neo4j
         /// <summary>
         /// Get Classifier by email.
         /// </summary>
-        /// <param name="email"></param>
+        /// <param name="email">Classifier's email</param>
+        /// <returns>Classifier if exists, else null.</returns>
         public Classifier getClassifier(String email)
         {
+            this.open();
+            if (client != null)
+            {
+                // Query
+                // MATCH (c:Classifier {email: {email} })
+                // RETURN c
+                try
+                {
+                    var query = client.Cypher
+                        .Match("(c:Classifier {email: {email} })-[:ASSOCIATED_WITH]->(g:GLAM)")
+                        .WithParam("email", email)
+                        .With("c.email AS cEmail, g.name AS gName")
+                        .Return((cEmail, gName) => new
+                        {
+                            classifierEmail = cEmail.As<string>(),
+                            glamName = gName.As<string>(),
+                        }).Results.Single();
+                    
+                    if (query != null)
+                    {
+                        var rtnGlam = new GLAM(query.glamName);
+                        Classifier rtnClassifier = new Classifier(rtnGlam);
+                        rtnClassifier.email = query.classifierEmail;
+                        return rtnClassifier;
+                    }
+                    
+                }
+                catch (InvalidOperationException)
+                {
+                    // System.InvalidOperationException: Sequence contains no elements
+                }
+            }
             return null;
         }
 

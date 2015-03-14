@@ -24,8 +24,7 @@ namespace Neo4jTest
         [TestMethod]
         public void AddClassiier_Successful()
         {
-            GLAM glam = new GLAM("US National Parks Service",
-                "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
+            GLAM glam = new GLAM("US National Parks Service");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "user99@USNationalParks.com";
@@ -48,23 +47,36 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetClassifier_Exists()
+        public void GetClassifier_ByEmail_Exists()
         {
-            Assert.IsTrue(false);
+            string classifierEmail = "user1@USNationalParks.com";
+
+            var conn = new Neo4jDB();
+
+
+            Classifier foundClassifier = conn.getClassifier(classifierEmail);
+
+            Assert.IsNotNull(foundClassifier);
+            Assert.AreEqual(classifierEmail, foundClassifier.email);
+             
         }
 
         [TestMethod]
-        public void GetClassifier_DoesNotExist()
+        public void GetClassifier_ByEmail_DoesNotExist()
         {
-            Assert.IsTrue(false);
+            string classifierEmail = "userDoesNotExist@USNationalParks.com";
+
+            var conn = new Neo4jDB();
+
+            Classifier foundClassifier = conn.getClassifier(classifierEmail);
+
+            Assert.IsNull(foundClassifier);
         }
 
         [TestMethod]
         public void DeleteClassifier_Successful()
         {
-            GLAM glam = new GLAM("US National Parks Service",
-                "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
-
+            GLAM glam = new GLAM("US National Parks Service");
             Classifier classifier = new Classifier(glam);
             classifier.email = "userDeleteMe@USNationalParks.com";
 
@@ -166,9 +178,7 @@ namespace Neo4jTest
         [TestMethod]
         public void GetAllUnclassified_YourOwn_Exists()
         {
-            GLAM glam = new GLAM("US National Parks Service", 
-                "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
-
+            GLAM glam = new GLAM("US National Parks Service");
             Classifier classifier = new Classifier(glam);
             classifier.email = "user1@USNationalParks.com";
 
@@ -192,9 +202,7 @@ namespace Neo4jTest
         [TestMethod]
         public void GetAllUnclassified_NotYours_Exists()
         {
-            GLAM glam = new GLAM("US National Parks Service",
-               "https://sites.google.com/a/ualberta.ca/rick-szostak/publications/appendix-to-employing-a-synthetic-approach-to-subject-classification-across-glam/archaeology-object-name-list-used-by-the-us-national-parks-service");
-
+            GLAM glam = new GLAM("US National Parks Service");
             Classifier classifier = new Classifier(glam);
             classifier.email = "user2@USNationalParks.com";
 
@@ -232,7 +240,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample", "someurl");
+            GLAM glam = new GLAM("Sample");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testing1@BCCNeo4j.com";
@@ -293,7 +301,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample", "someurl");
+            GLAM glam = new GLAM("Sample");
 
             Term termTool = new Term
             {
@@ -327,7 +335,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample", "someurl");
+            GLAM glam = new GLAM("Sample");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testing3@BCCNeo4j.com";
@@ -380,7 +388,7 @@ namespace Neo4jTest
 
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample", "someurl");
+            GLAM glam = new GLAM("Sample");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testing4@BCCNeo4j.com";
@@ -420,7 +428,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample", "someurl");
+            GLAM glam = new GLAM("Sample");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testing5@BCCNeo4j.com";
@@ -452,7 +460,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample", "someurl");
+            GLAM glam = new GLAM("Sample");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testingToDel@BCCNeo4j.com";
