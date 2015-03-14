@@ -155,9 +155,45 @@ namespace Neo4j
             return null;
         }
 
-        public List<GLAM> getAllGlams()
+        /// <summary>
+        /// Retrieves the list of all GLAMs.
+        /// </summary>
+        /// <param name="alphabetical">Sorts alphabetically by default.</param>
+        /// <returns></returns>
+        public List<GLAM> getAllGlams(bool alphabetical = true)
         {
-            return null;
+            List<GLAM> rtnGLAMs = new List<GLAM>();
+
+            this.open();
+            if (client != null)
+            {
+                // Query
+                // MATCH (g:GLAM)
+                // WITH g.name as gName
+                // ORDER BY gName
+                // RETURN gName
+                var query = client.Cypher
+                    .Match("(g:GLAM)")
+                    .With("g.name AS gName");
+                if (alphabetical)
+                {
+                    query = query.OrderBy("gName");
+                }
+                var result = query.Return((gName) => new
+                    {
+                        glamName = gName.As<string>(),
+                    }).Results.ToList();
+
+                if (result != null)
+                {
+                    foreach (var res in result)
+                    {
+                        GLAM tmpGLAM = new GLAM(res.glamName);
+                        rtnGLAMs.Add(tmpGLAM);
+                    }
+                }
+            }
+            return rtnGLAMs;
         }
 
         /// <summary>

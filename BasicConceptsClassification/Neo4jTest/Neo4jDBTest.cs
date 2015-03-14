@@ -43,7 +43,25 @@ namespace Neo4jTest
         [TestMethod]
         public void AddClassifier_AlreadyExists_ThrowException()
         {
-            Assert.IsTrue(false);
+            GLAM glam = new GLAM("US National Parks Service");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "user99@USNationalParks.com";
+
+            var conn = new Neo4jDB();
+
+            Classifier addedClassifier = conn.addClassifier(classifier);
+           
+            // TODO: once we have test setup and cleanup, use those instead
+            // of try-catch to do the clean up...
+            try
+            {
+                Classifier addedClassifier2 = conn.addClassifier(addedClassifier);
+            }
+            catch (Exception)
+            {
+            }
+            conn.deleteClassifier(addedClassifier);
         }
 
         [TestMethod]
@@ -52,7 +70,6 @@ namespace Neo4jTest
             string classifierEmail = "user1@USNationalParks.com";
 
             var conn = new Neo4jDB();
-
 
             Classifier foundClassifier = conn.getClassifier(classifierEmail);
 
@@ -84,14 +101,11 @@ namespace Neo4jTest
 
             Classifier addedClassifier = conn.addClassifier(classifier);
 
-            Assert.IsNotNull(addedClassifier);
-            Assert.AreEqual(classifier.email, addedClassifier.email);
-            Assert.AreEqual(glam.name, addedClassifier.getOrganizationName());
-
             conn.deleteClassifier(addedClassifier);
 
-            // Need to write getClassifier(string email) or something.
-            Assert.IsFalse(true);
+            // Make sure the classifier no longer exists
+            Classifier notFound = conn.getClassifier(addedClassifier.email);
+            Assert.IsNull(notFound);
         }
 
         [TestMethod]
@@ -102,10 +116,16 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetAllGlams_Success()
+        public void GetAllGlams_Exists()
         {
-            // getAllGlams();
-            Assert.IsFalse(true);
+            var conn = new Neo4jDB();
+
+            List<GLAM> resGlam = conn.getAllGlams();
+
+            // TODO: sample data should have a GLAM called AAAAAAAA
+            // and therefore it would be the first one alphabetically.
+            Assert.AreNotEqual(0, resGlam.Count);
+            Assert.AreEqual("Achaemenid GLAM", resGlam[0].name);
         }
 
         [TestMethod]
@@ -208,23 +228,28 @@ namespace Neo4jTest
 
             var conn = new Neo4jDB();
 
-            Assert.IsFalse(true);
+            conn.addClassifier(classifier);
 
-            //conn.addClassifier(classifier);
-
-            //ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier);
+            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier);
 
             // TODO: fix: Bad test without sample data, but will do for now
-            //Assert.AreNotEqual(0, unclassifieds.data.Count);
+            Assert.AreNotEqual(0, unclassifieds.data.Count);
 
             // check cases:
             // not all may have a null constr
             // some may not have a ConceptString
-            //foreach (var unclassified in unclassifieds.data)
-            //{
-            //    Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
-            //    Assert.AreEqual("", unclassified.conceptStr.ToString());
-            //}
+            // Since we just added the classifier and didn't add any classifiables to them,
+            // We can check that all the Classifiables they should have should not
+            // have the permission OwnerOnly.
+            foreach (var unclassified in unclassifieds.data)
+            {
+                Assert.AreNotEqual(Classifiable.Persmission.OwnerOnly,
+                    unclassified.perm);
+                Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
+                Assert.AreEqual("", unclassified.conceptStr.ToString());
+            }
+
+            conn.deleteClassifier(classifier);
         }
 
         [TestMethod]
@@ -327,7 +352,6 @@ namespace Neo4jTest
             };
 
             Classifiable result = conn.addClassifiable(newClassifiable);
-
         }
 
         [TestMethod]
@@ -369,11 +393,13 @@ namespace Neo4jTest
 
             // Try adding another Classifiable, but with the same id. Should
             // throw an exception.
+            // TODO: once we have setup and clean up methods, remove this try-catch
+            // so that the clean doesn't have to be handled in this test function
             try
             {
                 Classifiable result2 = conn.addClassifiable(result);
             }
-            catch (Exception e)
+            catch (Exception)
             {
             }
             conn.deleteClassifiable(result);
