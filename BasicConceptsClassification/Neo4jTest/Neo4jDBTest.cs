@@ -482,6 +482,26 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void UpdateClassifiable_SimpleNoConStr_Success()
+        {
+            // Might merge with the one below (updating all properties)
+            // but as a start have them split up
+            Assert.IsFalse(true);
+        }
+
+        [TestMethod]
+        public void UpdateClassifiable_AllProperties_Success()
+        {
+            Assert.IsFalse(true);
+        }
+
+        [TestMethod]
+        public void UpdateClassifiable_UniqueIdViolation_ThrowException()
+        {
+            Assert.IsFalse(true);
+        }
+
+        [TestMethod]
         public void DeleteClassifiable_Suceed()
         {
             GLAM glam = new GLAM("Sample");
