@@ -334,31 +334,41 @@ namespace Neo4j
             {
                 // Query 
                 // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
-                // WHERE c.status = "Classified"
-                // RETURN c AS classifiable
-                // UNION
-                // OPTIONAL MATCH (c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)
+                // MATCH (c)<-[rModify:MODIFIED_BY]-(o)
+                // WHERE o.email = "testingRecent@BCCNeo4j.com"
+                // AND c.status = "Classified"
+                // RETURN c AS classifiable, rModify.lastModified as date
+                //                 UNION
+                // OPTIONAL MATCH (c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)
+                // OPTIONAL MATCH (c)<-[rModify2:MODIFIED_BY]-(o2)
                 // WHERE g.name = "US National Parks Service"
                 // AND c2.perm = "GLAM"
                 // AND c2.status = "Unclassified"
-                // RETURN c2 AS classifiable
+                // RETURN c2 AS classifiable, rModify2.lastModified as date
+                // ORDER BY date
                 var query = client.Cypher
                     .Match("(c:Classifiable)<-[:OWNS]-(o:Classifier)")
+                    .Match("(c)<-[rModified:MODIFIED_BY]-(o)")
                     .Where("o.email = {email}").WithParam("email", classifier.email)
                     .AndWhere("c.status = {status}").WithParam("status", Classifiable.Status.Classified)
+                    .With("c, rModified.lastModified AS date")
                     .Return((c) => new
                     {
                         classifiable = c.As<Classifiable>(),
                     })
+                    .OrderByDescending("date")
                     .Union()
-                    .Match("(c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
+                    .Match("(c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
+                    .Match("(c)<-[rModified2:MODIFIED_BY]-(o2)")
                     .Where("g.name = {classifierGlam}").WithParam("classifierGlam", classifier.getOrganizationName())
                     .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
                     .AndWhere("c2.status = {status}")
+                    .With("c2, rModified2.lastModified AS date")
                     .Return((c2) => new
                     {
                         classifiable = c2.As<Classifiable>(),
                     })
+                    .OrderByDescending("date")
                     .Results.ToList();
 
                 if (query != null)
@@ -532,6 +542,8 @@ namespace Neo4j
                     .Create("(c:Classifiable {id:{cId}})")
                     .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
                     .CreateUnique("(c)<-[:OWNS]-(o)")
+                    .CreateUnique("(c)<-[rModify:MODIFIED_BY]-(o)")
+                    .Set("rModify.lastModified = timestamp()")
                     .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
                     .Set("cs.terms = {newConStr}");
 
@@ -546,7 +558,6 @@ namespace Neo4j
                                                 WHERE x <> """"
                                             )
                                         ) AS t4")
-
                         .Match("(matchedT:Term {rawTerm: t4})")
                         .Create("(cs)-[:HAS_TERM]->(matchedT)")
                         .With("c, COLLECT([matchedT.rawTerm]) AS ts");
@@ -616,13 +627,15 @@ namespace Neo4j
                 // MATCH (:Classifier)-[r:OWNS]->(c:Classifiable {id:"Neo4j-dummyiD"})
                 // OPTIONAL MATCH (c)-[r2:`HAS_CONSTR`]->(cs:ConceptString)
                 // OPTIONAL MATCH (cs)-[r3:HAS_TERM]->(:Term) 
-                // DELETE r3, r2, cs, r, c
+                // OPTIONAL MATCH (c)-[rOther]-()
+                // DELETE r3, r2, cs, r, c, rOther
                 client.Cypher
                     .Match("(:Classifier)-[r:OWNS]->(c:Classifiable {id:{cId}})")
                     .OptionalMatch("(c)-[r1:HAS_CONSTR]->(cs:ConceptString)")
                     .OptionalMatch("(cs)-[r2:HAS_TERM]->(:Term)")
+                    .OptionalMatch("(c)-[rOther]-()")
                     .WithParam("cId", classifiable.id)
-                    .Delete("r2, r1, cs, r, c")
+                    .Delete("r2, r1, cs, r, c, rOther")
                     .ExecuteWithoutResults();
             }
         }

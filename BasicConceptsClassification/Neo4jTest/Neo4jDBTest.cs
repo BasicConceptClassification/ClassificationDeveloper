@@ -196,11 +196,72 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetYourRecentlyClassified()
+        public void GetYourRecentlyClassified_AfterTwoAdds()
         {
-            // Need to check that they're all ones that YOU have recently
-            // modified! Ordered by most recent date.
-            Assert.IsTrue(false);
+            // Get your recently test steps:
+            // 1) Classify something 
+            // 2) Get recently classified
+            // 3) Classify again
+            // 4) Get recently classified and should be in order...
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingRecent@BCCNeo4j.com";
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyAdd01",
+                name = "dummyAdd01",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            conn.addClassifier(classifier);
+
+            // Add the first classifiable and get the recent results
+            Classifiable result = conn.addClassifiable(newClassifiable);
+            ClassifiableCollection recent1 = conn.getRecentlyClassified(classifier);
+
+            // Test to make sure we got one result for that new classifier
+            Assert.AreEqual(1, recent1.data.Count);
+            Assert.AreEqual(newClassifiable.name, recent1.data[0].name);
+
+            // Create the second classifiable
+            Classifiable newClassifiable2 = newClassifiable;
+            newClassifiable2.name = "dummyAdd02";
+            newClassifiable2.id = glam.name + "_" + newClassifiable2.name;
+
+            // Add the second classifiable
+            Classifiable result2 = conn.addClassifiable(newClassifiable2);
+            ClassifiableCollection recent2 = conn.getRecentlyClassified(classifier);
+
+            // Test to make sure we get two classifiables and the one we just added is first
+            Assert.AreEqual(2, recent2.data.Count);
+            Assert.AreEqual(result2.name, recent2.data[0].name);
+            Assert.AreEqual(result.name, recent2.data[1].name);
+
+            // Clean up
+            conn.deleteClassifiable(result);
+            conn.deleteClassifiable(result2);
+            conn.deleteClassifier(classifier);
         }
 
         [TestMethod]
