@@ -43,9 +43,6 @@ namespace BCCApplication.Account
         //the control submit button
         protected void SubmitObj_Click(object sender, EventArgs e)
         {
-            //I create a listbox for testing or watching the results.
-            //which is listbox1, and you can use by calling     listbox1.Items.Add(things that you want to print out)
-
             //input of each text box
             //get vaule of each
             string inputUrl = ObURL.Text;
