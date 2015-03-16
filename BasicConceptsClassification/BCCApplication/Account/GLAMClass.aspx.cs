@@ -34,9 +34,9 @@ namespace BCCApplication.Account
             
             GenerateTermUpdates();
 
-            GenerateRecentlyClassified(dbConn, currentClassifier);
+            GenerateRecentlyClassified(dbConn, currentClassifier.email);
 
-            GenerateUnclassified(dbConn, currentClassifier);
+            GenerateUnclassified(dbConn, currentClassifier.email);
         }
 
         protected void GenerateTermUpdates()
@@ -60,11 +60,11 @@ namespace BCCApplication.Account
             }
         }
 
-        protected void GenerateRecentlyClassified(Neo4jDB conn, Classifier classifier)
+        protected void GenerateRecentlyClassified(Neo4jDB conn, string classifierEmail)
         {
             try
             {
-                ClassifiableCollection classifiables = conn.getRecentlyClassified(classifier);
+                ClassifiableCollection classifiables = conn.getRecentlyClassified(classifierEmail);
                 for (int i = 0; i < classifiables.data.Count; i++)
                 {
                     String RecClassT = classifiables.data[i].name;
@@ -80,11 +80,11 @@ namespace BCCApplication.Account
 
         }
 
-        protected void GenerateUnclassified(Neo4jDB conn, Classifier classifier)
+        protected void GenerateUnclassified(Neo4jDB conn, string classifierEmail)
         {
             try
             {
-                ClassifiableCollection classifiables = conn.getAllUnclassified(classifier);
+                ClassifiableCollection classifiables = conn.getAllUnclassified(classifierEmail);
                 for (int i = 0; i < classifiables.data.Count; i++)
                 {
                     String unClassified = classifiables.data[i].name;

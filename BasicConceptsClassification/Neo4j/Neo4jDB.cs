@@ -322,7 +322,7 @@ namespace Neo4j
         /// </summary>
         /// <param name="classifier">Classifier who owns the classifiables returned.</param>
         /// <returns>Classifiables.</returns>
-        public ClassifiableCollection getRecentlyClassified(Classifier classifier)
+        public ClassifiableCollection getRecentlyClassified(string classifierEmail)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
             {
@@ -339,8 +339,8 @@ namespace Neo4j
                 // AND c.status = "Classified"
                 // RETURN c AS classifiable, rModify.lastModified as date
                 //                 UNION
-                // OPTIONAL MATCH (c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)
-                // OPTIONAL MATCH (c)<-[rModify2:MODIFIED_BY]-(o2)
+                // MATCH (c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)
+                // MATCH (c)<-[rModify2:MODIFIED_BY]-(o2)
                 // WHERE g.name = "US National Parks Service"
                 // AND c2.perm = "GLAM"
                 // AND c2.status = "Unclassified"
@@ -349,7 +349,7 @@ namespace Neo4j
                 var query = client.Cypher
                     .Match("(c:Classifiable)<-[:OWNS]-(o:Classifier)")
                     .Match("(c)<-[rModified:MODIFIED_BY]-(o)")
-                    .Where("o.email = {email}").WithParam("email", classifier.email)
+                    .Where("o.email = {email}").WithParam("email", classifierEmail)
                     .AndWhere("c.status = {status}").WithParam("status", Classifiable.Status.Classified)
                     .With("c, rModified.lastModified AS date")
                     .Return((c) => new
@@ -358,10 +358,9 @@ namespace Neo4j
                     })
                     .OrderByDescending("date")
                     .Union()
-                    .Match("(c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
-                    .Match("(c)<-[rModified2:MODIFIED_BY]-(o2)")
-                    .Where("g.name = {classifierGlam}").WithParam("classifierGlam", classifier.getOrganizationName())
-                    .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
+                    .Match("(c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(:GLAM)<-[:ASSOCIATED_WITH]-(o)")
+                    .Match("(c2)<-[rModified2:MODIFIED_BY]-(o2)")
+                    .Where("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
                     .AndWhere("c2.status = {status}")
                     .With("c2, rModified2.lastModified AS date")
                     .Return((c2) => new
@@ -398,7 +397,7 @@ namespace Neo4j
         /// </summary>
         /// <returns>A ClassifiableCollection with Classifiables that have
         /// not been classified. Does not return the owner or concept string.</returns>
-        public ClassifiableCollection getAllUnclassified(Classifier classifier)
+        public ClassifiableCollection getAllUnclassified(string classifierEmail)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
             {
@@ -420,16 +419,15 @@ namespace Neo4j
                 // RETURN c2 AS classifiable
                 var query = client.Cypher
                     .Match("(c:Classifiable)<-[:OWNS]-(o:Classifier)")
-                    .Where("o.email = {email}").WithParam("email", classifier.email)
+                    .Where("o.email = {email}").WithParam("email", classifierEmail)
                     .AndWhere("c.status = {status}").WithParam("status", Classifiable.Status.Unclassified)
                     .Return((c) => new
                     {
                         classifiable = c.As<Classifiable>(),
                     })
                     .Union()
-                    .Match("(c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
-                    .Where("g.name = {classifierGlam}").WithParam("classifierGlam", classifier.getOrganizationName())
-                    .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
+                    .Match("(c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(:GLAM)<-[:ASSOCIATED_WITH]-(o)")
+                    .Where("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
                     .AndWhere("c2.status = {status}")
                     .Return((c2) => new
                     {

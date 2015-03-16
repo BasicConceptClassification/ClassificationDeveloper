@@ -238,7 +238,7 @@ namespace Neo4jTest
 
             // Add the first classifiable and get the recent results
             Classifiable result = conn.addClassifiable(newClassifiable);
-            ClassifiableCollection recent1 = conn.getRecentlyClassified(classifier);
+            ClassifiableCollection recent1 = conn.getRecentlyClassified(classifier.email);
 
             // Test to make sure we got one result for that new classifier
             Assert.AreEqual(1, recent1.data.Count);
@@ -251,7 +251,7 @@ namespace Neo4jTest
 
             // Add the second classifiable
             Classifiable result2 = conn.addClassifiable(newClassifiable2);
-            ClassifiableCollection recent2 = conn.getRecentlyClassified(classifier);
+            ClassifiableCollection recent2 = conn.getRecentlyClassified(classifier.email);
 
             // Test to make sure we get two classifiables and the one we just added is first
             Assert.AreEqual(2, recent2.data.Count);
@@ -273,7 +273,7 @@ namespace Neo4jTest
 
             var conn = new Neo4jDB();
 
-            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier);
+            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier.email);
 
             // TODO: fix: Bad test without sample data, but will do for now
             Assert.AreNotEqual(0, unclassifieds.data.Count);
@@ -299,7 +299,7 @@ namespace Neo4jTest
 
             conn.addClassifier(classifier);
 
-            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier);
+            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier.email);
 
             // TODO: fix: Bad test without sample data, but will do for now
             Assert.AreNotEqual(0, unclassifieds.data.Count);
@@ -338,7 +338,7 @@ namespace Neo4jTest
 
             var conn = new Neo4jDB();
 
-            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier);
+            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier.email);
 
             Assert.AreEqual(0, unclassifieds.data.Count);
         }
