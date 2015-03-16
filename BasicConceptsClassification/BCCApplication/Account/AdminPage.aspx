@@ -205,7 +205,37 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div id="con_one_3" style="display:none"><p>Hello</p></div>
+                            <div id="con_one_3" style="display:none">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <p>Term to Rename:</p>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="RenameTermTextBox" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td></td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <p>Rename to:</p>
+                                        </td>
+                                        <td>
+                                            <asp:TextBox ID="RenameToTextBox" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:Button ID="RenameUpdateButton" runat="server" Text="Update" OnClick="RenameUpdateButton_Click" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td />
+                                        <td />
+                                        <td>
+                                            <asp:Button ID="RenameAddButton" runat="server" Text="ADD" OnClick="RenameAddButton_Click" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                             <div id="con_one_4" style="display:none"><p>Ni Hao</p></div>
                         </div>
                     </td>
