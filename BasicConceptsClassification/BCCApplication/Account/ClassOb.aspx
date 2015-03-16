@@ -5,16 +5,20 @@
         <tr>
             <td>Name: 
                 <asp:TextBox ID="ObName" runat="server"></asp:TextBox>
+                <asp:RequiredFieldValidator runat="server" ControlToValidate="ObName"
+                    CssClass="text-danger" ErrorMessage="The name of the object is required." />
             </td>
             <td>URL: 
                 <asp:TextBox ID="ObURL" runat="server"></asp:TextBox>
+                <asp:RequiredFieldValidator runat="server" ControlToValidate="ObUrl"
+                    CssClass="text-danger" ErrorMessage="The name of the object is required." />
             </td>
         </tr>
         <tr>
             <td>Edit Permissions 
                 <asp:RadioButtonList ID="EditPerm" runat="server" Font-Size="X-Small" RepeatColumns="2">
-                    <asp:ListItem>Only Me</asp:ListItem>
-                    <asp:ListItem Selected="True">Anyone in my Institution</asp:ListItem>
+                    <asp:ListItem Value="OwnerOnly">Only Me</asp:ListItem>
+                    <asp:ListItem Value="GLAM" Selected="True">Anyone in my Institution</asp:ListItem>
                 </asp:RadioButtonList>
             </td>
             <td>Concept String: 
@@ -27,8 +31,6 @@
             </td>
             <td>
                 <asp:Button ID="SubmitObj" runat="server" Text="Submit" OnClick="SubmitObj_Click" /><br />
-                <asp:ListBox ID="ListBox1" runat="server" Height="149px" Width="234px"></asp:ListBox>
-                <br />
             </td>
         </tr>
         <tr>

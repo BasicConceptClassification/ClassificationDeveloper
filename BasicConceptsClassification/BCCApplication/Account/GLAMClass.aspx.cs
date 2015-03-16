@@ -17,26 +17,15 @@ namespace BCCApplication.Account
         {
             var dbConn = new Neo4jDB();
 
-            // Realized I still don't know how to fetch Glam and classifier somehow...
-            GLAM g = new GLAM("Not A Real GLAM");
-
-            Classifier currentClassifier = new Classifier(g);
-            currentClassifier.email = "doesnotexist@someplace.com";
-
-            // Comment out the above and uncomment below for how it will look 
-            // for an example
-            /*
-            GLAM g = new GLAM("National Gallery (US)");
-
-            Classifier currentClassifier = new Classifier(g);
-            currentClassifier.email = "user2@NationalGalleryUS.com";
-            */
+            // Hard coding these in for showing purposes. 
+            // Currently unknown how to get the email of the currently logged in user
+            string userEmail = "somewhere@com";
             
             GenerateTermUpdates();
 
-            GenerateRecentlyClassified(dbConn, currentClassifier.email);
+            GenerateRecentlyClassified(dbConn, userEmail);
 
-            GenerateUnclassified(dbConn, currentClassifier.email);
+            GenerateUnclassified(dbConn, userEmail);
         }
 
         protected void GenerateTermUpdates()
