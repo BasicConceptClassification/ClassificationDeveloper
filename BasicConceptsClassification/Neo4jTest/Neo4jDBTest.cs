@@ -62,6 +62,7 @@ namespace Neo4jTest
             {
             }
             conn.deleteClassifier(addedClassifier);
+            
         }
 
         [TestMethod]
@@ -196,7 +197,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetYourRecentlyClassified_AfterTwoAdds()
+        public void GetRecentlyClassified_Yours_AfterTwoAdds()
         {
             // Get your recently test steps:
             // 1) Classify something 
@@ -262,6 +263,118 @@ namespace Neo4jTest
             conn.deleteClassifiable(result);
             conn.deleteClassifiable(result2);
             conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
+        }
+
+        [TestMethod]
+        public void GetRecentlyClassified_YoursOnly()
+        {
+            // Steps:
+            // 1) ClassifierA adds Classifiable A_1, perm GLAM
+            //      Recent A: A_1
+            // 2) ClassifierA adds Classifiable A_2, perm OwnerOnly
+            //      Recent A: A_2, A_1
+            // 3) Classifier B adds Classifiable B_1, perm GLAM
+            //      Recent A: B_1, A_2, A_1
+            // 4) Classifier A adds Classifiable A_3, perm GLAM
+            //      Recent A: A_3, A_2, A_1
+            //      Recent B: B_1
+            GLAM glam = new GLAM("Recent A vs B");
+
+            Classifier classifierA = new Classifier(glam);
+            classifierA.email = "testingRecentA@BCCNeo4j.com";
+
+            Classifier classifierB = new Classifier(glam);
+            classifierB.email = "testingRecentB@BCCNeo4j.com";
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+            Classifiable A1GLAM = new Classifiable
+            {
+                id = glam.name + "_" + "A1 GLAM",
+                name = "A1 GLAM",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifierA,
+                conceptStr = conStr,
+            };
+
+            Classifiable A2OwnerOnly = new Classifiable
+            {
+                id = glam.name + "_" + "A2 OwnerOnly",
+                name = "A2 OwnerOnly",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.OwnerOnly.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifierA,
+                conceptStr = conStr,
+            };
+
+            Classifiable A3GLAM = new Classifiable
+            {
+                id = glam.name + "_" + "A3 GLAM",
+                name = "A3 GLAM",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifierA,
+                conceptStr = conStr,
+            };
+
+            Classifiable B1GLAM = new Classifiable
+            {
+                id = glam.name + "_" + "B1 GLAM",
+                name = "B1 GLAM",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifierB,
+                conceptStr = conStr,
+            };
+
+            var conn = new Neo4jDB();
+
+            conn.addClassifier(classifierA);
+            conn.addClassifier(classifierB);
+
+            // Add the Classifiables in this order
+            Classifiable resA1 = conn.addClassifiable(A1GLAM);
+            Classifiable resA2 = conn.addClassifiable(A2OwnerOnly);
+            Classifiable resB1 = conn.addClassifiable(B1GLAM);
+            Classifiable resA3 = conn.addClassifiable(A3GLAM);
+
+            ClassifiableCollection recentA = conn.getRecentlyClassified(classifierA.email);
+            ClassifiableCollection recentB = conn.getRecentlyClassified(classifierB.email);
+
+            // Verify Classifier A's recently modified
+            Assert.AreEqual(3, recentA.data.Count);
+            Assert.AreEqual(A3GLAM.name, recentA.data[0].name);
+            Assert.AreEqual(A2OwnerOnly.name, recentA.data[1].name);
+            Assert.AreEqual(A1GLAM.name, recentA.data[2].name);
+
+            // Verify Classifier B's recently modified
+            Assert.AreEqual(1, recentB.data.Count);
+            Assert.AreEqual(B1GLAM.name, recentB.data[0].name);
+
+            conn.deleteClassifiable(A1GLAM);
+            conn.deleteClassifiable(A2OwnerOnly);
+            conn.deleteClassifiable(A3GLAM);
+            conn.deleteClassifiable(B1GLAM);
+            conn.deleteClassifier(classifierA);
+            conn.deleteClassifier(classifierB);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -319,6 +432,115 @@ namespace Neo4jTest
             }
 
             conn.deleteClassifier(classifier);
+        }
+
+        [TestMethod]
+        public void GettAllUnclassified_YoursAndOthers()
+        {
+            Assert.IsTrue(false);
+
+            // Steps:
+            // 1) ClassifierA adds Classifiable A_1, perm GLAM
+            //      Recent A: A_1
+            // 2) ClassifierA adds Classifiable A_2, perm OwnerOnly
+            //      Recent A: A_2, A_1
+            // 3) Classifier B adds Classifiable B_1, perm GLAM
+            //      Recent A: B_1, A_2, A_1
+            // 4) Classifier A adds Classifiable A_3, perm GLAM
+            //      Recent A: A_3, B_1, A_2, A_1
+            //      Recent B: A_3, B_1, A_1
+            GLAM glam = new GLAM("Recent A vs B");
+
+            Classifier classifierA = new Classifier(glam);
+            classifierA.email = "testingRecentA@BCCNeo4j.com";
+
+            Classifier classifierB = new Classifier(glam);
+            classifierB.email = "testingRecentB@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+            Classifiable A1GLAM = new Classifiable
+            {
+                id = glam.name + "_" + "A1 GLAM",
+                name = "A1 GLAM",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifierA,
+                conceptStr = conStr,
+            };
+
+            Classifiable A2OwnerOnly = new Classifiable
+            {
+                id = glam.name + "_" + "A2 OwnerOnly",
+                name = "A2 OwnerOnly",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.OwnerOnly.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifierA,
+                conceptStr = conStr,
+            };
+
+            Classifiable A3GLAM = new Classifiable
+            {
+                id = glam.name + "_" + "A3 GLAM",
+                name = "A3 GLAM",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifierA,
+                conceptStr = conStr,
+            };
+
+            Classifiable B1GLAM = new Classifiable
+            {
+                id = glam.name + "_" + "B1 GLAM",
+                name = "B1 GLAM",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifierB,
+                conceptStr = conStr,
+            };
+
+            var conn = new Neo4jDB();
+
+            // Add the two classifiers (since we need the glams)
+            conn.addClassifier(classifierA);
+            conn.addClassifier(classifierB);
+
+            // Add the Classifiables in this order
+            Classifiable resA1 = conn.addClassifiable(A1GLAM);
+            Classifiable resA2 = conn.addClassifiable(A2OwnerOnly);
+            Classifiable resB1 = conn.addClassifiable(B1GLAM);
+            Classifiable resA3 = conn.addClassifiable(A3GLAM);
+
+            ClassifiableCollection recentA = conn.getRecentlyClassified(classifierA.email);
+            ClassifiableCollection recentB = conn.getRecentlyClassified(classifierB.email);
+
+            Assert.AreEqual(4, recentA.data.Count);
+            Assert.AreEqual(3, recentB.data.Count);
+
+            // Recent A: A_3, B_1, A_2, A_1
+            Assert.AreEqual(A3GLAM.name, recentA.data[0].name);
+            Assert.AreEqual(B1GLAM.name, recentA.data[1].name);
+            Assert.AreEqual(A2OwnerOnly.name, recentA.data[2].name);
+            Assert.AreEqual(A1GLAM.name, recentA.data[3].name);
+
+            // Recent B: A_3, B_1, A_1
+
+            // Clean up
+            conn.deleteClassifiable(resA1);
+            conn.deleteClassifiable(resA2);
+            conn.deleteClassifiable(resA3);
+            conn.deleteClassifiable(resB1);
+            conn.deleteClassifier(classifierA);
+            conn.deleteClassifier(classifierB);
+            conn.deleteGlam(glam);
+
         }
 
         [TestMethod]
@@ -400,6 +622,7 @@ namespace Neo4jTest
 
             conn.deleteClassifiable(result);
             conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -487,6 +710,7 @@ namespace Neo4jTest
             }
             conn.deleteClassifiable(result);
             conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -530,6 +754,7 @@ namespace Neo4jTest
 
             conn.deleteClassifiable(result);
             conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -562,6 +787,7 @@ namespace Neo4jTest
 
             conn.deleteClassifiable(result);
             conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -625,6 +851,7 @@ namespace Neo4jTest
             Assert.IsNull(isGone);
 
             conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -660,6 +887,7 @@ namespace Neo4jTest
             Assert.IsNull(isGone);
 
             conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -697,6 +925,7 @@ namespace Neo4jTest
             var conn = new Neo4jDB();
 
             conn.deleteClassifiable(classifiable);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
