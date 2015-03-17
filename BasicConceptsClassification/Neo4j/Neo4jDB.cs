@@ -471,15 +471,12 @@ namespace Neo4j
         /// <returns>The new Classifiable from the Database for verification.</returns>
         public Classifiable addClassifiable(Classifiable newClassifiable)
         {
-            // Step 1: Check if there are proper terms
+            // Check 1: Check if there are proper terms
             // TODO: Ummm decide on something else maybe?
             if (countNumTermsExist(newClassifiable.conceptStr.terms) != newClassifiable.conceptStr.terms.Count)
             {
                 throw new Exception("Some Terms are not in the Classification!");
             }
-            
-            // Step 2: Go ahead and (try to) add the Classifiable!
-            Classifiable rtnClassifiable = new Classifiable();
 
             this.open();
             if (client != null)
@@ -502,8 +499,8 @@ namespace Neo4j
                 //      ) AS t4
                 // MATCH (matchedT:Term{rawTerm:t4)})
                 // CREATE (cs)-[:HAS_TERM]->(t)
-                // WITH c, cs, COLLECT([matchedT.rawTerm]) AS ts
-                // RETURN c AS classifiable, ts AS terms
+                // WITH c.id as cId
+                // RETURN cId
                 // NOTE: Owner isn't returned from the actual DB at this point
 
                 // The query is built and executed in stages to check for proper parameters,
@@ -546,7 +543,7 @@ namespace Neo4j
                     .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
                     .Set("cs.terms = {newConStr}");
 
-                // Only go get terms if they exist...
+                // Only create relationships to terms if they exist
                 if (newClassifiable.conceptStr.ToString() != "")
                 {
                     buildQuery = buildQuery
@@ -558,61 +555,22 @@ namespace Neo4j
                                             )
                                         ) AS t4")
                         .Match("(matchedT:Term {rawTerm: t4})")
-                        .Create("(cs)-[:HAS_TERM]->(matchedT)")
-                        .With("c, COLLECT([matchedT.rawTerm]) AS ts");
-                }
-                else
-                {
-                    // If there are no terms, just make a list of strings with only "",
-                    // just to prevent writing two essentially the same queries.
-                    buildQuery = buildQuery
-                        .With("c, COLLECT([\"\"]) AS ts");
+                        .Create("(cs)-[:HAS_TERM]->(matchedT)");
                 }
 
-                var query = buildQuery.Return((c, ts) => new
-                {
-                    classifiable = c.As<Classifiable>(),
-                    terms = ts.As<IEnumerable<string>>(),
-                    //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
-                }).Results.ToList().Single();
+                var query = buildQuery
+                    .With("c.id as newId")
+                    .Return((newId) => new
+                    {
+                        cId = newId.As<string>(),
+                    }).Results.ToList().Single();
 
                 if (query != null)
                 {
-                    return getClassifiableById(query.classifiable.id);
-                    /*
-                    // Construct the Concept String from results
-                    ConceptString resConStr = new ConceptString
-                    {
-                        terms = new List<Term>(),
-                    };
-
-                    if (query.terms.ElementAt(0) != "")
-                    {
-                        // Build the terms
-                        foreach (var t in query.terms)
-                        {
-                            var tempData = JsonConvert.DeserializeObject<dynamic>(t);
-                            var tmp = new Term
-                            {
-                                rawTerm = tempData[0]
-                            };
-
-                            tmp.subTerms = new List<Term>();
-                            resConStr.terms.Add(tmp);
-                        }
-                        // Reverse for some reason
-                        resConStr.terms.Reverse();
-                    }
-                    rtnClassifiable = query.classifiable;
-                    rtnClassifiable.owner = newClassifiable.owner;
-
-                    rtnClassifiable.conceptStr = resConStr;
-
-                    return rtnClassifiable;
-                     * */
+                    return getClassifiableById(query.cId);
                 }
             }
-            return rtnClassifiable;
+            return null;
         }
 
         /// <summary>
