@@ -7,7 +7,6 @@ using System.Web.UI.WebControls;
 
 using BCCLib;
 using Neo4j;
-using System.Diagnostics;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -23,9 +22,7 @@ namespace BCCApplication.Account
             // Ref: http://blogs.msdn.com/b/webdev/archive/2013/10/16/customizing-profile-information-in-asp-net-identity-in-vs-2013-templates.aspx
             // See "Getting Profile Information"
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
-
             var currentUser = manager.FindById(User.Identity.GetUserId());
-
             string userEmail = currentUser.Email;
             
             GenerateTermUpdates();
@@ -48,8 +45,9 @@ namespace BCCApplication.Account
                     RecAddedTerms.Items.Add(new ListItem(RecAddT));
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine("GLAMClass_Exception: {0}", ex.Message);
                 // Some sort of notification?
                 String RecAddT = "Sorry, server is having issues!";
                 RecAddedTerms.Items.Add(new ListItem(RecAddT));          
@@ -67,8 +65,9 @@ namespace BCCApplication.Account
                     RecClassTerms.Items.Add(new ListItem(RecClassT));
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine("GLAMClass_Exception: {0}", ex.Message);
                 // Some sort of notification?
                 String RecClassT = "Sorry, server is having issues!";
                 RecClassTerms.Items.Add(new ListItem(RecClassT));
@@ -87,8 +86,9 @@ namespace BCCApplication.Account
                     UnClassList.Items.Add(new ListItem(unClassified));
                 }
             }
-            catch
+            catch (Exception ex)
             {
+                System.Diagnostics.Debug.WriteLine("GLAMClass_Exception: {0}", ex.Message);
                 // Some sort of notification?
                 String unClassified = "Sorry, server is having issues!"; 
                 UnClassList.Items.Add(new ListItem(unClassified));

@@ -8,7 +8,6 @@ using BCCLib;
 using Neo4j;
 using System.Web.Security;
 
-using System.Diagnostics;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 
@@ -45,6 +44,7 @@ namespace BCCApplication.Account
         //the control submit button
         protected void SubmitObj_Click(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine("ClassOb_BUTTON-SUBMIT: Click registered");
             //input of each text box
             //get vaule of each
             string inputUrl = ObURL.Text;
@@ -116,14 +116,18 @@ namespace BCCApplication.Account
                 newClassifiable.status = Classifiable.Status.Classified.ToString();
             }
 
+            System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_GOT: name: {0}; url: {1}; perm: {2}; conStr: {3}; ownerEmail: {4};", 
+                newClassifiable.name, newClassifiable.url, newClassifiable.perm, newClassifiable.conceptStr.ToString(), newClassifiable.owner.email));
 
             // Try to add the newClassifiable and display an error message depending on the result.
             try
             {
+                System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_TRYING: Attempting to add Classifiable with name {0}", newClassifiable.name));
                 Classifiable result = conn.addClassifiable(newClassifiable);
 
                 if (result != null)
                 {
+                    System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_SUCCESS: Added Classifiable with name {0}", newClassifiable.name));
                     ObAddStatus.Text = String.Format("Successfully added {0}.", result.name);
                 }
 
@@ -132,9 +136,10 @@ namespace BCCApplication.Account
             {
                 // Exceptions: Unique id already exists, null object (not all data filled in)
                 // Do some exception handling based on Exception type ...learn how to do custom exceptions?
-                Debug.WriteLine(ex.Message);
+                System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_FAILED: could not add Classifiable with name {0}", newClassifiable.name));
+                System.Diagnostics.Debug.WriteLine(ex.Message);
                 ObAddStatus.Text = String.Format("Could not add because {0}.", "REASONS");
-            }           
+            }
         }
 
         /// <summary>

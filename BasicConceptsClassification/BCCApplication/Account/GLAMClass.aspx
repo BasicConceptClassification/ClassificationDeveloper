@@ -22,7 +22,7 @@
                         </form>
                         </center>
                         
-                         <table style="width:100%;" id =" NewsBoxClass" runat="server">
+                         <table style="width:100%;" id ="NewsBoxClass" runat="server">
                             <tr>
                                 <td>
                                     <asp:Label ID="Label2" runat="server" Text="News:" Font-Bold="True" Font-Size="Medium"></asp:Label>
