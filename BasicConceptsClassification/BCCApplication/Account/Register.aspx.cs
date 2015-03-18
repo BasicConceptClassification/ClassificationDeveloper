@@ -12,10 +12,33 @@ using Microsoft.AspNet.Membership.OpenAuth;
 using BCCApplication.Logic;
 using Microsoft.AspNet.Identity.EntityFramework;
 
+using Neo4j;
+using BCCLib;
+using System.Diagnostics;
+
 namespace BCCApplication.Account
 {
     public partial class Register : Page
     {
+        protected void Page_Load(object sender, EventArgs e)
+        {
+            GLAMListBox.Items.Clear();
+            try
+            {
+                var dbConn = new Neo4jDB();
+                List<GLAM> GLAMS = dbConn.getAllGlams();
+                if (GLAMS.Count != 0)
+                {
+                    foreach (GLAM g in GLAMS)
+                    {
+                        GLAMListBox.Items.Add(g.name);
+                    }
+                    GLAMListBox.SelectedIndex = 0;
+                }
+            }
+            catch (Exception) { }
+        }
+
         protected void CreateUser_Click(object sender, EventArgs e)
         {
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -45,6 +68,8 @@ namespace BCCApplication.Account
                     {
                         IdUserResult = userMgr.AddToRole(userMgr.FindByName(Username.Text).Id, RoleActions.ROLE_CLASS);
                     }
+
+                    AddNeo4jClassifierData();
                 }
 
                 IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
@@ -52,6 +77,25 @@ namespace BCCApplication.Account
             else
             {
                 //ErrorMessage.Text = result.Errors.FirstOrDefault();
+            }
+        }
+
+        protected int AddNeo4jClassifierData()
+        {
+            GLAM classifierGlam = new GLAM(GLAMListBox.SelectedValue);
+            Classifier newClassifier = new Classifier(classifierGlam);
+            newClassifier.email = Email.Text;
+
+            // Need to something more than this?
+            try
+            {
+                var dbConn = new Neo4jDB();
+                dbConn.addClassifier(newClassifier);
+                return 0;
+            }
+            catch (Exception) 
+            {
+                return 1;
             }
         }
     }

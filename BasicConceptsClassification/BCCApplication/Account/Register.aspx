@@ -50,6 +50,11 @@
             </div>
         </div>
         <div class="form-group">
+            <div class="col-md-10">
+                <asp:ListBox runat="server" ID="GLAMListBox"></asp:ListBox>
+            </div>
+        </div>
+        <div class="form-group">
             <div class="col-md-offset-2 col-md-10">
                 <asp:Button runat="server" OnClick="CreateUser_Click" Text="Register" CssClass="btn btn-default" />
             </div>
