@@ -55,11 +55,10 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
 
-            // create a temp GALM for testing
-            // TODO: fetch proper GLAM
-            GLAM gl = new GLAM("UA");
+            // TODO: cleanup. It's a bit...messy.
+            var conn = new Neo4jDB();
+            GLAM gl = conn.getGlamOfClassifier(userEmail);
 
-            // TODO: Fetch email properly
             Classifier classifier = new Classifier(gl);
             classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
@@ -117,7 +116,6 @@ namespace BCCApplication.Account
                 newClassifiable.status = Classifiable.Status.Classified.ToString();
             }
 
-            var conn = new Neo4jDB();
 
             // Try to add the newClassifiable and display an error message depending on the result.
             try

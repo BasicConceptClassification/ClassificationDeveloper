@@ -152,6 +152,28 @@ namespace Neo4j
         /// <param name="classifierEmail"></param>
         public GLAM getGlamOfClassifier(String classifierEmail)
         {
+            this.open();
+            if (client != null)
+            {
+                // Query
+                // MATCH (g:GLAM)
+                // WITH g.name as gName
+                // ORDER BY gName
+                // RETURN gName
+                var query = client.Cypher
+                    .Match("(g:GLAM)<-[:ASSOCIATED_WITH]-(c:Classifier {email:{em}})")
+                    .WithParam("em", classifierEmail)
+                    .With("g.name AS gName")
+                    .Return((gName) => new
+                    {
+                        glamName = gName.As<string>(),
+                    }).Results.Single();
+
+                if (query != null)
+                {
+                    return new GLAM(query.glamName);
+                }
+            }
             return null;
         }
 

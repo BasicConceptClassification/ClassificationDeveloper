@@ -22,7 +22,6 @@ namespace BCCApplication.Account
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            GLAMListBox.Items.Clear();
             try
             {
                 var dbConn = new Neo4jDB();
@@ -33,7 +32,6 @@ namespace BCCApplication.Account
                     {
                         GLAMListBox.Items.Add(g.name);
                     }
-                    GLAMListBox.SelectedIndex = 0;
                 }
             }
             catch (Exception) { }
