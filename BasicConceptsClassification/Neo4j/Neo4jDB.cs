@@ -664,7 +664,7 @@ namespace Neo4j
                     buildQuery = buildQuery
                             .With("c")
                             .Match("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
-                            .OptionalMatch("(cs)-[rOldTerms:HAS_TERMS]->(:Term)")
+                            .OptionalMatch("(cs)-[rOldTerms:HAS_TERM]->(:Term)")
                             .Delete("rOldTerms")
                             .Set("cs.terms = {newConStr}")
                             .WithParam("newConStr", updatedClass.conceptStr.ToString());

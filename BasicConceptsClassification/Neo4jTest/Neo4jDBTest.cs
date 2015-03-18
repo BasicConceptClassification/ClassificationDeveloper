@@ -767,8 +767,6 @@ namespace Neo4jTest
 
             Classifiable result = conn.addClassifiable(newClassifiable);
 
-          //  Classifiable res2 = conn.getClassifiableById(result.id);
-
             Assert.AreEqual(0, result.conceptStr.terms.Count);
             Assert.AreEqual("", result.conceptStr.ToString());
 
@@ -778,7 +776,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void UpdateClassifiable_Simple_Success()
+        public void UpdateClassifiable_YoursSimple_Success()
         {
             GLAM glam = new GLAM("Updating GLAM");
 
@@ -801,7 +799,6 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
-
             // Add the classifiable
             var conn = new Neo4jDB();
 
@@ -813,10 +810,6 @@ namespace Neo4jTest
             newClassifiable.name = "newName";
             newClassifiable.url = "newUrl";
             newClassifiable.perm = Classifiable.Persmission.OwnerOnly.ToString();
-
-
-//            Assert.AreEqual("", conn.updateClassifiable(addedClassifiable, newClassifiable, classifier));
-
             
             Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
 
@@ -836,28 +829,203 @@ namespace Neo4jTest
             conn.deleteClassifiable(updatedClassifiable);
             conn.deleteClassifier(classifier);
             conn.deleteGlam(glam);
-            
-        }
-
-        [TestMethod]
-        public void UpdateClassifiable_YoursSimple_Success()
-        {
-            // Simple update with just the basic information (ie: url)
-            Assert.IsFalse(true);
         }
 
         [TestMethod]
         public void UpdateClassifiable_AnothersSimple_Success()
         {
-            // Simple update with just the basic information (ie: url)
+            GLAM glam = new GLAM("Updating GLAM");
+
+            Classifier ownerClassifier = new Classifier(glam);
+            ownerClassifier.email = "testingUpdateSimpleOwner@BCCNeo4j.com";
+
+            Classifier editingClassifier = new Classifier(glam);
+            editingClassifier.email = "testingUpdateSimpleAnother@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName1",
+                name = "dummyName1",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = ownerClassifier,
+                conceptStr = conStr,
+            };
+
+            // Add the classifiable
+            var conn = new Neo4jDB();
+
+            conn.addClassifier(ownerClassifier);
+            conn.addClassifier(editingClassifier);
+
+            Classifiable addedClassifiable = conn.addClassifiable(newClassifiable);
+
+            // Make changes and update
+            newClassifiable.name = "newName";
+            newClassifiable.url = "newUrl";
+            newClassifiable.perm = Classifiable.Persmission.OwnerOnly.ToString();
+            
+            Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, editingClassifier);
+
+            // Make checks.
+            // TODO: call getById and compare that way instead?
+            Assert.AreEqual(String.Format("{0}_{1}", glam.ToString(), newClassifiable.name), 
+                            updatedClassifiable.id);
+            Assert.AreEqual(newClassifiable.name, updatedClassifiable.name);
+            Assert.AreEqual(newClassifiable.url, updatedClassifiable.url);
+            Assert.AreEqual(newClassifiable.perm, updatedClassifiable.perm);
+            Assert.AreEqual(newClassifiable.status, updatedClassifiable.status);
+
+            Assert.AreEqual(newClassifiable.conceptStr.ToString(),
+                            updatedClassifiable.conceptStr.ToString());
+
+            // Cleanup
+            conn.deleteClassifiable(updatedClassifiable);
+            conn.deleteClassifier(ownerClassifier);
+            conn.deleteClassifier(editingClassifier);
+            conn.deleteGlam(glam);
+        }
+
+        [TestMethod]
+        public void UpdateClassifiable_NotAllowed()
+        {
             Assert.IsFalse(true);
         }
 
         [TestMethod]
-        public void UpdateClassifiable_OnlyConStr_Success()
+        public void UpdateClassifiable_AddConStr_Success()
         {
             // Only the ConStr is affected; no other properties should be changed.
-            Assert.IsFalse(true);
+            GLAM glam = new GLAM("Updating GLAM");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingUpdateConStrAdd@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyNameCSAdd",
+                name = "dummyNameCSAdd",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            // Add the classifiable
+            var conn = new Neo4jDB();
+
+            conn.addClassifier(classifier);
+
+            Classifiable addedClassifiable = conn.addClassifiable(newClassifiable);
+
+            // Make changes and update
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+            newClassifiable.conceptStr.terms.Add(termTool);
+
+            Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
+
+            // Make checks.
+            // TODO: call getById and compare that way instead?
+            Assert.AreEqual(String.Format("{0}_{1}", glam.ToString(), newClassifiable.name),
+                            updatedClassifiable.id);
+            Assert.AreEqual(newClassifiable.name, updatedClassifiable.name);
+            Assert.AreEqual(newClassifiable.url, updatedClassifiable.url);
+            Assert.AreEqual(newClassifiable.perm, updatedClassifiable.perm);
+            Assert.AreEqual(newClassifiable.status, updatedClassifiable.status);
+
+            Assert.AreEqual(1, newClassifiable.conceptStr.terms.Count);
+            Assert.AreEqual(newClassifiable.conceptStr.ToString(),
+                            updatedClassifiable.conceptStr.ToString());
+
+            // Cleanup
+            conn.deleteClassifiable(updatedClassifiable);
+            conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
+        }
+
+        [TestMethod]
+        public void UpdateClassifiable_RemoveConStr_Success()
+        {
+            // Only the ConStr is affected; no other properties should be changed.
+            GLAM glam = new GLAM("Updating GLAM");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingUpdateConStrRemove@BCCNeo4j.com";
+
+            // Make changes and update
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool,
+                },
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyNameCSrm",
+                name = "dummyNameCSrm",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            // Add the classifiable
+            var conn = new Neo4jDB();
+
+            conn.deleteClassifiable(newClassifiable);
+            conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
+
+            conn.addClassifier(classifier);
+
+            Classifiable addedClassifiable = conn.addClassifiable(newClassifiable);
+
+            List<Term> noTerms = new List<Term>();
+            newClassifiable.conceptStr.terms = noTerms;
+
+            Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
+
+            // Make checks.
+            // TODO: call getById and compare that way instead?
+            Assert.AreEqual(String.Format("{0}_{1}", glam.ToString(), newClassifiable.name),
+                            updatedClassifiable.id);
+            Assert.AreEqual(newClassifiable.name, updatedClassifiable.name);
+            Assert.AreEqual(newClassifiable.url, updatedClassifiable.url);
+            Assert.AreEqual(newClassifiable.perm, updatedClassifiable.perm);
+            Assert.AreEqual(newClassifiable.status, updatedClassifiable.status);
+
+            // Make sure the Concept String has no concept string
+            Assert.AreEqual(0, updatedClassifiable.conceptStr.terms.Count);
+            Assert.AreEqual(newClassifiable.conceptStr.ToString(),
+                            updatedClassifiable.conceptStr.ToString());
+
+            // Cleanup
+            conn.deleteClassifiable(updatedClassifiable);
+            conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -874,12 +1042,6 @@ namespace Neo4jTest
 
         [TestMethod]
         public void UpdateClassifiable_ImproperTerms_ThrowsException()
-        {
-            Assert.IsFalse(true);
-        }
-
-        [TestMethod]
-        public void UpdateClassifiable_NoPermission_ThrowsException()
         {
             Assert.IsFalse(true);
         }
