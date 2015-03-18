@@ -228,19 +228,29 @@ namespace Neo4j
             {
                 // Query:
                 // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
+                // Match (g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)
                 // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
+                // OPTIONAL MATCH (g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)
                 // RETURN 	c, 
-                //          cs,
-                //          COLLECT ([t]) as ts
+                //          COLLECT ([t]) as ts,
+                //          
+                // We have g and g2 for the two GLAMs in case another user outside of the GLAM
+                // is allowed to modify...like the admin?
                 var query = client.Cypher
                     .Match("(c:Classifiable{id:{id}})-[:HAS_CONSTR]->(cs)")
-                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
                     .WithParam("id", id)
-                    .With("c, t")
-                    .Return((c, t) => new
+                    .Match("(g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)")
+                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
+                    .OptionalMatch("(g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)")
+                    .With("c, t, g1.name AS ownerG, g2.name AS editorG, owner.email AS ownerE, lastEditor.email AS editorE")
+                    .Return((c, t, ownerG, ownerE, editorG, editorE) => new
                     {
                         classifiable = c.As<Classifiable>(),
                         terms = t.CollectAs<Term>(),
+                        ownerGlam = ownerG.As<string>(),
+                        ownerEmail = ownerE.As<string>(),
+                        editorGlam = editorG.As<string>(),
+                        editorEmail = editorE.As<string>(),
                     }).Results.SingleOrDefault();
 
                 if (query != null)
@@ -263,8 +273,15 @@ namespace Neo4j
                     // A bit of a hack for now. But it maintains order because of
                     // ...some reason.
                     resConStr.terms.Reverse();
-
                     query.classifiable.conceptStr = resConStr;
+
+                    // If these two are not null...
+                    if (query.ownerGlam != null && query.ownerEmail != null)
+                    {
+                        GLAM tmpG = new GLAM(query.ownerGlam);
+                        query.classifiable.owner = new Classifier(tmpG);
+                        query.classifiable.owner.email = query.ownerEmail;
+                    }
 
                     return query.classifiable;
                 }

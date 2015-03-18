@@ -142,6 +142,8 @@ namespace Neo4jTest
             Assert.AreEqual("Adze Blade", classifiedWithGoodId.name);
             Assert.AreEqual(6, classifiedWithGoodId.conceptStr.terms.Count);
             Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", classifiedWithGoodId.conceptStr.ToString());
+            Assert.IsNotNull(classifiedWithGoodId.owner.email);
+            Assert.AreEqual("US National Parks Service", classifiedWithGoodId.owner.getOrganizationName());
         }
 
         [TestMethod]
@@ -572,10 +574,7 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
-            // Remove old datd in case
-            conn.deleteClassifiable(newClassifiable);
-            conn.deleteClassifier(classifier);
-            conn.deleteGlam(glam);
+            conn.addClassifier(classifier);
 
             Classifiable result = conn.addClassifiable(newClassifiable);
 
@@ -584,7 +583,7 @@ namespace Neo4jTest
             Assert.AreEqual(newClassifiable.url, result.url);
             Assert.AreEqual(newClassifiable.perm, result.perm);
             Assert.AreEqual(newClassifiable.status, result.status);
-            //Assert.AreEqual(newClassifiable.owner.email, result.owner.email);
+            Assert.AreEqual(newClassifiable.owner.email, result.owner.email);
 
             Assert.AreEqual(newClassifiable.conceptStr.ToString(),
                 result.conceptStr.ToString());
@@ -672,6 +671,7 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
+            conn.addClassifier(classifier);
             Classifiable result = conn.addClassifiable(newClassifiable);
             result.url = "anotherDummyUrl";
 
@@ -727,6 +727,7 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
+            conn.addClassifier(classifier);
             Classifiable result = conn.addClassifiable(newClassifiable);
 
             conn.deleteClassifiable(result);
@@ -760,9 +761,7 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
-            conn.deleteClassifiable(newClassifiable);
-            conn.deleteClassifier(classifier);
-            conn.deleteGlam(glam);
+            conn.addClassifier(classifier);
 
             Classifiable result = conn.addClassifiable(newClassifiable);
 
@@ -1214,7 +1213,7 @@ namespace Neo4jTest
             GLAM glam = new GLAM("Recent Unclassified");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testingEditUnclassedOwner@BCCNeo4j.com";
+            classifier.email = "testingEditRecentOwner@BCCNeo4j.com";
 
             // Make changes and update
             Term termTool = new Term
@@ -1314,7 +1313,7 @@ namespace Neo4jTest
 
             var conn = new Neo4jDB();
 
-            conn.deleteClassifiable(newClassifiable);
+            conn.addClassifier(classifier);
 
             Classifiable result = conn.addClassifiable(newClassifiable);
 
@@ -1353,7 +1352,7 @@ namespace Neo4jTest
 
             var conn = new Neo4jDB();
 
-            conn.deleteClassifiable(newClassifiable);
+            conn.addClassifier(classifier);
 
             Classifiable result = conn.addClassifiable(newClassifiable);
 
