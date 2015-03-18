@@ -8,6 +8,8 @@ using System.Web.UI.WebControls;
 using BCCLib;
 using Neo4j;
 using System.Diagnostics;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace BCCApplication.Account
 {
@@ -17,9 +19,14 @@ namespace BCCApplication.Account
         {
             var dbConn = new Neo4jDB();
 
-            // Hard coding these in for showing purposes. 
-            // Currently unknown how to get the email of the currently logged in user
-            string userEmail = "somewhere@com";
+            // Manager was from register.aspx page
+            // Ref: http://blogs.msdn.com/b/webdev/archive/2013/10/16/customizing-profile-information-in-asp-net-identity-in-vs-2013-templates.aspx
+            // See "Getting Profile Information"
+            var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
+
+            var currentUser = manager.FindById(User.Identity.GetUserId());
+
+            string userEmail = currentUser.Email;
             
             GenerateTermUpdates();
 

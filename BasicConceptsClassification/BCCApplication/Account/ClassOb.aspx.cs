@@ -9,6 +9,8 @@ using Neo4j;
 using System.Web.Security;
 
 using System.Diagnostics;
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
 
 namespace BCCApplication.Account
 {
@@ -49,6 +51,10 @@ namespace BCCApplication.Account
             string inputName = ObName.Text;
             string inputConcept = ObConcept.Text;
 
+            var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = manager.FindById(User.Identity.GetUserId());
+            string userEmail = currentUser.Email;
+
             // create a temp GALM for testing
             // TODO: fetch proper GLAM
             GLAM gl = new GLAM("UA");
@@ -56,7 +62,7 @@ namespace BCCApplication.Account
             // TODO: Fetch email properly
             Classifier classifier = new Classifier(gl);
             classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
-            classifier.email = "somewhere@com";
+            classifier.email = userEmail;
 
             // TODO: either make a constructor for ConceptString to take (this)(format) and have it parse
             // it out so we don't have to see this parsing every single time AND create terms from it?
