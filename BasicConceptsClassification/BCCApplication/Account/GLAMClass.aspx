@@ -8,10 +8,10 @@
             <br />
             <table style="width:100%;">
                 <tr>
-                    <td class="auto-style1"><p>Recently Added Terms</p>
-                        <select id="RecAddedTerms" name="D1" size="5" runat="server"></select><br /><br />
-                        <p>Your Recently Classified</p>
-                        <select id="RecClassTerms" name="D1" size="5" runat="server"></select>
+                    <td class="auto-style1"><p>BCC Term Updates:</p>
+                        <select id="RecAddedTerms" name="D1" size="8" runat="server"></select><br /><br />
+                        <p>Your Recently Classified:</p>
+                        <select id="RecClassTerms" name="D1" size="8" runat="server"></select>
                     </td>
                     <td><center><h1>Welcome, Classifier!</h1>
                         <p>Search for items below, add new or classify items waiting to be classified! (And other instructions.)</p>
@@ -21,14 +21,37 @@
                         <form action="SearchResults.aspx" method="get" target="_self">
                         </form>
                         </center>
+                        
+                         <table style="width:100%;" id =" NewsBoxClass" runat="server">
+                            <tr>
+                                <td>
+                                    <asp:Label ID="Label2" runat="server" Text="News:" Font-Bold="True" Font-Size="Medium"></asp:Label>
+                                    <br />
+                                    <center><asp:TextBox ID="NewsBox" runat="server" Height="222px" Width="648px"></asp:TextBox></center>
+                                    <br />
+
+                                </td>
+                            </tr>
+                        </table>
                         <table style="width:100%;">
                             <tr>
-                                <td><center><h3>Not Classified: </h3>
+
+                                <td>
+                                    <asp:Label ID="Label1" runat="server" Text="Manage Classifiables:" Font-Bold="True" Font-Size="Medium"></asp:Label><br />
+                                    <center><h3> Not Classified: </h3>
                                     <select id="UnClassList" name="D1" size="5" runat="server"></select><br />
                                     <asp:Button ID="ButtGLAMClassClassNow" runat="server" Text="Classify Now" OnClick="ClassNow_Click" Font-Size="Small" /></center>
                                 </td>
+                                <td>
+                                    <center><br />
+                                    <center><h3> Unclassified - Special: </h3>
+                                    <select id="UnClassAdminCause" name="D1" size="5" runat="server"></select><br />
+                                    <asp:Button ID="ButtGLAMClassReClassNow" runat="server" Text="Reclassify Now" OnClick="ReClassNow_Click" Font-Size="Small" /></center></center>
+                                </td>
                                 <td><center>OR</center></td>
-                                <td><center><asp:Button ID="ButtGLAMClassAddNew" runat="server" Text="Add New" OnClick="AddNew_Click" Font-Size="Small"/></center></td>
+                                <td><center><asp:Button ID="ButtGLAMClassAddNew" runat="server" Text="Add New" OnClick="AddNew_Click" Font-Size="Small"/><br /><br />
+                                    <asp:Button ID="RemoveClass" runat="server" Text="Remove" OnClick="RemoveClassPage_Click" Font-Size="Small"/>
+                                    </center></td>
                             </tr>
                         </table>
                         <br />                       
@@ -44,6 +67,9 @@
     <style type="text/css">
         #UnClassList {
             width: 187px;
+        }
+        #UnClassAdminCause {
+             width: 187px;
         }
         .auto-style1 {
             width: 307px;

@@ -111,5 +111,15 @@ namespace BCCApplication.Account
         {
             Server.Transfer("ClassOb.aspx", true);
         }
+
+        protected void RemoveClassPage_Click(object sender, EventArgs e)
+        {
+            Server.Transfer("RemoveClassOb.aspx", true);
+        }
+
+        protected void ReClassNow_Click(object sender, EventArgs e)
+        {
+            Server.Transfer("ClassOb.aspx", true);
+        }
     }
 }

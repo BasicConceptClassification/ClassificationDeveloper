@@ -49,6 +49,42 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Button Button1;
         
         /// <summary>
+        ///  NewsBoxClass control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlTable  NewsBoxClass;
+        
+        /// <summary>
+        /// Label2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label2;
+        
+        /// <summary>
+        /// NewsBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.TextBox NewsBox;
+        
+        /// <summary>
+        /// Label1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label1;
+        
+        /// <summary>
         /// UnClassList control.
         /// </summary>
         /// <remarks>
@@ -67,6 +103,24 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Button ButtGLAMClassClassNow;
         
         /// <summary>
+        /// UnClassAdminCause control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.HtmlControls.HtmlSelect UnClassAdminCause;
+        
+        /// <summary>
+        /// ButtGLAMClassReClassNow control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ButtGLAMClassReClassNow;
+        
+        /// <summary>
         /// ButtGLAMClassAddNew control.
         /// </summary>
         /// <remarks>
@@ -74,5 +128,14 @@ namespace BCCApplication.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button ButtGLAMClassAddNew;
+        
+        /// <summary>
+        /// RemoveClass control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button RemoveClass;
     }
 }

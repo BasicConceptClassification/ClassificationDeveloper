@@ -180,6 +180,7 @@
     <Content Include="Account\OpenAuthProviders.ascx" />
     <Content Include="Account\Register.aspx" />
     <Content Include="Account\RegisterExternalLogin.aspx" />
+    <Content Include="Account\RemoveClassOb.aspx" />
     <Content Include="Classification.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\Site.css" />
@@ -267,6 +268,13 @@
     </Compile>
     <Compile Include="Account\GLAMClass.aspx.designer.cs">
       <DependentUpon>GLAMClass.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\RemoveClassOb.aspx.cs">
+      <DependentUpon>RemoveClassOb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\RemoveClassOb.aspx.designer.cs">
+      <DependentUpon>RemoveClassOb.aspx</DependentUpon>
     </Compile>
     <Compile Include="App_Start\Startup.Auth.cs" />
     <Content Include="Roles\Classification\Web.config" />
