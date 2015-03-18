@@ -447,10 +447,10 @@ namespace Neo4jTest
             GLAM glam = new GLAM("Recent Uncclassified");
 
             Classifier classifierA = new Classifier(glam);
-            classifierA.email = "testingRecentA@BCCNeo4j.com";
+            classifierA.email = "testingUnclassedA@BCCNeo4j.com";
 
             Classifier classifierB = new Classifier(glam);
-            classifierB.email = "testingRecentB@BCCNeo4j.com";
+            classifierB.email = "testingUnclassedB@BCCNeo4j.com";
 
             ConceptString conStr = new ConceptString
             {
@@ -696,7 +696,6 @@ namespace Neo4jTest
             "Some Terms are not in the Classification!")]
         public void AddClassifiable_TermsDoNotExist()
         {
-
             var conn = new Neo4jDB();
 
             GLAM glam = new GLAM("Sample");
@@ -1029,31 +1028,256 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void UpdateClassifiable_AllProperties_Success()
-        {
-            Assert.IsFalse(true);
-        }
-
-        [TestMethod]
         public void UpdateClassifiable_UniqueIdViolation_ThrowException()
         {
-            Assert.IsFalse(true);
+            // Only the ConStr is affected; no other properties should be changed.
+            GLAM glam = new GLAM("Updating GLAM");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingUpdateViolateId@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+             Classifiable uniqueClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "unique",
+                name = "unique",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable changingClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "original",
+                name = "original",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            // Add the classifiable
+            var conn = new Neo4jDB();
+
+            conn.addClassifier(classifier);
+
+            Classifiable addedClassifiable = conn.addClassifiable(uniqueClassifiable);
+            Classifiable toUpdateClassifiable = conn.addClassifiable(changingClassifiable);
+
+            // Unqiue violation! Two classifiables can't have the same name and be in the same GLAM!
+            changingClassifiable.name = addedClassifiable.name;
+
+            try
+            {
+                Classifiable updatedClassifiable = conn.updateClassifiable(toUpdateClassifiable, changingClassifiable, classifier);
+            }
+            catch (Exception)
+            {
+                // TODO: use custom exceptions or something for unqiue id violation, etc.
+            }
+
+            // Cleanup
+            conn.deleteClassifiable(addedClassifiable);
+            conn.deleteClassifiable(toUpdateClassifiable);
+            conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
         public void UpdateClassifiable_ImproperTerms_ThrowsException()
         {
-            Assert.IsFalse(true);
+            GLAM glam = new GLAM("Sample");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testing4@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyName4",
+                name = "dummyName4",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            var conn = new Neo4jDB();
+
+            Classifiable addedClassifiable = conn.addClassifiable(newClassifiable);
+
+            // Make changes and update
+            Term termTooool = new Term
+            {
+                rawTerm = "Tooool",
+            };
+            newClassifiable.conceptStr.terms.Add(termTooool);
+
+            try
+            {
+                Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
+                conn.deleteClassifiable(updatedClassifiable);
+            }
+            catch (Exception)
+            {
+                // TODO: better exception handling
+            }
+
+            conn.deleteClassifiable(addedClassifiable);
+            conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
         public void GetUnclassified_UpdateClassifiablePermChange()
         {
-            // ClassifierA has some Classifiables with perm GLAM
-            // CLassifierB who is in the same GLAM, can see these
-            // Then ClassifierA changes the perm on one to be OwnerOnly
-            // ClassifierB can no longer that one that changed
-            Assert.IsFalse(true);
+            // ClassifierA has a Classifiable with perm GLAM
+            // CLassifierB who is in the same GLAM, can see it at first
+            // Then ClassifierA changes the perm to be OwnerOnly
+            // ClassifierB can no longer see that Classifiable
+            GLAM glam = new GLAM("Recent Unclassified");
+
+            Classifier classifierA = new Classifier(glam);
+            classifierA.email = "testingEditUnclassedOwner@BCCNeo4j.com";
+
+            Classifier classifierB = new Classifier(glam);
+            classifierB.email = "testingEditUnclassedAnother@BCCNeo4j.com";
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term>(),
+            };
+
+            Classifiable changingClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "A1 GLAM",
+                name = "A1 GLAM",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifierA,
+                conceptStr = conStr,
+            };
+
+            var conn = new Neo4jDB();
+
+            // Add the two classifiers (since we need the glams)
+            conn.addClassifier(classifierA);
+            conn.addClassifier(classifierB);
+
+            // Add the Classifiables in this order
+            Classifiable originalClassifiable = conn.addClassifiable(changingClassifiable);
+
+            ClassifiableCollection recentA = conn.getAllUnclassified(classifierA.email);
+            ClassifiableCollection recentB = conn.getAllUnclassified(classifierB.email);
+
+            Assert.AreEqual(1, recentA.data.Count);
+            Assert.AreEqual(1, recentB.data.Count);
+
+            // Change permission so that Classifier B can't see it anymore
+            changingClassifiable.perm = Classifiable.Persmission.OwnerOnly.ToString();
+
+            Classifiable changedClassifiable = conn.updateClassifiable(originalClassifiable, changingClassifiable, classifierA);
+
+            recentA = conn.getAllUnclassified(classifierA.email);
+            recentB = conn.getAllUnclassified(classifierB.email);
+
+            Assert.AreEqual(1, recentA.data.Count);
+            Assert.AreEqual(0, recentB.data.Count);
+
+            // Clean up
+            conn.deleteClassifiable(changedClassifiable);
+            conn.deleteClassifier(classifierA);
+            conn.deleteClassifier(classifierB);
+            conn.deleteGlam(glam);
+        }
+
+        [TestMethod]
+        public void GetRecentlyClassified_UpdateClassifiableYours()
+        {
+            // Have classifiedA, classifiedB for a Classifier
+            // Recently: B, A
+            // Modify A
+            // Recently: A, B
+            GLAM glam = new GLAM("Recent Unclassified");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingEditUnclassedOwner@BCCNeo4j.com";
+
+            // Make changes and update
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                {
+                    termTool,
+                }
+            };
+
+            Classifiable classifiableA = new Classifiable
+            {
+                id = glam.name + "_" + "A",
+                name = "A",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            Classifiable classifiableB = new Classifiable
+            {
+                id = glam.name + "_" + "B",
+                name = "B",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            var conn = new Neo4jDB();
+
+            conn.addClassifier(classifier);
+            Classifiable addedA = conn.addClassifiable(classifiableA);
+            Classifiable addedB = conn.addClassifiable(classifiableB);
+
+            ClassifiableCollection recent = conn.getRecentlyClassified(classifier.email);
+
+            // Recent order: B, A
+            Assert.AreEqual(addedB.id, recent.data[0].id);
+            Assert.AreEqual(addedA.id, recent.data[1].id);
+
+            // Modify A so it becomes the most recent
+            classifiableA.url = "easyToChange";
+            conn.updateClassifiable(addedA, classifiableA, classifier);
+
+            recent = conn.getRecentlyClassified(classifier.email);
+
+            // Recent order: A, B
+            Assert.AreEqual(addedA.id, recent.data[0].id);
+            Assert.AreEqual(addedB.id, recent.data[1].id);
+
+            conn.deleteClassifiable(recent.data[0]);
+            conn.deleteClassifiable(recent.data[1]);
+            conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
