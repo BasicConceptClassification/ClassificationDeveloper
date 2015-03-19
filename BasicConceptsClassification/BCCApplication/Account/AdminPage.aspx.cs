@@ -128,5 +128,20 @@ namespace BCCApplication.Account
         {
 
         }
+
+        protected void DeleteUpdateButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void DeleteSafelyButton_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        protected void DeleteOverwriteButton_Click(object sender, EventArgs e)
+        {
+
+        }
 	}
 }

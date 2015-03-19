@@ -20,8 +20,8 @@
         .horizontal {
             width: 426px;
         }
-        .auto-style1 {
-            width: 268435520px;
+        .list1 {
+            width: 512px;
         }
 
     </style>
@@ -115,7 +115,7 @@
                     </td>
                 </tr>
                 <tr>
-                    <td rowspan="5" colspan="4" id="Datalist1" class="auto-style1">
+                    <td rowspan="5" colspan="4" id="Datalist1" >
                         <div style="width:512px">
                          <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" OnSelectedNodeChanged="DataSet_SelectedNodeChanged">
                             <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
@@ -236,7 +236,42 @@
                                     </tr>
                                 </table>
                             </div>
-                            <div id="con_one_4" style="display:none"><p>Ni Hao</p></div>
+                            <div id="con_one_4" style="display:none">
+                                <table>
+                                    <tr>
+                                        <td>
+                                            <p>Delete Term:</p>
+                                        </td>
+                                        <td colspan="2">
+                                            <asp:TextBox ID="DeleteTextBox" runat="server"></asp:TextBox>
+                                        </td>
+                                        <td>
+                                            <asp:Button ID="DeleteUpdateButton" runat="server" Text="Update" OnClick="DeleteUpdateButton_Click" />
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="4">
+                                            <p>GLAM Objects Affected</p>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td class="list1" colspan="2">
+                                            <select id="DeleteSafely" size="8" runat="server" name="Name"></select>
+                                        </td>
+                                        <td class="list1" colspan="2">
+                                            <select id="DeleteOverwrite" size="8" runat="server" name="ConceptString"></select>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td colspan="2">
+                                            <asp:Button ID="DeleteSafelyButton" runat="server" Text="Delete Safely" OnClick="DeleteSafelyButton_Click" />
+                                        </td>
+                                        <td colspan="2">
+                                            <asp:Button ID="DeleteOverwriteButton" runat="server" Text="Delete Term and Overwrite" OnClick="DeleteOverwriteButton_Click" />
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
                         </div>
                     </td>
                 </tr>

@@ -24,7 +24,7 @@ namespace BCCApplication.Account
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
-            
+
             GenerateTermUpdates();
 
             GenerateRecentlyClassified(dbConn, userEmail);
