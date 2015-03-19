@@ -402,7 +402,7 @@ namespace Neo4j
                         classifiable = c.As<Classifiable>(),
                         terms = t.CollectAs<Term>(),
                     })
-                    .OrderByDescending("c.name")
+                    .OrderBy("c.name")
                     .Results.ToList();
 
                 if (query != null)
