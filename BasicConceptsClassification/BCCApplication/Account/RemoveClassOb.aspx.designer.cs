@@ -13,13 +13,31 @@ namespace BCCApplication.Account {
     public partial class RemoveClassOb {
         
         /// <summary>
-        /// UnClassList control.
+        /// Notification control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSelect UnClassList;
+        protected global::System.Web.UI.WebControls.Label Notification;
+        
+        /// <summary>
+        /// ClassListBox control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.ListBox ClassListBox;
+        
+        /// <summary>
+        /// ButtonGetClassifiableInfo control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Button ButtonGetClassifiableInfo;
         
         /// <summary>
         /// Label1 control.
@@ -47,6 +65,15 @@ namespace BCCApplication.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label3;
+        
+        /// <summary>
+        /// SelectIndex control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.HiddenField SelectIndex;
         
         /// <summary>
         /// SelectName control.
