@@ -221,17 +221,17 @@
                                             <p>Rename to:</p>
                                         </td>
                                         <td>
-                                            <asp:TextBox ID="RenameToTextBox" runat="server"></asp:TextBox>
+                                            
                                         </td>
                                         <td>
-                                            <asp:Button ID="RenameUpdateButton" runat="server" Text="Update" OnClick="RenameUpdateButton_Click" />
+                                            
                                         </td>
                                     </tr>
                                     <tr>
                                         <td />
                                         <td />
                                         <td>
-                                            <asp:Button ID="RenameAddButton" runat="server" Text="ADD" OnClick="RenameAddButton_Click" />
+                                            
                                         </td>
                                     </tr>
                                 </table>
