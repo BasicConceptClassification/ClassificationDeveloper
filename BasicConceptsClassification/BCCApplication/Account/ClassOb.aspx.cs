@@ -15,6 +15,10 @@ namespace BCCApplication.Account
 {
     public partial class ClassOb : System.Web.UI.Page
     {
+        private string SUCCESS_ADD = "Successfully added: ";
+        private string FAIL_UNIQUE = "Failed: Another GLAM Object with that name already exists in your GLAM.";
+        private string FAIL_TERMS = "Not all the terms in the concept string are from the controlled vocabulary.";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             // At the moment, generates another tree after clicking the Submit button.
@@ -51,6 +55,7 @@ namespace BCCApplication.Account
             string inputName = ObName.Text;
             string inputConcept = ObConcept.Text;
 
+            // Get the logged in user's email
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
@@ -128,17 +133,35 @@ namespace BCCApplication.Account
                 if (result != null)
                 {
                     System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_SUCCESS: Added Classifiable with name {0}", newClassifiable.name));
-                    ObAddStatus.Text = String.Format("Successfully added {0}.", result.name);
+                    ObAddStatus.Text = String.Format("{0} {1}.", SUCCESS_ADD, result.name);
                 }
 
             }
-            catch (Exception ex)
+            catch (ArgumentException ex)
             {
                 // Exceptions: Unique id already exists, null object (not all data filled in)
                 // Do some exception handling based on Exception type ...learn how to do custom exceptions?
                 System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_FAILED: could not add Classifiable with name {0}", newClassifiable.name));
                 System.Diagnostics.Debug.WriteLine(ex.Message);
-                ObAddStatus.Text = String.Format("Could not add because {0}.", "REASONS");
+
+                if (ex.ParamName == "Classifiable.name")
+                {
+                    ObAddStatus.Text = FAIL_UNIQUE;
+                }
+                else if (ex.ParamName == "Classifiable.conceptStr")
+                {
+                    ObAddStatus.Text = FAIL_TERMS;
+                }
+                else
+                {
+                    ObAddStatus.Text = "Could not classify for some reason.";
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+            }
+            catch (NullReferenceException ex)
+            {
+                ObAddStatus.Text = "Could not classify for some reason.";
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
 

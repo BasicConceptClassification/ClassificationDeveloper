@@ -762,8 +762,6 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception),
-            "Some Terms are not in the Classification!")]
         public void AddClassifiable_TermsDoNotExist()
         {
             var conn = new Neo4jDB();
@@ -797,10 +795,18 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
-            conn.addClassifier(classifier);
-            Classifiable result = conn.addClassifiable(newClassifiable);
+            conn.deleteClassifiable(newClassifiable);
+            conn.deleteClassifier(classifier);
 
-            conn.deleteClassifiable(result);
+            conn.addClassifier(classifier);
+
+            try
+            {
+                Classifiable result = conn.addClassifiable(newClassifiable);
+                conn.deleteClassifiable(result);
+            }
+            catch (Exception) { }
+
             conn.deleteClassifier(classifier);
             conn.deleteGlam(glam);
         }
