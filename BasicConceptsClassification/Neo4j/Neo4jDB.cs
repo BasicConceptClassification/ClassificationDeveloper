@@ -402,7 +402,7 @@ namespace Neo4j
                         classifiable = c.As<Classifiable>(),
                         terms = t.CollectAs<Term>(),
                     })
-                    .OrderByDescending("c.name")
+                    .OrderBy("c.name")
                     .Results.ToList();
 
                 if (query != null)
@@ -567,17 +567,18 @@ namespace Neo4j
         /// </summary>
         /// <exception cref="System.NullReferenceException">Thrown when there is insufficient
         /// information for adding a Classifiable.</exception>
-        /// <exception cref="Exception">Thrown when not all the Terms in the ConceptString are in the
-        /// Classification.</exception>
+        /// <exception cref="System.ArgumentException">1) Thrown when not all the Terms in the ConceptString are in the
+        /// Classification.
+        /// <para>2) Thrown when the the id is not unique.</para></exception>
         /// <param name="newClassifiable">New Classifiable to add. Must have a Classifier.</param>
         /// <returns>The new Classifiable from the Database for verification.</returns>
         public Classifiable addClassifiable(Classifiable newClassifiable)
         {
             // Check 1: Check if there are proper terms
-            // TODO: Ummm decide on something else maybe?
             if (countNumTermsExist(newClassifiable.conceptStr.terms) != newClassifiable.conceptStr.terms.Count)
             {
-                throw new Exception("Some Terms are not in the Classification!");
+                throw new System.ArgumentException("Some Terms are not in the Classification!",
+                    "Classifiable.conceptStr");
             }
 
             this.open();
@@ -636,8 +637,21 @@ namespace Neo4j
                 buildQuery = buildQuery
                     .Merge("(o:Classifier{email:{em}})")
                     .OnCreate()
-                    .Set("o.email ={em}")
-                    .Create("(c:Classifiable {id:{cId}})")
+                    .Set("o.email ={em}");
+
+                // UNIQUE Id
+                try
+                {
+                    buildQuery = buildQuery
+                        .Create("(c:Classifiable {id:{cId}})");
+                }
+                catch (NeoException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.NeoMessage);
+                    throw new System.ArgumentException(ex.NeoMessage, "Classifiable.name");
+                }
+
+                buildQuery = buildQuery
                     .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
                     .CreateUnique("(c)<-[:OWNS]-(o)")
                     .CreateUnique("(c)<-[rModify:MODIFIED_BY]-(o)")
@@ -659,17 +673,24 @@ namespace Neo4j
                         .Match("(matchedT:Term {rawTerm: t4})")
                         .Create("(cs)-[:HAS_TERM]->(matchedT)");
                 }
-
-                var query = buildQuery
-                    .With("c.id as newId")
-                    .Return((newId) => new
-                    {
-                        cId = newId.As<string>(),
-                    }).Results.ToList().Single();
-
-                if (query != null)
+                try
                 {
-                    return getClassifiableById(query.cId);
+                    var query = buildQuery
+                        .With("c.id as newId")
+                        .Return((newId) => new
+                        {
+                            cId = newId.As<string>(),
+                        }).Results.FirstOrDefault();
+
+                    if (query != null)
+                    {
+                        return getClassifiableById(query.cId);
+                    }
+                }
+                catch (NeoException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.NeoMessage);
+                    throw new System.ArgumentException(ex.NeoMessage, "Classifiable.name");
                 }
             }
             return null;

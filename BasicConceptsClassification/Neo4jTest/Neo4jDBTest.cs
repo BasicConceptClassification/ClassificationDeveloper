@@ -112,8 +112,20 @@ namespace Neo4jTest
         [TestMethod]
         public void GetGlamOfClassifier_Success()
         {
-            //getGlamOfClassifier("someemail@somewhere.com");
-            Assert.IsFalse(true);
+            var conn = new Neo4jDB();
+            GLAM glam = new GLAM("Fetched GLAM");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingGetGlamOfMe@BCCNeo4j.com";
+
+            conn.addClassifier(classifier);
+
+            GLAM fetchedG = conn.getGlamOfClassifier(classifier.email);
+
+            Assert.AreEqual(glam.name, fetchedG.name);
+
+            conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -504,7 +516,7 @@ namespace Neo4jTest
             // 3) ClassifierB adds Classifiable B_1, perm GLAM
             //      ListLen A: 3
             //      ListLen B: 2
-            GLAM glam = new GLAM("Recent Uncclassified");
+            GLAM glam = new GLAM("Recent Uncclassified YoursandOthers");
 
             Classifier classifierA = new Classifier(glam);
             classifierA.email = "testingUnclassedA@BCCNeo4j.com";
@@ -589,7 +601,7 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("NonExisting");
             Classifier classifier = new Classifier(glam);
-            classifier.email = "userDoNotExist@USNationalParks.com";
+            classifier.email = "userDoesNotExistUnclassified@USNationalParks.com";
 
             var conn = new Neo4jDB();
 
@@ -750,8 +762,6 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(Exception),
-            "Some Terms are not in the Classification!")]
         public void AddClassifiable_TermsDoNotExist()
         {
             var conn = new Neo4jDB();
@@ -759,7 +769,7 @@ namespace Neo4jTest
             GLAM glam = new GLAM("AddClassifiable ButBadTerms");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testing4@BCCNeo4j.com";
+            classifier.email = "testingNoTermsExist@BCCNeo4j.com";
 
             Term termTooool = new Term
             {
@@ -785,10 +795,18 @@ namespace Neo4jTest
                 conceptStr = conStr,
             };
 
-            conn.addClassifier(classifier);
-            Classifiable result = conn.addClassifiable(newClassifiable);
+            conn.deleteClassifiable(newClassifiable);
+            conn.deleteClassifier(classifier);
 
-            conn.deleteClassifiable(result);
+            conn.addClassifier(classifier);
+
+            try
+            {
+                Classifiable result = conn.addClassifiable(newClassifiable);
+                conn.deleteClassifiable(result);
+            }
+            catch (Exception) { }
+
             conn.deleteClassifier(classifier);
             conn.deleteGlam(glam);
         }
@@ -1204,7 +1222,7 @@ namespace Neo4jTest
             // CLassifierB who is in the same GLAM, can see it at first
             // Then ClassifierA changes the perm to be OwnerOnly
             // ClassifierB can no longer see that Classifiable
-            GLAM glam = new GLAM("Recent Unclassified");
+            GLAM glam = new GLAM("Recent Unclassified Update Perm");
 
             Classifier classifierA = new Classifier(glam);
             classifierA.email = "testingEditUnclassedOwner@BCCNeo4j.com";
@@ -1268,7 +1286,7 @@ namespace Neo4jTest
             // Recently: B, A
             // Modify A
             // Recently: A, B
-            GLAM glam = new GLAM("Recent Unclassified");
+            GLAM glam = new GLAM("Recent Unclassified Update Yours");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testingEditRecentOwner@BCCNeo4j.com";
