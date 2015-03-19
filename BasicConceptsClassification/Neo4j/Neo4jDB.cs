@@ -250,18 +250,29 @@ namespace Neo4j
             {
                 // Query:
                 // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
+                // Match (g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)
                 // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
+                // OPTIONAL MATCH (g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)
                 // RETURN 	c, 
-                //          cs,
-                //          COLLECT ([t]) as ts
+                //          COLLECT ([t]) as ts,
+                //          
+                // We have g and g2 for the two GLAMs in case another user outside of the GLAM
+                // is allowed to modify...like the admin?
                 var query = client.Cypher
                     .Match("(c:Classifiable{id:{id}})-[:HAS_CONSTR]->(cs)")
-                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
                     .WithParam("id", id)
-                    .Return((c, t) => new
+                    .Match("(g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)")
+                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
+                    .OptionalMatch("(g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)")
+                    .With("c, t, g1.name AS ownerG, g2.name AS editorG, owner.email AS ownerE, lastEditor.email AS editorE")
+                    .Return((c, t, ownerG, ownerE, editorG, editorE) => new
                     {
                         classifiable = c.As<Classifiable>(),
                         terms = t.CollectAs<Term>(),
+                        ownerGlam = ownerG.As<string>(),
+                        ownerEmail = ownerE.As<string>(),
+                        editorGlam = editorG.As<string>(),
+                        editorEmail = editorE.As<string>(),
                     }).Results.SingleOrDefault();
 
                 if (query != null)
@@ -284,8 +295,15 @@ namespace Neo4j
                     // A bit of a hack for now. But it maintains order because of
                     // ...some reason.
                     resConStr.terms.Reverse();
-
                     query.classifiable.conceptStr = resConStr;
+
+                    // If these two are not null...
+                    if (query.ownerGlam != null && query.ownerEmail != null)
+                    {
+                        GLAM tmpG = new GLAM(query.ownerGlam);
+                        query.classifiable.owner = new Classifier(tmpG);
+                        query.classifiable.owner.email = query.ownerEmail;
+                    }
 
                     return query.classifiable;
                 }
@@ -555,17 +573,12 @@ namespace Neo4j
         /// <returns>The new Classifiable from the Database for verification.</returns>
         public Classifiable addClassifiable(Classifiable newClassifiable)
         {
-            // Step 1: Check if there are proper terms
+            // Check 1: Check if there are proper terms
             // TODO: Ummm decide on something else maybe?
-            //
-            
             if (countNumTermsExist(newClassifiable.conceptStr.terms) != newClassifiable.conceptStr.terms.Count)
             {
                 throw new Exception("Some Terms are not in the Classification!");
             }
-            
-            // Step 2: Go ahead and (try to) add the Classifiable!
-            Classifiable rtnClassifiable = new Classifiable();
 
             this.open();
             if (client != null)
@@ -588,8 +601,8 @@ namespace Neo4j
                 //      ) AS t4
                 // MATCH (matchedT:Term{rawTerm:t4)})
                 // CREATE (cs)-[:HAS_TERM]->(t)
-                // WITH c, cs, COLLECT([matchedT.rawTerm]) AS ts
-                // RETURN c AS classifiable, ts AS terms
+                // WITH c.id as cId
+                // RETURN cId
                 // NOTE: Owner isn't returned from the actual DB at this point
 
                 // The query is built and executed in stages to check for proper parameters,
@@ -602,10 +615,9 @@ namespace Neo4j
                     buildQuery = buildQuery
                         .WithParams(new
                         {
-                            //cId = newClassifiable.owner.getOrganizationName() +
-                            //    "_" +
-                            //    newClassifiable.name,
-                            cId = newClassifiable.id,
+                            cId = newClassifiable.owner.getOrganizationName() +
+                                "_" +
+                                newClassifiable.name,
                             cName = newClassifiable.name,
                             cUrl = newClassifiable.url,
                             cPerm = newClassifiable.perm,
@@ -633,7 +645,7 @@ namespace Neo4j
                     .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
                     .Set("cs.terms = {newConStr}");
 
-                // Only go get terms if they exist...
+                // Only create relationships to terms if they exist
                 if (newClassifiable.conceptStr.ToString() != "")
                 {
                     buildQuery = buildQuery
@@ -645,57 +657,19 @@ namespace Neo4j
                                             )
                                         ) AS t4")
                         .Match("(matchedT:Term {rawTerm: t4})")
-                        .Create("(cs)-[:HAS_TERM]->(matchedT)")
-                        .With("c, COLLECT([matchedT.rawTerm]) AS ts");
-                }
-                else
-                {
-                    // If there are no terms, just make a list of strings with only "",
-                    // just to prevent writing two essentially the same queries.
-                    buildQuery = buildQuery
-                        .With("c, COLLECT([\"\"]) AS ts");
+                        .Create("(cs)-[:HAS_TERM]->(matchedT)");
                 }
 
-                var query = buildQuery.Return((c, ts) => new
-                {
-                    classifiable = c.As<Classifiable>(),
-                    terms = ts.As<IEnumerable<string>>(),
-                    //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
-                })
-                        .Results.ToList().Single();
-
+                var query = buildQuery
+                    .With("c.id as newId")
+                    .Return((newId) => new
+                    {
+                        cId = newId.As<string>(),
+                    }).Results.ToList().Single();
 
                 if (query != null)
                 {
-                    // Construct the Concept String from results
-                    ConceptString resConStr = new ConceptString
-                    {
-                        terms = new List<Term>(),
-                    };
-
-                    if (query.terms.ElementAt(0) != "")
-                    {
-                        // Build the terms
-                        foreach (var t in query.terms)
-                        {
-                            var tempData = JsonConvert.DeserializeObject<dynamic>(t);
-                            var tmp = new Term
-                            {
-                                rawTerm = tempData[0]
-                            };
-
-                            tmp.subTerms = new List<Term>();
-                            resConStr.terms.Add(tmp);
-                        }
-                    }
-                    rtnClassifiable = query.classifiable;
-                    rtnClassifiable.owner = newClassifiable.owner;
-
-                    // Reverse for some reason
-                    resConStr.terms.Reverse();
-                    rtnClassifiable.conceptStr = resConStr;
-
-                    return rtnClassifiable;
+                    return getClassifiableById(query.cId);
                 }
             }
             return null;
@@ -729,12 +703,112 @@ namespace Neo4j
         /// <summary>
         /// Not finished. Will do as name implies.
         /// </summary>
-        /// <param name="updatedClassifiable"></param>
-        /// <returns></returns>
-        public Classifiable updateClassifiable(Classifiable updatedClassifiable)
+        /// <param name="oldClassifiable">The old information.</param>
+        /// <param name="updatedClassifiable">The updated information.</param>
+        /// <param name="modifier">The Classifier who modified the Classifiable.</param>
+        /// <returns>The classifiable with the basic updated information 
+        /// and concept string (no owner information).</returns>
+        public Classifiable updateClassifiable(Classifiable oldClass, Classifiable updatedClass, Classifier modifier)
         {
-            //.OnMatch()
-            // .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
+            // Check 1: Check if there are proper terms
+            // TODO: Ummm decide on something else maybe?
+            if (countNumTermsExist(updatedClass.conceptStr.terms) != updatedClass.conceptStr.terms.Count)
+            {
+                throw new Exception("Some Terms are not in the Classification!");
+            }
+
+            // Try to update
+            this.open();
+            if (client != null)
+            {
+                // Query: Merge classifier based on email, create new Classifiable and 
+                // create relationship to the Classifier, split the ConStr into Terms and connect them.
+                //
+                // MATCH (c:Classifiable {id: "Updating GLAM_dummyName1" })<-[:OWNS]-(owner:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)
+                // SET c.id = g.name + "_newName"
+                // SET c.name = "newName", c.url = "newUrl", c.perm = "OwnerOnly", c.status = "Unclassified"
+                // WITH c
+                // MATCH (c)<-[rModify:MODIFIED_BY]-(prevClassifier:Classifier)
+                // DELETE rModify
+                // With c
+                // Match(recentClassifier:Classifier {email: "testingUpdateSimple@BCCNeo4j.com" })
+                // CREATE UNIQUE (c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)
+                // SET rNewModify.lastModified = timestamp()
+                // RETURN c.id AS cId
+                // NOTE: Owner isn't returned from the actual DB at this point
+                
+                // The query is built and executed in stages to check for proper parameters,
+                // id is unique, etc.
+                var buildQuery = client.Cypher;
+
+                //Check 2?
+                // TODO: a way to make sure the editing classifier has permission to edit this Classifiable?
+
+                // Update 1) Set the updated basic information (id, name, url, perm, status)
+                buildQuery = buildQuery
+                    .Match("(c:Classifiable {id: {oldId} })<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
+                    .WithParam("oldId", oldClass.id)
+                    .Set("c.id = g.name + {updatedId}").WithParam("updatedId", "_" + updatedClass.name)
+                    .Set("c.name = {upName}, c.url = {upUrl}, c.perm = {upPerm}, c.status = {upStatus}")
+                    .WithParams(new
+                    {
+                        upName = updatedClass.name,
+                        upUrl = updatedClass.url,
+                        upPerm = updatedClass.perm,
+                        upStatus = updatedClass.status,
+                    });
+
+                // Update 2) Update the concept string if it's been changed...
+                if (updatedClass.conceptStr.ToString() != oldClass.conceptStr.ToString())
+                {
+                    // Find, remove old, update, add new
+                    // Remove the old
+                    buildQuery = buildQuery
+                            .With("c")
+                            .Match("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
+                            .OptionalMatch("(cs)-[rOldTerms:HAS_TERM]->(:Term)")
+                            .Delete("rOldTerms")
+                            .Set("cs.terms = {newConStr}")
+                            .WithParam("newConStr", updatedClass.conceptStr.ToString());
+
+                    // If the updated ConStr has actual terms:
+                    if (updatedClass.conceptStr.ToString() != "")
+                    {
+                        buildQuery = buildQuery
+                            .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
+                                UNWIND ( FILTER
+                                            ( x in
+                                                SPLIT( trmStr, "")"" )
+                                                WHERE x <> """"
+                                            )
+                                        ) AS t4")
+                            .Match("(matchedT:Term {rawTerm: t4})")
+                            .Create("(cs)-[:HAS_TERM]->(matchedT)");
+                    }
+                }
+
+                // Update 3) update who last modified this
+                // TODO: use case statements to only update the classifier if necessary
+                var results = buildQuery
+                   .With("c")
+                   .Match("(c)<-[rModify:MODIFIED_BY]-(prevClassifier:Classifier)")
+                   .Delete("rModify")
+                   .With("c")
+                   .Match("(recentClassifier:Classifier {email: {modifierEmail} })")
+                   .WithParam("modifierEmail", modifier.email)
+                   .CreateUnique("(c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)")
+                   .Set("rNewModify.lastModified = timestamp()")
+                   .With("c.id AS newId")
+                   .Return((newId) => new            
+                   {
+                       cId = newId.As<string>(),
+                   }).Results.Single();
+                 
+                if (results != null)
+                {
+                    return getClassifiableById(results.cId);
+                }
+            }
             return null;
         }
 
@@ -830,7 +904,6 @@ namespace Neo4j
                     .Limit(limit)
                     .Results.ToList();
 
-
                 if (query != null)
                 {
                     // Build up Classifiables
@@ -873,9 +946,7 @@ namespace Neo4j
 
                         resColl.data.Add(cTmp);
                     }
-
                 }
-
             }
             return resColl;
         }
