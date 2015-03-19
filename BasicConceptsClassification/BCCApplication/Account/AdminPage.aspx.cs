@@ -120,5 +120,13 @@ namespace BCCApplication.Account
             conn.moveTerm(result_1, result_2);
             */
         }
+        protected void RenameUpdateButton_Click(object sender, EventArgs e)
+        {
+
+        }
+        protected void RenameAddButton_Click(Object sender, EventArgs e)
+        {
+
+        }
 	}
 }
