@@ -771,7 +771,7 @@ namespace Neo4jTest
             GLAM glam = new GLAM("AddClassifiable ButBadTerms");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testing4@BCCNeo4j.com";
+            classifier.email = "testingNoTermsExist@BCCNeo4j.com";
 
             Term termTooool = new Term
             {
