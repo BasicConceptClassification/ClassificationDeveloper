@@ -203,7 +203,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("GettingClassifiables01");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testingGetMyClassifiables@BCCNeo4j.com";
@@ -603,7 +603,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("AddingClassifiableSuccess");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testing1@BCCNeo4j.com";
@@ -667,7 +667,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("AddClassifiableWnoClassifier");
 
             Term termTool = new Term
             {
@@ -700,10 +700,10 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("AddClassifier But Exists");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testing3@BCCNeo4j.com";
+            classifier.email = "testingAlreadyExists@BCCNeo4j.com";
 
             Term termTool = new Term
             {
@@ -756,7 +756,7 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("AddClassifiable ButBadTerms");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testing4@BCCNeo4j.com";
@@ -798,10 +798,10 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("AddingWithNoTerms");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testing5@BCCNeo4j.com";
+            classifier.email = "testingNoTerms@BCCNeo4j.com";
 
             ConceptString conStr = new ConceptString
             {
@@ -1150,10 +1150,10 @@ namespace Neo4jTest
         [TestMethod]
         public void UpdateClassifiable_ImproperTerms_ThrowsException()
         {
-            GLAM glam = new GLAM("Sample");
-
+            GLAM glam = new GLAM("UpdatingClassifiable ImproperTerms");
+         
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testing4@BCCNeo4j.com";
+            classifier.email = "testingUpdatingImproperTerms@BCCNeo4j.com";
 
             ConceptString conStr = new ConceptString
             {
@@ -1172,7 +1172,7 @@ namespace Neo4jTest
             };
 
             var conn = new Neo4jDB();
-
+            conn.addClassifier(classifier);
             Classifiable addedClassifiable = conn.addClassifiable(newClassifiable);
 
             // Make changes and update
@@ -1340,7 +1340,7 @@ namespace Neo4jTest
         [TestMethod]
         public void DeleteClassifiable_Suceed()
         {
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("DeletingAClassifiable");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testingToDel@BCCNeo4j.com";
@@ -1387,10 +1387,10 @@ namespace Neo4jTest
         [TestMethod]
         public void DeleteClassifiable_NoTerms_Succeed()
         {
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("DeleteClassifiable-NoTerms-Success");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "testingToDel02@BCCNeo4j.com";
+            classifier.email = "testingToDelNoTerms@BCCNeo4j.com";
 
             ConceptString conStr = new ConceptString
             {
@@ -1426,7 +1426,7 @@ namespace Neo4jTest
         [TestMethod]
         public void DeleteClassifiable_DoesNotExist()
         {
-            GLAM glam = new GLAM("Sample");
+            GLAM glam = new GLAM("DeleteClassifiable DoesNotExist");
 
             Classifier classifier = new Classifier(glam);
             classifier.email = "testingToDel03@BCCNeo4j.com";
@@ -1456,8 +1456,9 @@ namespace Neo4jTest
             };
 
             var conn = new Neo4jDB();
-
+            conn.addClassifier(classifier);
             conn.deleteClassifiable(classifiable);
+            conn.deleteClassifier(classifier);
             conn.deleteGlam(glam);
         }
 
