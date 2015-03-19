@@ -197,6 +197,64 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void GetClassifiables_SomeExist()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM glam = new GLAM("Sample");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingGetMyClassifiables@BCCNeo4j.com";
+
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> 
+                { 
+                    termTool, 
+                }
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyAdd01",
+                name = "dummyAdd01",
+                url = "dummyURL",
+                perm = Classifiable.Persmission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            conn.addClassifier(classifier);
+
+            Classifiable result = conn.addClassifiable(newClassifiable);
+
+            // Create the second classifiable
+            Classifiable newClassifiable2 = newClassifiable;
+            newClassifiable2.name = "dummyAdd02";
+            newClassifiable2.id = glam.name + "_" + newClassifiable2.name;
+
+            // Add the second classifiable
+            Classifiable result2 = conn.addClassifiable(newClassifiable2);
+
+            ClassifiableCollection resCollection = conn.getClassifiables(classifier);
+
+            Assert.AreEqual(2, resCollection.data.Count);
+
+            // Clean up
+            conn.deleteClassifiable(result);
+            conn.deleteClassifiable(result2);
+            conn.deleteClassifier(classifier);
+            conn.deleteGlam(glam);
+        }
+        
+
+        [TestMethod]
         public void GetRecentlyClassified_Yours_AfterTwoAdds()
         {
             // Get your recently test steps:

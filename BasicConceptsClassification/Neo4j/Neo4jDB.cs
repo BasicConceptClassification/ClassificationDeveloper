@@ -359,6 +359,71 @@ namespace Neo4j
             return resColl;
         }
 
+        public ClassifiableCollection getClassifiables(Classifier owner)
+        {
+             ClassifiableCollection resColl = new ClassifiableCollection
+            {
+                data = new List<Classifiable>(),
+            };
+
+            this.open();
+            if (client != null)
+            {
+                // Query 
+                // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
+                // WHERE o.email = "testingRecent@BCCNeo4j.com"
+                // OPTIONAL MATCH (c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t:Term)
+                // RETURN c AS classifiable
+                // ORDER BY c.name
+                var query = client.Cypher
+                    .Match("(c:Classifiable)<-[:OWNS]-(owner:Classifier)")
+                    .Where("owner.email = {email}").WithParam("email", owner.email)
+                    .OptionalMatch("(c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t:Term)")
+                    .Return((c, t) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                        terms = t.CollectAs<Term>(),
+                    })
+                    .OrderByDescending("c.name")
+                    .Results.ToList();
+
+                if (query != null)
+                {
+                    foreach (var res in query)
+                    {
+                        // if the union has no data, returns as null,
+                        // so need to check that we actually have a result
+                        if (res.classifiable != null)
+                        {
+                            // TODO: reorder terms to match concept string
+                            ConceptString resConStr = new ConceptString
+                            {
+                                terms = new List<Term>(),
+                            };
+
+                            // Thanks muchy to the example:
+                            // https://github.com/neo4j-contrib/developer-resources/blob/gh-pages/language-guides/dotnet/neo4jclient/Neo4jDotNetDemo/Controllers/MovieController.cs
+
+                            foreach (var t in res.terms)
+                            {
+                                t.Data.subTerms = new List<Term>();
+                                resConStr.terms.Add(t.Data);
+                            }
+
+                            // A bit of a hack for now. But it maintains order because of
+                            // ...some reason.
+                            resConStr.terms.Reverse();
+
+                            res.classifiable.conceptStr = resConStr;
+                            resColl.data.Add(res.classifiable);
+                        }
+                        
+                    }
+                }
+            }
+            return resColl;
+        }
+
         /// <summary>
         /// Get the classifier's recently classified classifiables.
         /// </summary>
@@ -376,10 +441,8 @@ namespace Neo4j
             if (client != null)
             {
                 // Query 
-                // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
                 // MATCH (c)<-[rModify:MODIFIED_BY]-(o)
                 // WHERE o.email = "testingRecent@BCCNeo4j.com"
-                // AND c.status = "Classified"
                 // RETURN c AS classifiable, rModify.lastModified as date
                 // ORDER BY date
                 var query = client.Cypher
