@@ -11,7 +11,7 @@ namespace BCCLibTest
         [TestMethod]
         public void ClassifiableCollection_Sort()
         {
-            Assert.IsTrue(false, "Sort method untested!");
+            Assert.Fail();
         }
     }
 }

@@ -26,7 +26,7 @@ namespace Neo4jTest
         {
             // TODO: ATM it's tested as clean up a cleanup function when adding 
             // a classifiable... 
-            Assert.IsFalse(true);
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -380,7 +380,7 @@ namespace Neo4jTest
         [TestMethod]
         public void DeleteClassifiable_DoesNotExist()
         {
-            Assert.IsFalse(true);
+            Assert.Fail();
         }
 
         [TestMethod]
@@ -814,6 +814,61 @@ namespace Neo4jTest
             // Clean up the mess
             Assert.AreEqual<int>(2, conn.delTermFORCE(t1));
             Assert.AreEqual<int>(2, conn.delTermFORCE(t2));
+        }
+
+        [TestMethod]
+        public void testValidateDelete()
+        {
+            var conn = new Neo4jDB();
+
+            // Create a test node with no children
+            Term t1 = new Term
+            {
+                id = "TEST_1",
+                rawTerm = "Test 1",
+                lower = "test 1"
+            };
+
+            // Add that to the db.
+            conn.addTerm(t1, null);
+
+            // We expect to be able to delete that safely.
+            Assert.IsTrue(conn.validateDeleteTerm(t1));
+
+            // Delete the term we just added to the db.
+            conn.delTermFORCE(t1);
+
+            // Check some random term in the middle of the db.
+            Term t2 = new Term
+            {
+                id = "http://www.w3.org/2002/07/owl#topObjectProperty"
+            };
+
+            // We expect to not be able to delete this.
+            Assert.IsFalse(conn.validateDeleteTerm(t2));
+        }
+
+        [TestMethod]
+        public void TestDelTermPreview()
+        {
+            var conn = new Neo4jDB();
+
+            // See what happens when we try to delete the term "Heating" from the database.
+            // Note that this could fail when the db is updated.
+            Term t1 = new Term
+            {
+                id = "tmpId-protection",
+            };
+
+            var result = conn.delTermPREVIEW(t1);
+
+            // Correct values last I checked XD.
+            // The correct values can be found using the query:
+            //      match (a:Term{id:"tmpId-protection"})-[r:HAS_TERM]-(b) return count(b)
+            Assert.AreEqual<int>(1, result.stringsAffected.Count);
+
+            //      match (a:ConceptString{terms:"(protection)(for)(war)"})-[r:HAS_CONSTR]-(b) count(b)
+            Assert.AreEqual<int>(1, result.classifiablesAffected.Count);
         }
     }
 }
