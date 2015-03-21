@@ -46,6 +46,7 @@ namespace BCCApplication.Account
                 {
                 }
             }
+             
         }
 
         //the control submit button
@@ -191,8 +192,9 @@ namespace BCCApplication.Account
             {
                 currentNode.ChildNodes.Add(generateBccTree(childTerm, currentNode));
             }
-            return currentNode;
+            return currentNode; 
         }
+             
     }
 
 

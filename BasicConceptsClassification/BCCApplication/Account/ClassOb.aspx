@@ -1,4 +1,4 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ClassOb.aspx.cs" Inherits="BCCApplication.Account.ClassOb" %>
+﻿<%@ Page Title="Clasify" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ClassOb.aspx.cs" Inherits="BCCApplication.Account.ClassOb" %>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
     <asp:RequiredFieldValidator runat="server" ControlToValidate="ObName" CssClass="text-danger" 
@@ -42,7 +42,8 @@
                 <asp:Label ID="ObAddStatus" runat="server"></asp:Label>
             </td>
             <td>
-                <asp:Button ID="SubmitObj" runat="server" Text="Submit" OnClick="SubmitObj_Click" /><br />
+        
+                <asp:Button ID="SubmitObj" runat="server" Text="Submit" OnClick="SubmitObj_Click" AutoPostBack="false"/><br />
             </td>
         </tr>
         <tr>
@@ -66,7 +67,7 @@
                 </p>
             </td>
         </tr>
-    </table>
+    </table> 
     <br />
 &nbsp; 
 </asp:Content>
