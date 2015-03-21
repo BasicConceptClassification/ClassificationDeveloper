@@ -71,7 +71,7 @@ public partial class Search : System.Web.UI.Page
     {
         string str = TextBox2.Text;
         Application["textpass"] = str;
-        Server.Transfer("SearchResults.aspx", true);
+        Response.Redirect("SearchResults.aspx", true);
 
 
     }

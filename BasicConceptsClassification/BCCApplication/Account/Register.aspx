@@ -46,10 +46,12 @@
         </div>
         <div class="form-group">
             <div class="col-md-10">
-                <asp:CheckBox runat="server" ID="ClassifierCheckBox" Text="Classifier" />
+                <asp:CheckBox runat="server" ID="ClassifierCheckBox" />
+                <asp:Label runat="server" AssociatedControlID="ClassifierCheckBox" CssClass="checkbox">Classifier</asp:Label>
             </div>
         </div>
         <div class="form-group">
+            <asp:Label runat="server" AssociatedControlID="GLAMListBox" CssClass="col-md-2 control-label">Associated With</asp:Label>
             <div class="col-md-10">
                 <asp:ListBox runat="server" ID="GLAMListBox"></asp:ListBox>
             </div>

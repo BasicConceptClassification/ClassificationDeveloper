@@ -1,28 +1,40 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ClassOb.aspx.cs" Inherits="BCCApplication.Account.ClassOb" %>
+﻿<%@ Page Title="Clasify" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ClassOb.aspx.cs" Inherits="BCCApplication.Account.ClassOb" %>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
+    <asp:RequiredFieldValidator runat="server" ControlToValidate="ObName" CssClass="text-danger" 
+        ErrorMessage="The name of the object is required." />
+    <asp:RequiredFieldValidator runat="server" ControlToValidate="ObUrl" CssClass="text-danger" 
+        ErrorMessage="The URL of the object is required." />
     <table style="width:100%;">
         <tr>
-            <td>Name: 
-                <asp:TextBox ID="ObName" runat="server"></asp:TextBox>
-                <asp:RequiredFieldValidator runat="server" ControlToValidate="ObName"
-                    CssClass="text-danger" ErrorMessage="The name of the object is required." />
+            <td>
+                <div class="form-group">
+                    <asp:Label runat="server" AssociatedControlID="ObName" CssClass="control-label">Name</asp:Label> 
+                    <asp:TextBox ID="ObName" runat="server"></asp:TextBox>
+                </div>
             </td>
-            <td>URL: 
-                <asp:TextBox ID="ObURL" runat="server"></asp:TextBox>
-                <asp:RequiredFieldValidator runat="server" ControlToValidate="ObUrl"
-                    CssClass="text-danger" ErrorMessage="The name of the object is required." />
+            <td>
+                <div class="form-group">
+                    <asp:Label runat="server" AssociatedControlID="ObURL" CssClass="control-label">URL</asp:Label>
+                    <asp:TextBox ID="ObURL" runat="server"></asp:TextBox>
+                </div>
             </td>
         </tr>
         <tr>
-            <td>Edit Permissions 
-                <asp:RadioButtonList ID="EditPerm" runat="server" Font-Size="X-Small" RepeatColumns="2">
-                    <asp:ListItem Value="OwnerOnly">Only Me</asp:ListItem>
-                    <asp:ListItem Value="GLAM" Selected="True">Anyone in my Institution</asp:ListItem>
-                </asp:RadioButtonList>
+            <td>
+                <div class="form-group">
+                    <asp:Label runat="server" AssociatedControlID="EditPerm" CssClass="control-label">Edit Permissions</asp:Label>    
+                    <asp:RadioButtonList ID="EditPerm" runat="server" Font-Size="X-Small" RepeatColumns="2">
+                        <asp:ListItem Value="GLAM" Selected="True"/>
+                        <asp:ListItem Value="OwnerOnly"/>
+                    </asp:RadioButtonList>
+                </div>
             </td>
-            <td>Concept String: 
-                <asp:TextBox ID="ObConcept" runat="server"></asp:TextBox>
+            <td>
+                <div class="form-group">
+                    <asp:Label runat="server" AssociatedControlID="ObConcept" CssClass="control-label">Concept String</asp:Label>
+                    <asp:TextBox ID="ObConcept" runat="server"></asp:TextBox>
+                </div>
             </td>
         </tr>
         <tr>
@@ -30,7 +42,8 @@
                 <asp:Label ID="ObAddStatus" runat="server"></asp:Label>
             </td>
             <td>
-                <asp:Button ID="SubmitObj" runat="server" Text="Submit" OnClick="SubmitObj_Click" /><br />
+        
+                <asp:Button ID="SubmitObj" runat="server" Text="Submit" OnClick="SubmitObj_Click" AutoPostBack="false"/><br />
             </td>
         </tr>
         <tr>
@@ -54,7 +67,7 @@
                 </p>
             </td>
         </tr>
-    </table>
+    </table> 
     <br />
 &nbsp; 
 </asp:Content>

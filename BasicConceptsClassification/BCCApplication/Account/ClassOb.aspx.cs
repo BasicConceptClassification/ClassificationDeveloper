@@ -21,28 +21,32 @@ namespace BCCApplication.Account
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // At the moment, generates another tree after clicking the Submit button.
-            int expandDepth = 3;
-
-            // Fetch BCC from the DB
-            var dbConn = new Neo4jDB();
-
-            // Fix this to be a bit better for catching and handling error messages
-            try
+            if (!Page.IsPostBack)
             {
-                Term bccRootTerm = dbConn.getBccFromRootWithDepth(expandDepth);
+                // At the moment, generates another tree after clicking the Submit button.
+                int expandDepth = 3;
 
-                // Create a starting TreeNode as the root to generate the BCC
-                TreeNode currentNode = new TreeNode();
-                DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
+                // Fetch BCC from the DB
+                var dbConn = new Neo4jDB();
 
-                // By default, leave collapsed
-                DataSet.CollapseAll();
-                DataSet.ShowCheckBoxes = TreeNodeTypes.All;
+                // Fix this to be a bit better for catching and handling error messages
+                try
+                {
+                    Term bccRootTerm = dbConn.getBccFromRootWithDepth(expandDepth);
+
+                    // Create a starting TreeNode as the root to generate the BCC
+                    TreeNode currentNode = new TreeNode();
+                    DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
+
+                    // By default, leave collapsed
+                    DataSet.CollapseAll();
+                    DataSet.ShowCheckBoxes = TreeNodeTypes.All;
+                }
+                catch
+                {
+                }
             }
-            catch
-            {
-            } 
+             
         }
 
         //the control submit button
@@ -188,8 +192,9 @@ namespace BCCApplication.Account
             {
                 currentNode.ChildNodes.Add(generateBccTree(childTerm, currentNode));
             }
-            return currentNode;
+            return currentNode; 
         }
+             
     }
 
 

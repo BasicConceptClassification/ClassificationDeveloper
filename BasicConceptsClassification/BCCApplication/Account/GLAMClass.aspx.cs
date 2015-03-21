@@ -72,7 +72,6 @@ namespace BCCApplication.Account
                 String RecClassT = "Sorry, server is having issues!";
                 RecClassTerms.Items.Add(new ListItem(RecClassT));
             }
-
         }
 
         protected void GenerateUnclassified(Neo4jDB conn, string classifierEmail)
@@ -99,27 +98,27 @@ namespace BCCApplication.Account
         {
             string str = TextBox2.Text;
             Application["textpass"] = str;
-            Server.Transfer("SearchResults.aspx", true);
+            Response.Redirect("~/SearchResults.aspx", true);
         }
 
         protected void ClassNow_Click(object sender, EventArgs e)
         {
-            Server.Transfer("ClassOb.aspx", true);
+            Response.Redirect("ClassOb.aspx", true);
         }
 
         protected void AddNew_Click(object sender, EventArgs e)
         {
-            Server.Transfer("ClassOb.aspx", true);
+            Response.Redirect("ClassOb.aspx", true);
         }
 
         protected void RemoveClassPage_Click(object sender, EventArgs e)
         {
-            Server.Transfer("RemoveClassOb.aspx", true);
+            Response.Redirect("RemoveClassOb.aspx", true);
         }
 
         protected void ReClassNow_Click(object sender, EventArgs e)
         {
-            Server.Transfer("ClassOb.aspx", true);
+            Response.Redirect("ClassOb.aspx", true);
         }
     }
 }
