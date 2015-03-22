@@ -14,10 +14,13 @@ namespace BCCApplication.Account
 {
     public partial class GLAMClass : System.Web.UI.Page
     {
+        private string RECENTCLASSIFIED_NONE = "No GLAM objects have been recently classified.";
+        private string UNCLASSFIED_NONE = "All your GLAM objects are classified!";
+        private string UNCLASSFIED_SPECIAL_NONE = "No GLAM OBjects require special attention!";
+        private string ERROR_SERVER = "Having server issues, sorry!";
+
         protected void Page_Load(object sender, EventArgs e)
         {
-            var dbConn = new Neo4jDB();
-
             // Manager was from register.aspx page
             // Ref: http://blogs.msdn.com/b/webdev/archive/2013/10/16/customizing-profile-information-in-asp-net-identity-in-vs-2013-templates.aspx
             // See "Getting Profile Information"
@@ -25,11 +28,15 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
 
+            var dbConn = new Neo4jDB();
+
             GenerateTermUpdates();
 
             GenerateRecentlyClassified(dbConn, userEmail);
 
             GenerateUnclassified(dbConn, userEmail);
+
+            GenerateUnclassifiedSpecial(dbConn, userEmail);
         }
 
         protected void GenerateTermUpdates()
@@ -54,43 +61,112 @@ namespace BCCApplication.Account
             }
         }
 
+
         protected void GenerateRecentlyClassified(Neo4jDB conn, string classifierEmail)
         {
             try
             {
                 ClassifiableCollection classifiables = conn.getRecentlyClassified(classifierEmail);
-                for (int i = 0; i < classifiables.data.Count; i++)
+                if (classifiables.data.Count > 0)
                 {
-                    String RecClassT = classifiables.data[i].name;
-                    RecClassTerms.Items.Add(new ListItem(RecClassT));
+                    for (int i = 0; i < classifiables.data.Count; i++)
+                    {
+                        String RecClassT = classifiables.data[i].name;
+                        RecClassObj.Items.Add(new ListItem(RecClassT));
+                    }
+                    LabelRecClassObj.Visible = false;
+                    RecClassObj.Visible = true;
+                }
+                else
+                {
+                    LabelRecClassObj.Visible = true;
+                    LabelRecClassObj.Text = RECENTCLASSIFIED_NONE;
+                    RecClassObj.Visible = false;
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("GLAMClass_Exception: {0}", ex.Message);
-                // Some sort of notification?
-                String RecClassT = "Sorry, server is having issues!";
-                RecClassTerms.Items.Add(new ListItem(RecClassT));
+
+                LabelRecClassObj.Visible = true;
+                LabelRecClassObj.Text = ERROR_SERVER;
+                RecClassObj.Visible = false;
             }
         }
+
 
         protected void GenerateUnclassified(Neo4jDB conn, string classifierEmail)
         {
             try
             {
                 ClassifiableCollection classifiables = conn.getAllUnclassified(classifierEmail);
-                for (int i = 0; i < classifiables.data.Count; i++)
+                if (classifiables.data.Count > 0)
                 {
-                    String unClassified = classifiables.data[i].name;
-                    UnClassList.Items.Add(new ListItem(unClassified));
+                    for (int i = 0; i < classifiables.data.Count; i++)
+                    {
+                        String unClassified = classifiables.data[i].name;
+                        UnClassList.Items.Add(new ListItem(unClassified));
+                    }
+                    LabelNotClassified.Visible = false;
+                    UnClassList.Visible = true;
+                    ButtGLAMClassClassNow.Visible = true;
+                }
+                else
+                {
+                    LabelNotClassified.Visible = true;
+                    LabelNotClassified.Text = UNCLASSFIED_NONE;
+                    UnClassList.Visible = false;
+                    ButtGLAMClassClassNow.Visible = false;
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("GLAMClass_Exception: {0}", ex.Message);
-                // Some sort of notification?
-                String unClassified = "Sorry, server is having issues!"; 
-                UnClassList.Items.Add(new ListItem(unClassified));
+                
+                LabelNotClassified.Visible = true;
+                LabelNotClassified.Text = ERROR_SERVER;
+                UnClassList.Visible = false;
+                ButtGLAMClassClassNow.Visible = false;
+            }
+        }
+
+        protected void GenerateUnclassifiedSpecial(Neo4jDB conn, string classifierEmail)
+        {
+            try
+            {
+                // ClassifiableCollection classifiables = conn.getAllUnclassifiedSpecial(classifierEmail);
+                ClassifiableCollection classifiables = new ClassifiableCollection
+                {
+                    data = new List<Classifiable>(),
+                };
+
+                if (classifiables.data.Count > 0)
+                {
+                    for (int i = 0; i < classifiables.data.Count; i++)
+                    {
+                        String unClassified = classifiables.data[i].name;
+                        UnClassAdminCause.Items.Add(new ListItem(unClassified));
+                    }
+                    LabelNotClassifiedSpecial.Visible = false;
+                    UnClassAdminCause.Visible = true;
+                    ButtGLAMClassReClassNow.Visible = true;
+                }
+                else
+                {
+                    LabelNotClassifiedSpecial.Visible = true;
+                    LabelNotClassifiedSpecial.Text = UNCLASSFIED_SPECIAL_NONE;
+                    UnClassAdminCause.Visible = false;
+                    ButtGLAMClassReClassNow.Visible = false;
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine("GLAMClass_Exception: {0}", ex.Message);
+                
+                LabelNotClassifiedSpecial.Visible = true;
+                LabelNotClassifiedSpecial.Text = ERROR_SERVER;
+                UnClassAdminCause.Visible = false;
+                ButtGLAMClassReClassNow.Visible = false;
             }
         }
 

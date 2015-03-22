@@ -8,10 +8,14 @@
             <br />
             <table style="width:100%;">
                 <tr>
-                    <td class="auto-style1"><p>BCC Term Updates:</p>
+                    <td class="auto-style1">
+                        <h3>BCC Term Updates:</h3>
                         <select id="RecAddedTerms" name="D1" size="8" runat="server"></select><br /><br />
-                        <p>Your Recently Classified:</p>
-                        <select id="RecClassTerms" name="D1" size="8" runat="server"></select>
+                        <h3>Your Recently Classified:</h3>
+                        <select id="RecClassObj" name="D1" size="8" runat="server"></select>
+                        <div>
+                            <asp:Label ID="LabelRecClassObj" runat="server" Visible="false"></asp:Label>
+                        </div>
                     </td>
                     <td><center><h1>Welcome, Classifier!</h1>
                         <p>Search for items below, add new or classify items waiting to be classified! (And other instructions.)</p>
@@ -33,22 +37,37 @@
                                 </td>
                             </tr>
                         </table>
+                        <div>
+                            <asp:Label ID="Label1" runat="server" Text="Manage Classifiables" Font-Bold="True" Font-Size="Medium"></asp:Label>
+                        </div>
                         <table style="width:100%;">
                             <tr>
-
                                 <td>
-                                    <asp:Label ID="Label1" runat="server" Text="Manage Classifiables:" Font-Bold="True" Font-Size="Medium"></asp:Label><br />
-                                    <center><h3> Not Classified: </h3>
-                                    <select id="UnClassList" name="D1" size="5" runat="server"></select><br />
-                                    <asp:Button ID="ButtGLAMClassClassNow" runat="server" Text="Classify Now" OnClick="ClassNow_Click" Font-Size="Small" /></center>
+                                    <h3>Not Classified</h3>
+                                    <div id="NotClassifiedExists">
+                                        <center>
+                                            <select id="UnClassList" name="D1" size="5" runat="server"></select><br />
+                                            <asp:Button ID="ButtGLAMClassClassNow" runat="server" Text="Classify Now" OnClick="ClassNow_Click" Font-Size="Small" />
+                                        </center>
+                                    </div>
+                                    <div id="NotClassifiedNoneExist">
+                                        <asp:Label ID="LabelNotClassified" runat="server" Visible="false"></asp:Label>
+                                    </div>
                                 </td>
                                 <td>
-                                    <center><br />
-                                    <center><h3> Unclassified - Special: </h3>
+                                    <h3>Not Classified - Special</h3>
+                                    <div id="NotClassifiedSpecialExists">
+                                    <center>
                                     <select id="UnClassAdminCause" name="D1" size="5" runat="server"></select><br />
-                                    <asp:Button ID="ButtGLAMClassReClassNow" runat="server" Text="Reclassify Now" OnClick="ReClassNow_Click" Font-Size="Small" /></center></center>
+                                    <asp:Button ID="ButtGLAMClassReClassNow" runat="server" Text="Reclassify Now" OnClick="ReClassNow_Click" Font-Size="Small" />
+
+                                    </center>
+                                        </div>
+                                    <div id="NotClassifiedSpecialNoneExist">
+                                        <asp:Label ID="LabelNotClassifiedSpecial" runat="server" Visible="false"></asp:Label>
+                                    </div>
                                 </td>
-                                <td><center>OR</center></td>
+                                <td><center><p>OR</p></center></td>
                                 <td><center><asp:Button ID="ButtGLAMClassAddNew" runat="server" Text="Add New" OnClick="AddNew_Click" Font-Size="Small"/><br /><br />
                                     <asp:Button ID="RemoveClass" runat="server" Text="Remove" OnClick="RemoveClassPage_Click" Font-Size="Small"/>
                                     </center></td>
@@ -77,7 +96,7 @@
         #RecAddedTerms {
             width: 187px;
         }
-        #RecClassTerms {
+        #RecClassObj {
             width: 187px;
         }
     </style>

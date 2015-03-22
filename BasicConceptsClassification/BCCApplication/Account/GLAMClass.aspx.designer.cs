@@ -22,13 +22,22 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.HtmlControls.HtmlSelect RecAddedTerms;
         
         /// <summary>
-        /// RecClassTerms control.
+        /// RecClassObj control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSelect RecClassTerms;
+        protected global::System.Web.UI.HtmlControls.HtmlSelect RecClassObj;
+        
+        /// <summary>
+        /// LabelRecClassObj control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LabelRecClassObj;
         
         /// <summary>
         /// TextBox2 control.
@@ -49,13 +58,13 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Button Button1;
         
         /// <summary>
-        ///  NewsBoxClass control.
+        /// NewsBoxClass control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable  NewsBoxClass;
+        protected global::System.Web.UI.HtmlControls.HtmlTable NewsBoxClass;
         
         /// <summary>
         /// Label2 control.
@@ -103,6 +112,15 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Button ButtGLAMClassClassNow;
         
         /// <summary>
+        /// LabelNotClassified control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LabelNotClassified;
+        
+        /// <summary>
         /// UnClassAdminCause control.
         /// </summary>
         /// <remarks>
@@ -119,6 +137,15 @@ namespace BCCApplication.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button ButtGLAMClassReClassNow;
+        
+        /// <summary>
+        /// LabelNotClassifiedSpecial control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LabelNotClassifiedSpecial;
         
         /// <summary>
         /// ButtGLAMClassAddNew control.
