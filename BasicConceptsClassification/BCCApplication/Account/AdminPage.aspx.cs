@@ -64,25 +64,15 @@ namespace BCCApplication.Account
             }
             return currentNode;
         }
+
         protected void AddUpdateButton_Click(object sender, EventArgs e)
         {
-
-
+            //maynot use it 
         }
+
         protected void AddAddButton_Click(object sender, EventArgs e)
         {
-            /*
-            string new_term_string = NewTermTextBox.Text;
-            var conn = new Neo4jDB();
-            Term new_term = new Term
-            {
-                id = new_term_string,
-                rawTerm = new_term_string,
-                lower = new_term_string.ToLower()
-            };
-            conn.addTerm(new_term, null);
-             */
-           /*
+          
             string new_term_string = NewTermTextBox.Text;
             string parent_term = ParentTermTextBox.Text;
             var conn = new Neo4jDB();
@@ -94,44 +84,53 @@ namespace BCCApplication.Account
                 lower = new_term_string.ToLower()
             };
 
-            conn.addTerm(new_term, null);
-            conn.moveTerm(new_term, searching_term);
-            */
+            conn.addTerm(new_term, searching_term);
+           
+            
 
         }
+
         protected void MoveUpdateButton1_Click(object sender, EventArgs e)
         {
-
-
+            //maynot use it 
         }
         protected void MoveUpdateButton2_Click(object sender, EventArgs e)
         {
-
-
+            //maynot use it 
         }
         protected void MoveAddButton_Click(object sender, EventArgs e)
         {
-            /*
+            
             string move_term1 = MoveTermTextBox.Text;
             string move_term2 = MoveTermUnderTextBox.Text;
             var conn = new Neo4jDB();
             Term result_1 = conn.getTermByRaw(move_term1);
             Term result_2 = conn.getTermByRaw(move_term2);
             conn.moveTerm(result_1, result_2);
-            */
+            
         }
         protected void RenameUpdateButton_Click(object sender, EventArgs e)
         {
-
+            //maynot use it 
         }
         protected void RenameAddButton_Click(Object sender, EventArgs e)
         {
+            string rename_from_string = RenameTermTextBox.Text;
+            string rename_to_string = RenameToTextBox.Text;
+            var conn = new Neo4jDB();
+            Term renameterm = conn.getTermByRaw(rename_from_string);
+            renameterm.rawTerm = rename_to_string;
+            renameterm.lower = rename_to_string.ToLower();
+            //conn.delTerm()
 
         }
 
         protected void DeleteUpdateButton_Click(object sender, EventArgs e)
         {
-
+            string delete_term = DeleteTextBox.Text;
+            var conn = new Neo4jDB();
+            Term delete_search_term = conn.getTermByRaw(delete_term);
+            conn.delTermFORCE(delete_search_term);
         }
 
         protected void DeleteSafelyButton_Click(object sender, EventArgs e)

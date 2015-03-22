@@ -246,7 +246,7 @@
                                             <asp:TextBox ID="DeleteTextBox" runat="server"></asp:TextBox>
                                         </td>
                                         <td>
-                                            <asp:Button ID="DeleteUpdateButton" runat="server" Text="Update" OnClick="DeleteUpdateButton_Click" />
+                                            <asp:Button ID="DeleteUpdateButton" runat="server" Text="Detele" OnClick="DeleteUpdateButton_Click" />
                                         </td>
                                     </tr>
                                     <tr>
