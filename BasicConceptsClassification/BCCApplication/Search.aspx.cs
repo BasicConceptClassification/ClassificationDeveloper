@@ -16,22 +16,26 @@ public partial class Search : System.Web.UI.Page
     
     protected void Page_Load(object sender, EventArgs e)
     {
-        if (DataSet.Height != 0)
+        if (!Page.IsPostBack)
         {
             // Testing purposes, only loading from BccRoot with a small depth
             int expandDepth = -1;
 
-            // Fetch BCC from the DB
-            var dbConn = new Neo4jDB();
-            Term bccRootTerm = dbConn.getBccFromRootWithDepth(expandDepth);
+            try
+            {
+                // Fetch BCC from the DB
+                var dbConn = new Neo4jDB();
+                Term bccRootTerm = dbConn.getBccFromRootWithDepth(expandDepth);
 
-            // Create a starting TreeNode as the root to generate the BCC
-            TreeNode currentNode = new TreeNode();
-            DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
+                // Create a starting TreeNode as the root to generate the BCC
+                TreeNode currentNode = new TreeNode();
+                DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
 
-            // By default, leave collapsed
-            DataSet.CollapseAll();
-            DataSet.ShowCheckBoxes = TreeNodeTypes.All;
+                // By default, leave collapsed
+                DataSet.CollapseAll();
+                DataSet.ShowCheckBoxes = TreeNodeTypes.All;
+            }
+            catch { }
         }
     }
 

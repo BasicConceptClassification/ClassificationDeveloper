@@ -32,6 +32,7 @@ namespace BCCApplication.Account
                     {
                         GLAMListBox.Items.Add(g.name);
                     }
+                    GLAMListBox.SelectedIndex = 0;
                 }
             }
             catch (Exception) { }

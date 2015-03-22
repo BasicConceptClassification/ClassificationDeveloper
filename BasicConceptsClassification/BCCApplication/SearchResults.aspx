@@ -2,11 +2,11 @@
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <center><h1>Search</h1></center>
+        <center><h1>Search Results</h1></center>
         <br />
         <center>
-            Search Results:
-            <asp:TextBox ID="searching_textbox" runat="server" placeholder ="(term1),(term2),(term3)"/>
+            <asp:Label ID="SearchPrompt" runat="server" CssClass="control-label">Search for:</asp:Label>
+            <asp:TextBox ID="searching_textbox" runat="server" CssClass="input-xxlarge search-query" placeholder="(Search)(by)(Terms)"/>
             <asp:Button ID="btnclick" onclick="btnclick_Click" Text="Search" runat="server" />
             <br />
             <asp:Button ID="name_sort" runat="server" Text="Sort by name" OnClick="name_sort_Click" />

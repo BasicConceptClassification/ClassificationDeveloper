@@ -47,7 +47,7 @@
         <div class="form-group">
             <div class="col-md-10">
                 <asp:CheckBox runat="server" ID="ClassifierCheckBox" />
-                <asp:Label runat="server" AssociatedControlID="ClassifierCheckBox" CssClass="checkbox">Classifier</asp:Label>
+                <asp:Label runat="server" AssociatedControlID="ClassifierCheckBox" CssClass="checkbox">Make Classifier</asp:Label>
             </div>
         </div>
         <div class="form-group">

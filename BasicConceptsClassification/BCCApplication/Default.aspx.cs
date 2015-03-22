@@ -15,20 +15,28 @@ namespace BCCApplication
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            // Testing purposes, only loading from BccRoot with a small depth
-            int expandDepth = 2;
+            if (!Page.IsPostBack)
+            {
+                // Testing purposes, only loading from BccRoot with a small depth
+                int expandDepth = 2;
+                
+                // If server is down, just don't display anything
+                try
+                { 
+                    // Fetch BCC from the DB
+                    var dbConn = new Neo4jDB();
+                    Term bccRootTerm = dbConn.getBccFromRootWithDepth(expandDepth);
 
-            // Fetch BCC from the DB
-            var dbConn = new Neo4jDB();
-            Term bccRootTerm = dbConn.getBccFromRootWithDepth(expandDepth);
+                    // Create a starting TreeNode as the root to generate the BCC
+                    TreeNode currentNode = new TreeNode();
+                    DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
 
-            // Create a starting TreeNode as the root to generate the BCC
-            TreeNode currentNode = new TreeNode();
-            DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
-
-            // By default, leave collapsed
-            DataSet.CollapseAll();
-            DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
+                    // By default, leave collapsed
+                    DataSet.CollapseAll();
+                    DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
+                }
+                catch { }
+            }
         }
 
 
@@ -63,10 +71,11 @@ namespace BCCApplication
             return currentNode;
         }
 
-        protected void Button1_Click(object sender, EventArgs e)
+        protected void SearchBtn_Click(object sender, EventArgs e)
         {
-            
-
+            string str = TextBox2.Text;
+            Application["textpass"] = str;
+            Response.Redirect("~/SearchResults.aspx", true);
         }
     }
 }
