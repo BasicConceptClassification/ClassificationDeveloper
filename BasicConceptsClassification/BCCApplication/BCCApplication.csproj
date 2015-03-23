@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -238,6 +238,7 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
+    <Content Include="Roles\Admin\AllUsers.aspx" />
     <Content Include="Roles\Classification\Classification.aspx" />
     <Content Include="Roles\Web.config" />
     <Content Include="Roles\Admin\Administration.aspx" />
@@ -277,6 +278,7 @@
     <Compile Include="Account\GLAMClass.aspx.designer.cs">
       <DependentUpon>GLAMClass.aspx</DependentUpon>
     </Compile>
+    <Compile Include="App_Start\Startup.Auth.cs" />
     <Compile Include="Account\RemoveClassOb.aspx.cs">
       <DependentUpon>RemoveClassOb.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -284,7 +286,7 @@
     <Compile Include="Account\RemoveClassOb.aspx.designer.cs">
       <DependentUpon>RemoveClassOb.aspx</DependentUpon>
     </Compile>
-    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Roles\Startup.Auth.cs" />
     <Content Include="Roles\Classification\Web.config" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
@@ -378,6 +380,13 @@
     </Compile>
     <Compile Include="Logic\IdentityModel.cs" />
     <Compile Include="Logic\RoleActions.cs" />
+    <Compile Include="Roles\Admin\AllUsers.aspx.cs">
+      <DependentUpon>AllUsers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Roles\Admin\AllUsers.aspx.designer.cs">
+      <DependentUpon>AllUsers.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Roles\Classification\Classification.aspx.cs">
       <DependentUpon>Classification.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>

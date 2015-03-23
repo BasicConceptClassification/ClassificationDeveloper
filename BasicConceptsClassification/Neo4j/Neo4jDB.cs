@@ -1324,7 +1324,7 @@ namespace Neo4j
                         .Create("(b:Term{addMe})<-[:SUBTERM_OF]-(a)")
                         .WithParam("addMe", newTerm)
                         .Return(() => Return.As<int>("count(b)"))
-                        .Results.DefaultIfEmpty(0).FirstOrDefault(); 
+                        .Results.DefaultIfEmpty(0).FirstOrDefault();
 
                     if (result != 0 && newTerm.subTerms != null)
                     {
@@ -1443,19 +1443,39 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Safe-deletes a term from the database. The operation has no effect if the target has child terms.
+        /// Renames a term in the database.
         /// </summary>
-        /// <param name="t">A term object representing the term to be added. Note that ID is the only matching criteria.</param>
-        /// <returns>The number of nodes affected by the operation. This will include:
-        ///     (a) The deleted node
-        ///     (b) Concept strings containing the deleted term
-        ///     (c) Classifiables with concept strings that contained the deleted term
-        /// </returns>
-        public int delTerm(Term t)
+        /// <param name="t">The term you want to rename. NB the only matching criteria is ID.</param>
+        /// <param name="newRawTerm">The new name for the term.</param>
+        /// <returns>True if the operation was successful, false otherwise.</returns>
+        public bool renameTerm(Term t, String newRawTerm)
         {
-            return 0;
+            this.open();
 
-            // TODO
+            if (client != null)
+            {
+                var targetSearch = client.Cypher
+                    .Match("(a:Term{id:{PARAM1}})")
+                    .WithParam("PARAM1", t.id)
+                    .Set("a.rawTerm = {PARAM2}, a.lower = {PARAM3}")
+                    .WithParam("PARAM2", newRawTerm)
+                    .WithParam("PARAM3", newRawTerm.ToLower())
+                    .Return(() => Return.As<int>("count(a)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
+
+                if (targetSearch == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
         }
 
         /// <summary>
@@ -1480,6 +1500,139 @@ namespace Neo4j
             else
             {
                 return 0;
+            }
+        }
+
+        /// <summary>
+        /// Checks if the given term can be safely deleted from the database, that is, the given term has no child terms.
+        /// </summary>
+        /// <param name="t">The term to check. NB the only matching criteria is the term ID.</param>
+        /// <returns>True if the term is safe to delete, false otherwise.</returns>
+        public bool validateDeleteTerm(Term t)
+        {
+            this.open();
+            if (client != null)
+            {
+                var numChildren = client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM_ID}})<-[:SUBTERM_OF]-(b)")
+                    .WithParam("PARAM_ID", t.id)
+                    .Return(() => Return.As<int>("count(b)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
+
+                if (numChildren > 0)
+                {
+                    return false;
+                }
+                else
+                {
+                    return true;
+                }
+            }
+            else
+            {
+                // The client couldn't be opened, so assume we're not ok to delete the term.
+                return false;
+            }
+        }
+
+        /// <summary>
+        /// Operates like delTerm, but performs no actual deletion.
+        /// </summary>
+        /// <param name="t">The term to preview deletion for.</param>
+        /// <returns>Nodes that would be affected by the deletion of Term t</returns>
+        public AffectedNodes delTermPREVIEW(Term t)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                AffectedNodes result = new AffectedNodes();
+
+                List<ConceptString> theStrings = client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM_ID}})<-[:HAS_TERM]-(b:ConceptString)")
+                    .WithParam("PARAM_ID", t.id)
+                    .Return(() => Return.As<ConceptString>("b"))
+                    .Results.ToList();
+
+                foreach (ConceptString aString in theStrings)
+                {
+                    // TODO: doesn't work! :P
+                    result.stringsAffected.Add(aString);
+
+                    List<Classifiable> theClassifiables = client
+                        .Cypher
+                        .Match("(a:ConceptString{terms:{PARAM_STR}})<-[:HAS_CONSTR]-(b:Classifiable)")
+                        .WithParam("PARAM_STR", aString.terms)
+                        .Return(() => Return.As<Classifiable>("b"))
+                        .Results.ToList();
+
+                    foreach (Classifiable aClassifiable in theClassifiables)
+                    {
+                        result.classifiablesAffected.Add(aClassifiable);
+                    }
+                }
+
+                return result;
+            }
+            else
+            {
+                return new AffectedNodes();
+            }
+        }
+
+        /// <summary>
+        /// Safe-deletes a term from the databse, that is, first checks that the term to be deleted has no child terms.
+        /// If the operation cannot be performed because it cannot be validated, this method throws an exception.
+        /// If the operation cannot be performed because there was an error in negoriating with the database, the method
+        /// returns an new, empty struct.
+        /// </summary>
+        /// <param name="t">The term to be deleted. NB that ID is the only matching criteria.</param>
+        /// <returns>A struct representing the concept strings and classifiables affected by this operation.</returns>
+        public AffectedNodes delTerm(Term t)
+        {
+            if (!validateDeleteTerm(t))
+            {
+                throw new ArgumentException();
+            }
+
+            this.open();
+
+            if (client != null)
+            {
+                AffectedNodes result = delTermPREVIEW(t);
+
+                delTermFORCE(t);
+
+                return result;
+            }
+            else
+            {
+                return new AffectedNodes();
+            }
+        }
+
+        /// <summary>
+        /// A data stucture that represents the terms affected by a DELETE operation in the database.
+        /// </summary>
+        public class AffectedNodes
+        {
+            public List<ConceptString> stringsAffected
+            {
+                get;
+                set;
+            }
+            public List<Classifiable> classifiablesAffected
+            {
+                get;
+                set;
+            }
+
+            public AffectedNodes()
+            {
+                stringsAffected = new List<ConceptString>();
+                classifiablesAffected = new List<Classifiable>();
             }
         }
     }
