@@ -22,9 +22,11 @@ namespace BCCApplication.Account
         // I don't know if we want to use status messages like this. 
         // If we do, I'm not sure how to give custom fail messages, other than making
         // multiple ones
-        protected string SUCCESS = "Removed successfully.";
-        protected string FAILED_GENERIC = "Unable to remove sucessfully.";
-        protected string PLEASE_SELECT = "Please select a Classifiable from the list and then click the button Get Information.";
+        private string SUCCESS = "Removed successfully.";
+        private string FAILED_GENERIC = "Unable to remove sucessfully.";
+        private string PLEASE_SELECT = "Please select a Classifiable from the list and then click the button Get Information.";
+        private string CLASSIFIABLE_NONE = "You don't have any classifiables!";
+        private string ERROR_SERVER = "Having server issues, sorry!";
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -38,6 +40,8 @@ namespace BCCApplication.Account
             string userEmail = currentUser.Email;
             var dbConn = new Neo4jDB();
 
+            // Give a notification/message to the user to left them know why their listbox is empty
+            // in the case that it is.
             try
             {
                 GLAM gl = dbConn.getGlamOfClassifier(userEmail);
@@ -52,11 +56,18 @@ namespace BCCApplication.Account
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 ClassListBox.Visible = false;
+                ButtonGetClassifiableInfo.Visible = false;
+                LabelClassListBox.Text = ERROR_SERVER;
+                LabelClassListBox.Visible = true;
             }
 
+            // If any classifiables exist, display them, otherwise, don't show the listbox 
+            // and display a message to the classifier user
             if (classifiables.data.Count > 0)
             {
                 ClassListBox.Visible = true;
+                LabelClassListBox.Visible = false;
+                ButtonGetClassifiableInfo.Visible = true;
                 foreach (Classifiable c in classifiables.data)
                 {
                     ClassListBox.Items.Add(c.name);
@@ -65,6 +76,9 @@ namespace BCCApplication.Account
             else
             {
                 ClassListBox.Visible = false;
+                ButtonGetClassifiableInfo.Visible = false;
+                LabelClassListBox.Text = CLASSIFIABLE_NONE;
+                LabelClassListBox.Visible = true;
             }    
         }
 
@@ -91,10 +105,11 @@ namespace BCCApplication.Account
             {
                 System.Diagnostics.Debug.WriteLine("RemoveClassOb_Please select a classifiable.");
                 Notification.Text = PLEASE_SELECT;
+                Notification.Visible = true;
             }
             else
             {
-                Notification.Text = "";
+                Notification.Visible = false;
             }
            
             // This feels like such a hack to:
@@ -108,8 +123,6 @@ namespace BCCApplication.Account
         {
             System.Diagnostics.Debug.WriteLine(String.Format("RemoveClassOb_TRYING: removing at index {0}", 
                 SelectIndex.Value));
-
-
 
             // Try to make sure a proper index is selected
             try
