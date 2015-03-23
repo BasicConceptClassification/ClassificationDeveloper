@@ -174,6 +174,7 @@
     <Content Include="Account\AccessDenied.aspx" />
     <Content Include="Account\AdminPage.aspx" />
     <Content Include="Account\ClassOb.aspx" />
+    <Content Include="Account\EditClassifiable.aspx" />
     <Content Include="Account\GLAMClass.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Manage.aspx" />
@@ -261,6 +262,13 @@
     </Compile>
     <Compile Include="Account\ClassOb.aspx.designer.cs">
       <DependentUpon>ClassOb.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\EditClassifiable.aspx.cs">
+      <DependentUpon>EditClassifiable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\EditClassifiable.aspx.designer.cs">
+      <DependentUpon>EditClassifiable.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\GLAMClass.aspx.cs">
       <DependentUpon>GLAMClass.aspx</DependentUpon>

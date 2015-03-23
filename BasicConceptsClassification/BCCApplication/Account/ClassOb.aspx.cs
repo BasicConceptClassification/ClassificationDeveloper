@@ -18,9 +18,32 @@ namespace BCCApplication.Account
         private string SUCCESS_ADD = "Successfully added: ";
         private string FAIL_UNIQUE = "Failed: Another GLAM Object with that name already exists in your GLAM.";
         private string FAIL_TERMS = "Not all the terms in the concept string are from the controlled vocabulary.";
+        static int counter_once = 1;
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            if (counter_once == 1)
+            {
+                string getinput_name = "";
+                string getinput_url = "";
+                string getinput_con = "";
+
+                try
+                {
+                    getinput_name = Application["namepass"].ToString();
+                    getinput_url = Application["urlpass"].ToString();
+                    getinput_con = Application["conpass"].ToString();
+                }
+                catch
+                {
+
+                }
+                ObName.Text = getinput_name;
+                ObURL.Text = getinput_url;
+                ObConcept.Text = getinput_con;
+                counter_once--;
+
+            }
             if (!Page.IsPostBack)
             {
                 // At the moment, generates another tree after clicking the Submit button.
