@@ -817,6 +817,36 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void TestRenameTerm()
+        {
+            var conn = new Neo4jDB();
+
+            // Create a new node to test on.
+            Term t1 = new Term
+            {
+                id = "TEST_1",
+                rawTerm = "Hello!",
+                lower = "hello"
+            };
+
+            conn.addTerm(t1, null);
+            Assert.AreEqual(t1.rawTerm, conn.getTermByRaw("Hello!").rawTerm);
+
+            // Rename the term.
+            Assert.IsTrue(conn.renameTerm(t1, "World!"));
+
+            // Check the op was successful.
+            Term checkMe = conn.getTermByRaw("World!");
+            Assert.AreEqual("World!", checkMe.rawTerm);
+            Assert.AreEqual("world!", checkMe.lower);
+
+            // Cleanup the changes we made to the db.
+            t1.rawTerm = "World!";
+            t1.lower = "world";
+            conn.delTermFORCE(t1);
+        }
+
+        [TestMethod]
         public void testValidateDelete()
         {
             var conn = new Neo4jDB();

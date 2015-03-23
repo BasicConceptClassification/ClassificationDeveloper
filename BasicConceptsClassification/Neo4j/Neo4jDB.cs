@@ -1030,6 +1030,42 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Renames a term in the database.
+        /// </summary>
+        /// <param name="t">The term you want to rename. NB the only matching criteria is ID.</param>
+        /// <param name="newRawTerm">The new name for the term.</param>
+        /// <returns>True if the operation was successful, false otherwise.</returns>
+        public bool renameTerm(Term t, String newRawTerm)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                var targetSearch = client.Cypher
+                    .Match("(a:Term{id:{PARAM1}})")
+                    .WithParam("PARAM1", t.id)
+                    .Set("a.rawTerm = {PARAM2}, a.lower = {PARAM3}")
+                    .WithParam("PARAM2", newRawTerm)
+                    .WithParam("PARAM3", newRawTerm.ToLower())
+                    .Return(() => Return.As<int>("count(a)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
+
+                if (targetSearch == 1)
+                {
+                    return true;
+                }
+                else
+                {
+                    return false;
+                }
+            }
+            else
+            {
+                return false;
+            }
+        }
+
+        /// <summary>
         /// Force-delete a given term and all relationships attached to it - that is, the term and all its relationships are deleted and no checking is done.
         /// </summary>
         /// <param name="t">The term to be deleted. Note that the only matching criteria is id.</param>
@@ -1109,6 +1145,7 @@ namespace Neo4j
 
                 foreach (ConceptString aString in theStrings)
                 {
+                    // TODO: doesn't work! :P
                     result.stringsAffected.Add(aString);
 
                     List<Classifiable> theClassifiables = client
@@ -1151,7 +1188,7 @@ namespace Neo4j
 
             if (client != null)
             {
-                AffectedNodes result = this.delTermPREVIEW(t);
+                AffectedNodes result = delTermPREVIEW(t);
 
                 delTermFORCE(t);
 
@@ -1174,8 +1211,8 @@ namespace Neo4j
                 set;
             }
             public List<Classifiable> classifiablesAffected
-            { 
-                get; 
+            {
+                get;
                 set;
             }
 
