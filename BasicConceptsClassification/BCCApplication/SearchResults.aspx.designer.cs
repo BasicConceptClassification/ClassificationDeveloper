@@ -12,6 +12,15 @@
 public partial class SearchResults {
     
     /// <summary>
+    /// SearchPrompt control.
+    /// </summary>
+    /// <remarks>
+    /// Auto-generated field.
+    /// To modify move field declaration from designer file to code-behind file.
+    /// </remarks>
+    protected global::System.Web.UI.WebControls.Label SearchPrompt;
+    
+    /// <summary>
     /// searching_textbox control.
     /// </summary>
     /// <remarks>

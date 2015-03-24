@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="utf-8"?>
+<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="12.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -174,12 +174,14 @@
     <Content Include="Account\AccessDenied.aspx" />
     <Content Include="Account\AdminPage.aspx" />
     <Content Include="Account\ClassOb.aspx" />
+    <Content Include="Account\EditClassifiable.aspx" />
     <Content Include="Account\GLAMClass.aspx" />
     <Content Include="Account\Login.aspx" />
     <Content Include="Account\Manage.aspx" />
     <Content Include="Account\OpenAuthProviders.ascx" />
     <Content Include="Account\Register.aspx" />
     <Content Include="Account\RegisterExternalLogin.aspx" />
+    <Content Include="Account\RemoveClassOb.aspx" />
     <Content Include="Classification.aspx" />
     <Content Include="Contact.aspx" />
     <Content Include="Content\Site.css" />
@@ -246,6 +248,7 @@
     </Compile>
     <Compile Include="Account\AdminPage.aspx.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Account\AdminPage.aspx.designer.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>
@@ -257,12 +260,30 @@
     <Compile Include="Account\ClassOb.aspx.designer.cs">
       <DependentUpon>ClassOb.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Account\EditClassifiable.aspx.cs">
+      <DependentUpon>EditClassifiable.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\EditClassifiable.aspx.designer.cs">
+      <DependentUpon>EditClassifiable.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Account\GLAMClass.aspx.cs">
       <DependentUpon>GLAMClass.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Account\GLAMClass.aspx.designer.cs">
       <DependentUpon>GLAMClass.aspx</DependentUpon>
     </Compile>
+    <Compile Include="App_Start\Startup.Auth.cs" />
+    <Compile Include="Account\RemoveClassOb.aspx.cs">
+      <DependentUpon>RemoveClassOb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\RemoveClassOb.aspx.designer.cs">
+      <DependentUpon>RemoveClassOb.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Roles\Startup.Auth.cs" />
+    <Content Include="Roles\Classification\Web.config" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
     <Content Include="Scripts\jquery-2.1.3.min.js" />

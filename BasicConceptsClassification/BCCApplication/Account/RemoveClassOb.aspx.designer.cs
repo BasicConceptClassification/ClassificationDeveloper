@@ -10,79 +10,43 @@
 namespace BCCApplication.Account {
     
     
-    public partial class GLAMClass {
+    public partial class RemoveClassOb {
         
         /// <summary>
-        /// RecAddedTerms control.
+        /// Notification control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSelect RecAddedTerms;
+        protected global::System.Web.UI.WebControls.Label Notification;
         
         /// <summary>
-        /// RecClassObj control.
+        /// ClassListBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSelect RecClassObj;
+        protected global::System.Web.UI.WebControls.ListBox ClassListBox;
         
         /// <summary>
-        /// LabelRecClassObj control.
+        /// ButtonGetClassifiableInfo control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelRecClassObj;
+        protected global::System.Web.UI.WebControls.Button ButtonGetClassifiableInfo;
         
         /// <summary>
-        /// TextBox2 control.
+        /// LabelClassListBox control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox TextBox2;
-        
-        /// <summary>
-        /// Button1 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button Button1;
-        
-        /// <summary>
-        /// NewsBoxClass control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlTable NewsBoxClass;
-        
-        /// <summary>
-        /// Label2 control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Label Label2;
-        
-        /// <summary>
-        /// NewsBox control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox NewsBox;
+        protected global::System.Web.UI.WebControls.Label LabelClassListBox;
         
         /// <summary>
         /// Label1 control.
@@ -94,75 +58,66 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Label Label1;
         
         /// <summary>
-        /// UnClassList control.
+        /// Label2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSelect UnClassList;
+        protected global::System.Web.UI.WebControls.Label Label2;
         
         /// <summary>
-        /// ButtGLAMClassClassNow control.
+        /// Label3 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ButtGLAMClassClassNow;
+        protected global::System.Web.UI.WebControls.Label Label3;
         
         /// <summary>
-        /// LabelNotClassified control.
+        /// SelectIndex control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelNotClassified;
+        protected global::System.Web.UI.WebControls.HiddenField SelectIndex;
         
         /// <summary>
-        /// UnClassAdminCause control.
+        /// SelectName control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlSelect UnClassAdminCause;
+        protected global::System.Web.UI.WebControls.TextBox SelectName;
         
         /// <summary>
-        /// ButtGLAMClassReClassNow control.
+        /// SelectURL control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ButtGLAMClassReClassNow;
+        protected global::System.Web.UI.WebControls.TextBox SelectURL;
         
         /// <summary>
-        /// LabelNotClassifiedSpecial control.
+        /// SelectConceptString control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label LabelNotClassifiedSpecial;
+        protected global::System.Web.UI.WebControls.TextBox SelectConceptString;
         
         /// <summary>
-        /// ButtGLAMClassAddNew control.
+        /// RemoveClassData control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button ButtGLAMClassAddNew;
-        
-        /// <summary>
-        /// RemoveClass control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.Button RemoveClass;
+        protected global::System.Web.UI.WebControls.Button RemoveClassData;
     }
 }

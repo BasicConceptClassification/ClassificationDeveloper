@@ -10,87 +10,87 @@
 namespace BCCApplication.Account {
     
     
-    public partial class ClassOb {
+    public partial class EditClassifiable {
         
         /// <summary>
-        /// ObName control.
+        /// EditClassifiable1 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox ObName;
+        protected global::System.Web.UI.HtmlControls.HtmlGenericControl EditClassifiable1;
         
         /// <summary>
-        /// ObURL control.
+        /// TextBox_Name control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox ObURL;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Name;
         
         /// <summary>
-        /// EditPerm control.
+        /// TextBox_URL control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList EditPerm;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_URL;
         
         /// <summary>
-        /// ObConcept control.
+        /// TextBox_Concept control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TextBox ObConcept;
+        protected global::System.Web.UI.WebControls.TextBox TextBox_Concept;
         
         /// <summary>
-        /// ObAddStatus control.
+        /// Edit control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Label ObAddStatus;
+        protected global::System.Web.UI.WebControls.Button Edit;
         
         /// <summary>
-        /// SubmitObj control.
+        /// ListBoxClass control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button SubmitObj;
+        protected global::System.Web.UI.WebControls.ListBox ListBoxClass;
         
         /// <summary>
-        /// DataSet control.
+        /// Update_Class control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.TreeView DataSet;
+        protected global::System.Web.UI.WebControls.Button Update_Class;
         
         /// <summary>
-        /// AddTOb control.
+        /// ListBox2 control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button AddTOb;
+        protected global::System.Web.UI.WebControls.ListBox ListBox2;
         
         /// <summary>
-        /// RemoveTOb control.
+        /// Update_Unclass control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.WebControls.Button RemoveTOb;
+        protected global::System.Web.UI.WebControls.Button Update_Unclass;
     }
 }

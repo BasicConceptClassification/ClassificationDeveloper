@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -12,12 +12,31 @@ using Microsoft.AspNet.Membership.OpenAuth;
 using BCCApplication.Logic;
 using Microsoft.AspNet.Identity.EntityFramework;
 
+using Neo4j;
+using BCCLib;
+using System.Diagnostics;
+
 namespace BCCApplication.Account
 {
     public partial class Register : Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
+            try
+            {
+                var dbConn = new Neo4jDB();
+                List<GLAM> GLAMS = dbConn.getAllGlams();
+                if (GLAMS.Count != 0)
+                {
+                    foreach (GLAM g in GLAMS)
+                    {
+                        GLAMListBox.Items.Add(g.name);
+                    }
+                    GLAMListBox.SelectedIndex = 0;
+                }
+            }
+            catch (Exception) { }
+
             if (User.IsInRole(RoleActions.ROLE_ADMIN))
             {
                 ClassifierCheckBox.Visible = true;
@@ -58,6 +77,8 @@ namespace BCCApplication.Account
                     {
                         IdUserResult = userMgr.AddToRole(userMgr.FindByName(Username.Text).Id, RoleActions.ROLE_CLASS);
                     }
+
+                    AddNeo4jClassifierData();
                 }
 
                 signInManager.PasswordSignIn(Username.Text, Password.Text, true, false);
@@ -67,6 +88,25 @@ namespace BCCApplication.Account
             else
             {
                 ErrorMessage.Text = IdUserResult.Errors.FirstOrDefault();
+            }
+        }
+
+        protected int AddNeo4jClassifierData()
+        {
+            GLAM classifierGlam = new GLAM(GLAMListBox.SelectedValue);
+            Classifier newClassifier = new Classifier(classifierGlam);
+            newClassifier.email = Email.Text;
+
+            // Need to something more than this?
+            try
+            {
+                var dbConn = new Neo4jDB();
+                dbConn.addClassifier(newClassifier);
+                return 0;
+            }
+            catch (Exception) 
+            {
+                return 1;
             }
         }
     }

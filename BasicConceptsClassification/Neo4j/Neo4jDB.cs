@@ -42,6 +42,90 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Add a new Classifier. Will create a new GLAM if the one provided 
+        /// does not currently exist
+        /// </summary>
+        /// <param name="newClassifier"></param>
+        public Classifier addClassifier(Classifier newClassifier)
+        {
+            this.open();
+            if (client != null)
+            {
+                // Query:
+                // MERGE (g:GLAM {name: "glamName"})
+                // CREATE (c:Classifier)
+                // SET c.email = {email}
+                // CREATE (c)-[:ASSOCIATED_WITH]->(g)
+                // RETURN c AS addedClassifier
+                var query = client.Cypher
+                    .Merge("(g:GLAM {name: {glamName} })")
+                    .WithParam("glamName", newClassifier.getOrganizationName())
+                    .Create("(c:Classifier {email: {email}})")
+                    .WithParam("email", newClassifier.email)
+                    .Create("(c)-[:ASSOCIATED_WITH]->(g)")
+                    .With("c.email as newEmail, g.name AS gName, g.homeUrl AS gUrl")
+                    .Return((newEmail, gName, gUrl) => new
+                    {
+                        classifierEmail = newEmail.As<string>(),
+                        glamName = gName.As<string>(),
+                        glamUrl = gUrl.As<string>(),
+                    })
+                    .Results.Single();
+                  
+                if (query != null)
+                {          
+                    var rtnGlam = new GLAM(query.glamName);
+                    Classifier rtnClassifier = new Classifier(rtnGlam);
+                    rtnClassifier.email = query.classifierEmail;
+                    return rtnClassifier;
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Get Classifier by email.
+        /// </summary>
+        /// <param name="email">Classifier's email</param>
+        /// <returns>Classifier if exists, else null.</returns>
+        public Classifier getClassifier(String email)
+        {
+            this.open();
+            if (client != null)
+            {
+                // Query
+                // MATCH (c:Classifier {email: {email} })
+                // RETURN c
+                try
+                {
+                    var query = client.Cypher
+                        .Match("(c:Classifier {email: {email} })-[:ASSOCIATED_WITH]->(g:GLAM)")
+                        .WithParam("email", email)
+                        .With("c.email AS cEmail, g.name AS gName")
+                        .Return((cEmail, gName) => new
+                        {
+                            classifierEmail = cEmail.As<string>(),
+                            glamName = gName.As<string>(),
+                        }).Results.Single();
+                    
+                    if (query != null)
+                    {
+                        var rtnGlam = new GLAM(query.glamName);
+                        Classifier rtnClassifier = new Classifier(rtnGlam);
+                        rtnClassifier.email = query.classifierEmail;
+                        return rtnClassifier;
+                    }
+                    
+                }
+                catch (InvalidOperationException)
+                {
+                    // System.InvalidOperationException: Sequence contains no elements
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
         /// Delete a Classifier from the GraphDB.
         /// <para>Mostly for unit testing puposes. Will only delete if has no Classifiables.</para>
         /// </summary>
@@ -50,14 +134,106 @@ namespace Neo4j
             this.open();
             if (client != null)
             {
-                // MATCH (:Classifier)-[r]-(a{id:"Neo4j-dummyiD"})-[r2:`HAS_CONSTR`]->(b)
-                // OPTIONAL MATCH (b)-[r3:HAS_TERM]->(t) 
-                // DELETE r, a, r2, b, r3
+                // MATCH (o:Classifier {email: {em} })
+                // OPTIONAL MATCH (o)-[r:ASSOCIATED_WITH]->(:GLAM)
+                // DELETE o,r
                 client.Cypher
                     .Match("(o:Classifier{email: {em} })")
                     .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
                     .WithParam("em", classifierToDel.email)
                     .Delete("o,r")
+                    .ExecuteWithoutResults();
+            }
+        }
+
+        /// <summary>
+        /// Might need.
+        /// </summary>
+        /// <param name="classifierEmail"></param>
+        public GLAM getGlamOfClassifier(String classifierEmail)
+        {
+            this.open();
+            if (client != null)
+            {
+                // Query
+                // MATCH (g:GLAM)
+                // WITH g.name as gName
+                // ORDER BY gName
+                // RETURN gName
+                var query = client.Cypher
+                    .Match("(g:GLAM)<-[:ASSOCIATED_WITH]-(c:Classifier {email:{em}})")
+                    .WithParam("em", classifierEmail)
+                    .With("g.name AS gName")
+                    .Return((gName) => new
+                    {
+                        glamName = gName.As<string>(),
+                    }).Results.Single();
+
+                if (query != null)
+                {
+                    return new GLAM(query.glamName);
+                }
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Retrieves the list of all GLAMs.
+        /// </summary>
+        /// <param name="alphabetical">Sorts alphabetically by default.</param>
+        /// <returns></returns>
+        public List<GLAM> getAllGlams(bool alphabetical = true)
+        {
+            List<GLAM> rtnGLAMs = new List<GLAM>();
+
+            this.open();
+            if (client != null)
+            {
+                // Query
+                // MATCH (g:GLAM)
+                // WITH g.name as gName
+                // ORDER BY gName
+                // RETURN gName
+                var query = client.Cypher
+                    .Match("(g:GLAM)")
+                    .With("g.name AS gName");
+                if (alphabetical)
+                {
+                    query = query.OrderBy("gName");
+                }
+                var result = query.Return((gName) => new
+                    {
+                        glamName = gName.As<string>(),
+                    }).Results.ToList();
+
+                if (result != null)
+                {
+                    foreach (var res in result)
+                    {
+                        GLAM tmpGLAM = new GLAM(res.glamName);
+                        rtnGLAMs.Add(tmpGLAM);
+                    }
+                }
+            }
+            return rtnGLAMs;
+        }
+
+        /// <summary>
+        /// For Testing.
+        /// </summary>
+        /// <param name="glam"></param>
+        public void deleteGlam(GLAM glam)
+        {
+            this.open();
+            if (client != null)
+            {
+                // MATCH (o:Classifier {email: {em} })
+                // OPTIONAL MATCH (o)-[r:ASSOCIATED_WITH]->(:GLAM)
+                // DELETE o,r
+                client.Cypher
+                    .Match("(g:GLAM{name: {name} })")
+                    .WithParam("name", glam.name)
+                    .Delete("g")
                     .ExecuteWithoutResults();
             }
         }
@@ -74,18 +250,29 @@ namespace Neo4j
             {
                 // Query:
                 // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
+                // Match (g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)
                 // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
+                // OPTIONAL MATCH (g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)
                 // RETURN 	c, 
-                //          cs,
-                //          COLLECT ([t]) as ts
+                //          COLLECT ([t]) as ts,
+                //          
+                // We have g and g2 for the two GLAMs in case another user outside of the GLAM
+                // is allowed to modify...like the admin?
                 var query = client.Cypher
                     .Match("(c:Classifiable{id:{id}})-[:HAS_CONSTR]->(cs)")
-                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
                     .WithParam("id", id)
-                    .Return((c, t) => new
+                    .Match("(g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)")
+                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
+                    .OptionalMatch("(g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)")
+                    .With("c, t, g1.name AS ownerG, g2.name AS editorG, owner.email AS ownerE, lastEditor.email AS editorE")
+                    .Return((c, t, ownerG, ownerE, editorG, editorE) => new
                     {
                         classifiable = c.As<Classifiable>(),
                         terms = t.CollectAs<Term>(),
+                        ownerGlam = ownerG.As<string>(),
+                        ownerEmail = ownerE.As<string>(),
+                        editorGlam = editorG.As<string>(),
+                        editorEmail = editorE.As<string>(),
                     }).Results.SingleOrDefault();
 
                 if (query != null)
@@ -108,8 +295,15 @@ namespace Neo4j
                     // A bit of a hack for now. But it maintains order because of
                     // ...some reason.
                     resConStr.terms.Reverse();
-
                     query.classifiable.conceptStr = resConStr;
+
+                    // If these two are not null...
+                    if (query.ownerGlam != null && query.ownerEmail != null)
+                    {
+                        GLAM tmpG = new GLAM(query.ownerGlam);
+                        query.classifiable.owner = new Classifier(tmpG);
+                        query.classifiable.owner.email = query.ownerEmail;
+                    }
 
                     return query.classifiable;
                 }
@@ -183,15 +377,78 @@ namespace Neo4j
             return resColl;
         }
 
+        public ClassifiableCollection getClassifiables(Classifier owner)
+        {
+             ClassifiableCollection resColl = new ClassifiableCollection
+            {
+                data = new List<Classifiable>(),
+            };
+
+            this.open();
+            if (client != null)
+            {
+                // Query 
+                // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
+                // WHERE o.email = "testingRecent@BCCNeo4j.com"
+                // OPTIONAL MATCH (c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t:Term)
+                // RETURN c AS classifiable
+                // ORDER BY c.name
+                var query = client.Cypher
+                    .Match("(c:Classifiable)<-[:OWNS]-(owner:Classifier)")
+                    .Where("owner.email = {email}").WithParam("email", owner.email)
+                    .OptionalMatch("(c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t:Term)")
+                    .Return((c, t) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                        terms = t.CollectAs<Term>(),
+                    })
+                    .OrderBy("c.name")
+                    .Results.ToList();
+
+                if (query != null)
+                {
+                    foreach (var res in query)
+                    {
+                        // if the union has no data, returns as null,
+                        // so need to check that we actually have a result
+                        if (res.classifiable != null)
+                        {
+                            // TODO: reorder terms to match concept string
+                            ConceptString resConStr = new ConceptString
+                            {
+                                terms = new List<Term>(),
+                            };
+
+                            // Thanks muchy to the example:
+                            // https://github.com/neo4j-contrib/developer-resources/blob/gh-pages/language-guides/dotnet/neo4jclient/Neo4jDotNetDemo/Controllers/MovieController.cs
+
+                            foreach (var t in res.terms)
+                            {
+                                t.Data.subTerms = new List<Term>();
+                                resConStr.terms.Add(t.Data);
+                            }
+
+                            // A bit of a hack for now. But it maintains order because of
+                            // ...some reason.
+                            resConStr.terms.Reverse();
+
+                            res.classifiable.conceptStr = resConStr;
+                            resColl.data.Add(res.classifiable);
+                        }
+                        
+                    }
+                }
+            }
+            return resColl;
+        }
+
         /// <summary>
-        /// Get all the Classifiables that are not classified.
-        /// <para>Classifiables returned are not associated with whoever
-        /// added them.</para>
+        /// Get the classifier's recently classified classifiables.
         /// </summary>
-        /// <returns>A ClassifiableCollection with Classifiables that have
-        /// not been classified. If all have been classified then the 
-        /// the collection will be empty.</returns>
-        public ClassifiableCollection getAllUnClassified()
+        /// <param name="classifier">Classifier who owns the classifiables returned.</param>
+        /// <returns>Classifiables without their concept string, owner, who recently classified them,
+        /// etc.</returns>
+        public ClassifiableCollection getRecentlyClassified(string classifierEmail)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
             {
@@ -202,26 +459,103 @@ namespace Neo4j
             if (client != null)
             {
                 // Query 
-                // MATCH (c:Classifiable)-[:`HAS_CONSTR`]->(cs:ConceptString {terms:""}) 
-                // RETURN c, cs
+                // MATCH (c)<-[rModify:MODIFIED_BY]-(o)
+                // WHERE o.email = "testingRecent@BCCNeo4j.com"
+                // RETURN c AS classifiable, rModify.lastModified as date
+                // ORDER BY date
                 var query = client.Cypher
-                    .Match("(c:Classifiable)-[:`HAS_CONSTR`]->(cs:ConceptString {terms:\"\"})")
+                    .Match("(c:Classifiable)<-[rModified:MODIFIED_BY]-(o:Classifier)")
+                    .Where("o.email = {email}").WithParam("email", classifierEmail)
+                    .With("c, rModified.lastModified AS date")
                     .Return((c) => new
                     {
                         classifiable = c.As<Classifiable>(),
                     })
+                    .OrderByDescending("date")
                     .Results.ToList();
 
                 if (query != null)
                 {
                     foreach (var res in query)
                     {
-                        res.classifiable.conceptStr = new ConceptString
+                        // if the union has no data, returns as null,
+                        // so need to check that we actually have a result
+                        if (res.classifiable != null)
                         {
-                            terms = new List<Term>(),
-                        };
+                            res.classifiable.conceptStr = new ConceptString
+                            {
+                                terms = new List<Term>(),
+                            };
+                            resColl.data.Add(res.classifiable);
+                        }
+                    }
+                }
+            }
+            return resColl;
+        }
 
-                        resColl.data.Add(res.classifiable);
+        /// <summary>
+        /// Get all the Classifiables that do not have the status "Classified".
+        /// <para>Classifiables returned are not associated with whoever
+        /// added them.</para>
+        /// </summary>
+        /// <returns>A ClassifiableCollection with Classifiables that have
+        /// not been classified. Does not return the owner, who last classified them,
+        /// or its concept string.</returns>
+        public ClassifiableCollection getAllUnclassified(string classifierEmail)
+        {
+            ClassifiableCollection resColl = new ClassifiableCollection
+            {
+                data = new List<Classifiable>(),
+            };
+
+            this.open();
+            if (client != null)
+            {
+                // Query 
+                // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
+                // WHERE c.status = "Unclassified"
+                // RETURN c AS classifiable
+                // UNION
+                // OPTIONAL MATCH (c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)
+                // WHERE g.name = "US National Parks Service"
+                // AND c2.perm = "GLAM"
+                // AND c2.status = "Unclassified"
+                // RETURN c2 AS classifiable
+                var query = client.Cypher
+                    .Match("(c:Classifiable)<-[:OWNS]-(o:Classifier)")
+                    .Where("o.email = {email}").WithParam("email", classifierEmail)
+                    .AndWhere("c.status <> {status}").WithParam("status", Classifiable.Status.Classified)
+                    .Return((c) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                    })
+                    .Union()
+                    .Match("(c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(:GLAM)<-[:ASSOCIATED_WITH]-(o)")
+                    .Where("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
+                    .AndWhere("c2.status <> {status}")
+                    .AndWhere("o2.email <> {email}")
+                    .Return((c2) => new
+                    {
+                        classifiable = c2.As<Classifiable>(),
+                    })
+                    .Results.ToList();
+
+                
+                if (query != null)
+                {
+                    foreach (var res in query)
+                    {
+                        // if the union has no data, returns as null,
+                        // so need to check that we actually have a result
+                        if (res.classifiable != null)
+                        {
+                            res.classifiable.conceptStr = new ConceptString
+                            {
+                                terms = new List<Term>(),
+                            };
+                            resColl.data.Add(res.classifiable);
+                        }
                     }
                 }
             }
@@ -233,23 +567,19 @@ namespace Neo4j
         /// </summary>
         /// <exception cref="System.NullReferenceException">Thrown when there is insufficient
         /// information for adding a Classifiable.</exception>
-        /// <exception cref="Exception">Thrown when not all the Terms in the ConceptString are in the
-        /// Classification.</exception>
+        /// <exception cref="System.ArgumentException">1) Thrown when not all the Terms in the ConceptString are in the
+        /// Classification.
+        /// <para>2) Thrown when the the id is not unique.</para></exception>
         /// <param name="newClassifiable">New Classifiable to add. Must have a Classifier.</param>
         /// <returns>The new Classifiable from the Database for verification.</returns>
         public Classifiable addClassifiable(Classifiable newClassifiable)
         {
-            // Step 1: Check if there are proper terms
-            // TODO: Ummm decide on something else maybe?
-            //
-            
+            // Check 1: Check if there are proper terms
             if (countNumTermsExist(newClassifiable.conceptStr.terms) != newClassifiable.conceptStr.terms.Count)
             {
-                throw new Exception("Some Terms are not in the Classification!");
+                throw new System.ArgumentException("Some Terms are not in the Classification!",
+                    "Classifiable.conceptStr");
             }
-            
-            // Step 2: Go ahead and (try to) add the Classifiable!
-            Classifiable rtnClassifiable = new Classifiable();
 
             this.open();
             if (client != null)
@@ -272,8 +602,8 @@ namespace Neo4j
                 //      ) AS t4
                 // MATCH (matchedT:Term{rawTerm:t4)})
                 // CREATE (cs)-[:HAS_TERM]->(t)
-                // WITH c, cs, COLLECT([matchedT.rawTerm]) AS ts
-                // RETURN c AS classifiable, ts AS terms
+                // WITH c.id as cId
+                // RETURN cId
                 // NOTE: Owner isn't returned from the actual DB at this point
 
                 // The query is built and executed in stages to check for proper parameters,
@@ -286,10 +616,9 @@ namespace Neo4j
                     buildQuery = buildQuery
                         .WithParams(new
                         {
-                            //cId = newClassifiable.owner.getOrganizationName() +
-                            //    "_" +
-                            //    newClassifiable.name,
-                            cId = newClassifiable.id,
+                            cId = newClassifiable.owner.getOrganizationName() +
+                                "_" +
+                                newClassifiable.name,
                             cName = newClassifiable.name,
                             cUrl = newClassifiable.url,
                             cPerm = newClassifiable.perm,
@@ -308,14 +637,29 @@ namespace Neo4j
                 buildQuery = buildQuery
                     .Merge("(o:Classifier{email:{em}})")
                     .OnCreate()
-                    .Set("o.email ={em}")
-                    .Create("(c:Classifiable {id:{cId}})")
+                    .Set("o.email ={em}");
+
+                // UNIQUE Id
+                try
+                {
+                    buildQuery = buildQuery
+                        .Create("(c:Classifiable {id:{cId}})");
+                }
+                catch (NeoException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.NeoMessage);
+                    throw new System.ArgumentException(ex.NeoMessage, "Classifiable.name");
+                }
+
+                buildQuery = buildQuery
                     .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
                     .CreateUnique("(c)<-[:OWNS]-(o)")
+                    .CreateUnique("(c)<-[rModify:MODIFIED_BY]-(o)")
+                    .Set("rModify.lastModified = timestamp()")
                     .CreateUnique("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
                     .Set("cs.terms = {newConStr}");
 
-                // Only go get terms if they exist...
+                // Only create relationships to terms if they exist
                 if (newClassifiable.conceptStr.ToString() != "")
                 {
                     buildQuery = buildQuery
@@ -326,59 +670,27 @@ namespace Neo4j
                                                 WHERE x <> """"
                                             )
                                         ) AS t4")
-
                         .Match("(matchedT:Term {rawTerm: t4})")
-                        .Create("(cs)-[:HAS_TERM]->(matchedT)")
-                        .With("c, COLLECT([matchedT.rawTerm]) AS ts");
+                        .Create("(cs)-[:HAS_TERM]->(matchedT)");
                 }
-                else
+                try
                 {
-                    // If there are no terms, just make a list of strings with only "",
-                    // just to prevent writing two essentially the same queries.
-                    buildQuery = buildQuery
-                        .With("c, COLLECT([\"\"]) AS ts");
-                }
-
-                var query = buildQuery.Return((c, ts) => new
-                {
-                    classifiable = c.As<Classifiable>(),
-                    terms = ts.As<IEnumerable<string>>(),
-                    //owner = Return.As<IEnumerable<string>>("COLLECT[o.email])"),
-                })
-                        .Results.ToList().Single();
-
-
-                if (query != null)
-                {
-                    // Construct the Concept String from results
-                    ConceptString resConStr = new ConceptString
-                    {
-                        terms = new List<Term>(),
-                    };
-
-                    if (query.terms.ElementAt(0) != "")
-                    {
-                        // Build the terms
-                        foreach (var t in query.terms)
+                    var query = buildQuery
+                        .With("c.id as newId")
+                        .Return((newId) => new
                         {
-                            var tempData = JsonConvert.DeserializeObject<dynamic>(t);
-                            var tmp = new Term
-                            {
-                                rawTerm = tempData[0]
-                            };
+                            cId = newId.As<string>(),
+                        }).Results.FirstOrDefault();
 
-                            tmp.subTerms = new List<Term>();
-                            resConStr.terms.Add(tmp);
-                        }
+                    if (query != null)
+                    {
+                        return getClassifiableById(query.cId);
                     }
-                    rtnClassifiable = query.classifiable;
-                    rtnClassifiable.owner = newClassifiable.owner;
-
-                    // Reverse for some reason
-                    resConStr.terms.Reverse();
-                    rtnClassifiable.conceptStr = resConStr;
-
-                    return rtnClassifiable;
+                }
+                catch (NeoException ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.NeoMessage);
+                    throw new System.ArgumentException(ex.NeoMessage, "Classifiable.name");
                 }
             }
             return null;
@@ -396,13 +708,15 @@ namespace Neo4j
                 // MATCH (:Classifier)-[r:OWNS]->(c:Classifiable {id:"Neo4j-dummyiD"})
                 // OPTIONAL MATCH (c)-[r2:`HAS_CONSTR`]->(cs:ConceptString)
                 // OPTIONAL MATCH (cs)-[r3:HAS_TERM]->(:Term) 
-                // DELETE r3, r2, cs, r, c
+                // OPTIONAL MATCH (c)-[rOther]-()
+                // DELETE r3, r2, cs, r, c, rOther
                 client.Cypher
                     .Match("(:Classifier)-[r:OWNS]->(c:Classifiable {id:{cId}})")
                     .OptionalMatch("(c)-[r1:HAS_CONSTR]->(cs:ConceptString)")
                     .OptionalMatch("(cs)-[r2:HAS_TERM]->(:Term)")
+                    .OptionalMatch("(c)-[rOther]-()")
                     .WithParam("cId", classifiable.id)
-                    .Delete("r2, r1, cs, r, c")
+                    .Delete("r2, r1, cs, r, c, rOther")
                     .ExecuteWithoutResults();
             }
         }
@@ -410,12 +724,112 @@ namespace Neo4j
         /// <summary>
         /// Not finished. Will do as name implies.
         /// </summary>
-        /// <param name="updatedClassifiable"></param>
-        /// <returns></returns>
-        public Classifiable updateClassifiable(Classifiable updatedClassifiable)
+        /// <param name="oldClassifiable">The old information.</param>
+        /// <param name="updatedClassifiable">The updated information.</param>
+        /// <param name="modifier">The Classifier who modified the Classifiable.</param>
+        /// <returns>The classifiable with the basic updated information 
+        /// and concept string (no owner information).</returns>
+        public Classifiable updateClassifiable(Classifiable oldClass, Classifiable updatedClass, Classifier modifier)
         {
-            //.OnMatch()
-            // .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
+            // Check 1: Check if there are proper terms
+            // TODO: Ummm decide on something else maybe?
+            if (countNumTermsExist(updatedClass.conceptStr.terms) != updatedClass.conceptStr.terms.Count)
+            {
+                throw new Exception("Some Terms are not in the Classification!");
+            }
+
+            // Try to update
+            this.open();
+            if (client != null)
+            {
+                // Query: Merge classifier based on email, create new Classifiable and 
+                // create relationship to the Classifier, split the ConStr into Terms and connect them.
+                //
+                // MATCH (c:Classifiable {id: "Updating GLAM_dummyName1" })<-[:OWNS]-(owner:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)
+                // SET c.id = g.name + "_newName"
+                // SET c.name = "newName", c.url = "newUrl", c.perm = "OwnerOnly", c.status = "Unclassified"
+                // WITH c
+                // MATCH (c)<-[rModify:MODIFIED_BY]-(prevClassifier:Classifier)
+                // DELETE rModify
+                // With c
+                // Match(recentClassifier:Classifier {email: "testingUpdateSimple@BCCNeo4j.com" })
+                // CREATE UNIQUE (c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)
+                // SET rNewModify.lastModified = timestamp()
+                // RETURN c.id AS cId
+                // NOTE: Owner isn't returned from the actual DB at this point
+                
+                // The query is built and executed in stages to check for proper parameters,
+                // id is unique, etc.
+                var buildQuery = client.Cypher;
+
+                //Check 2?
+                // TODO: a way to make sure the editing classifier has permission to edit this Classifiable?
+
+                // Update 1) Set the updated basic information (id, name, url, perm, status)
+                buildQuery = buildQuery
+                    .Match("(c:Classifiable {id: {oldId} })<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
+                    .WithParam("oldId", oldClass.id)
+                    .Set("c.id = g.name + {updatedId}").WithParam("updatedId", "_" + updatedClass.name)
+                    .Set("c.name = {upName}, c.url = {upUrl}, c.perm = {upPerm}, c.status = {upStatus}")
+                    .WithParams(new
+                    {
+                        upName = updatedClass.name,
+                        upUrl = updatedClass.url,
+                        upPerm = updatedClass.perm,
+                        upStatus = updatedClass.status,
+                    });
+
+                // Update 2) Update the concept string if it's been changed...
+                if (updatedClass.conceptStr.ToString() != oldClass.conceptStr.ToString())
+                {
+                    // Find, remove old, update, add new
+                    // Remove the old
+                    buildQuery = buildQuery
+                            .With("c")
+                            .Match("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
+                            .OptionalMatch("(cs)-[rOldTerms:HAS_TERM]->(:Term)")
+                            .Delete("rOldTerms")
+                            .Set("cs.terms = {newConStr}")
+                            .WithParam("newConStr", updatedClass.conceptStr.ToString());
+
+                    // If the updated ConStr has actual terms:
+                    if (updatedClass.conceptStr.ToString() != "")
+                    {
+                        buildQuery = buildQuery
+                            .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
+                                UNWIND ( FILTER
+                                            ( x in
+                                                SPLIT( trmStr, "")"" )
+                                                WHERE x <> """"
+                                            )
+                                        ) AS t4")
+                            .Match("(matchedT:Term {rawTerm: t4})")
+                            .Create("(cs)-[:HAS_TERM]->(matchedT)");
+                    }
+                }
+
+                // Update 3) update who last modified this
+                // TODO: use case statements to only update the classifier if necessary
+                var results = buildQuery
+                   .With("c")
+                   .Match("(c)<-[rModify:MODIFIED_BY]-(prevClassifier:Classifier)")
+                   .Delete("rModify")
+                   .With("c")
+                   .Match("(recentClassifier:Classifier {email: {modifierEmail} })")
+                   .WithParam("modifierEmail", modifier.email)
+                   .CreateUnique("(c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)")
+                   .Set("rNewModify.lastModified = timestamp()")
+                   .With("c.id AS newId")
+                   .Return((newId) => new            
+                   {
+                       cId = newId.As<string>(),
+                   }).Results.Single();
+                 
+                if (results != null)
+                {
+                    return getClassifiableById(results.cId);
+                }
+            }
             return null;
         }
 
@@ -511,7 +925,6 @@ namespace Neo4j
                     .Limit(limit)
                     .Results.ToList();
 
-
                 if (query != null)
                 {
                     // Build up Classifiables
@@ -554,9 +967,7 @@ namespace Neo4j
 
                         resColl.data.Add(cTmp);
                     }
-
                 }
-
             }
             return resColl;
         }

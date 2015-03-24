@@ -7,8 +7,9 @@
         <p>Quick explanation on how to use with or w/out the buttons. For more information please go <a href="About.aspx" target="_self">about/help page</a>.</p>
         <br />
         <center>
-            search:<asp:TextBox ID="TextBox2" runat="server"></asp:TextBox>
-            <asp:Button ID="Button1" runat="server" Text="Jump to Search page" OnClick="Button1_Click" />
+            <asp:Label ID="SearchPrompt" runat="server" CssClass="control-label">Search for:</asp:Label>
+            <asp:TextBox ID="TextBox2" runat="server" CssClass="input-xxlarge search-query" placeholder="(Search)(by)(Terms)"></asp:TextBox>
+            <asp:Button ID="Button1" runat="server" Text="Jump to Search page" OnClick="Button1_Click" CssClass="btn"/>
         </center>
     </div>
     <br />
