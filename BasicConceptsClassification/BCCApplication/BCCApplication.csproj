@@ -252,6 +252,7 @@
     </Compile>
     <Compile Include="Account\ClassOb.aspx.cs">
       <DependentUpon>ClassOb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
     </Compile>
     <Compile Include="Account\ClassOb.aspx.designer.cs">
       <DependentUpon>ClassOb.aspx</DependentUpon>
@@ -354,6 +355,7 @@
     </Compile>
     <Compile Include="Logic\IdentityModel.cs" />
     <Compile Include="Logic\RoleActions.cs" />
+    <Compile Include="Logic\Startup.Auth.cs" />
     <Compile Include="Startup.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Search.aspx.cs">
