@@ -121,6 +121,7 @@ namespace BCCApplication.Account
             Term renameterm = conn.getTermByRaw(rename_from_string);
             renameterm.rawTerm = rename_to_string;
             renameterm.lower = rename_to_string.ToLower();
+            conn.renameTerm(renameterm, rename_to_string);
             //conn.delTerm()
 
         }
