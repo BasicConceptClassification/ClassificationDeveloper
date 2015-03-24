@@ -211,6 +211,40 @@ namespace Neo4jTest
         }
 
         [TestMethod]
+        public void GetClassifiablesByAlpha_LetterACaseInsensitive()
+        {
+            var conn = new Neo4jDB();
+            
+            // Get using uppercase and verify that each one starts with with 'A' or 'a'
+            ClassifiableCollection resultsUpperStart = conn.getClassifiablesByAlphaGroup('A');
+            foreach (Classifiable c in resultsUpperStart.data)
+            {
+                bool check = c.name[0] == 'A' || c.name[0] == 'a';
+                Assert.IsTrue(check);
+            }
+
+            // Get using lowercase and verify that each one starts with with 'A' or 'a'
+            ClassifiableCollection resultsLowerStart = conn.getClassifiablesByAlphaGroup('a');
+            foreach (Classifiable c in resultsLowerStart.data)
+            {
+                bool check = c.name[0] == 'A' || c.name[0] == 'a';
+                Assert.IsTrue(check);
+            }
+
+            // Whether it is upper or lower case, should return the same numebr of results.
+            Assert.AreEqual(resultsLowerStart.data.Count, resultsUpperStart.data.Count);
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentException),
+            "This is not a letter of the alphabet.")]
+        public void GetClassifiablesByAlpha_Number_ThrowsException()
+        {
+            var conn = new Neo4jDB();
+            ClassifiableCollection results = conn.getClassifiablesByAlphaGroup('2');
+        }
+
+        [TestMethod]
         public void GetClassifiables_SomeExist()
         {
             var conn = new Neo4jDB();

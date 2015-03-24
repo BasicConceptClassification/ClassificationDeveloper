@@ -331,15 +331,15 @@ namespace Neo4j
             if (client != null)
             {
                 // Query:
-                // MATCH (c:`Classifiable`{id:{searchId}})-[:HAS_CONSTR]->(cs) 
-                // OPTIONAL MATCH (cs)-[:HAS_TERM]->(t:Term) 
+                // MATCH (c:`Classifiable`)
+                // WHERE c.name = {name}
+                // OPTIONAL MATCH (c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term) 
                 // RETURN 	c, 
-                //          cs,
                 //          COLLECT ([t]) as ts
                 var query = client.Cypher
-                    .Match("(c:Classifiable{name:{name}})-[:HAS_CONSTR]->(cs)")
-                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
-                    .WithParam("name", name)
+                    .Match("(c:Classifiable)")
+                    .Where("c.name = {name}").WithParam("name", name)
+                    .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
                     .Return((c, t) => new
                     {
                         classifiable = c.As<Classifiable>(),
@@ -377,6 +377,81 @@ namespace Neo4j
             return resColl;
         }
 
+        /// <summary>
+        /// Given a letter of the alphabet, will return all Classifiables that start
+        /// with that letter. Is case insensitive.
+        /// </summary>
+        /// <param name="letter"></param>
+        /// <exception cref="ArgumentException">Thrown when letter is not a letter of the alphabet.</exception>
+        /// <returns>ClassifiableCollection that starts with that letter, in alphabetical order.</returns>
+        public ClassifiableCollection getClassifiablesByAlphaGroup(char letter)
+        {
+            if (!Char.IsLetter(letter))
+            {
+                throw new ArgumentException("This is not a letter of the alphabet.", "letter");
+            }
+
+            ClassifiableCollection rtnColl = new ClassifiableCollection
+            {
+                data = new List<Classifiable>(),
+            };
+
+              this.open();
+              if (client != null)
+              {
+                  // Query:
+                  // MATCH (c:Classifiable) 
+                  // Where c.name =~ "{latter.Upper()}.*" OR c.name =~ "{letter.Lower()}.*"
+                  // RETURN c 
+                  // ORDER BY c.name
+                  var query = client.Cypher
+                      .Match("(c:Classifiable)")
+                      .Where("c.name = \"{letterUpper}.*\"").WithParam("letterUpper", char.ToUpper(letter))
+                      .OrWhere("c.name = \"{letterLower}.*\"").WithParam("letterLower", char.ToLower(letter))
+                      .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
+                      .With("c, t, c.name AS name")
+                      .Return((c, t) => new
+                      {
+                          classifiable = c.As<Classifiable>(),
+                          terms = t.CollectAs<Term>(),
+                      })
+                      .OrderBy("name")
+                      .Results.ToList();
+
+                  if (query != null)
+                  {
+                      foreach (var res in query)
+                      {
+                          // Build the concept string
+                          ConceptString resConStr = new ConceptString
+                          {
+                              terms = new List<Term>(),
+                          };
+
+                          // Get the terms from the concept string
+                          foreach (var t in res.terms)
+                          {
+                              t.Data.subTerms = new List<Term>();
+                              resConStr.terms.Add(t.Data);
+                          }
+
+                          // Maintains order probably because it retained the added order
+                          resConStr.terms.Reverse();
+
+                          // Add the concept string, and then the "finished" Classifiable to the collection
+                          res.classifiable.conceptStr = resConStr;
+                          rtnColl.data.Add(res.classifiable);
+                    }
+                }
+            }
+            return rtnColl;
+        }
+
+        /// <summary>
+        /// Get all the Classifiables that the classifier owns in a ClassifiableCollection.
+        /// </summary>
+        /// <param name="owner">The owner of the Classifiables</param>
+        /// <returns>ClassifiableCollection of the Classifier's Classifiables.</returns>
         public ClassifiableCollection getClassifiables(Classifier owner)
         {
              ClassifiableCollection resColl = new ClassifiableCollection
@@ -435,7 +510,6 @@ namespace Neo4j
                             res.classifiable.conceptStr = resConStr;
                             resColl.data.Add(res.classifiable);
                         }
-                        
                     }
                 }
             }
