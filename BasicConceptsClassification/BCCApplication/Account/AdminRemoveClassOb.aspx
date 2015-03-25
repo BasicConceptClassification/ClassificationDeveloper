@@ -43,19 +43,19 @@
                 <div class="form-group">
                     <asp:Label AssociatedControlID="TxtBxName" runat="server" CssClass="col-sm-3 control-label">Name</asp:Label>
                     <div class="col-sm-9">
-                        <asp:TextBox ID="TxtBxName" runat="server" CssClass="form-control"></asp:TextBox>
+                        <asp:TextBox ID="TxtBxName" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                     </div>
                 </div>
                 <div class="form-group">
                     <asp:Label AssociatedControlID="TxtBxUrl" runat="server" CssClass="col-sm-3 control-label">URL</asp:Label>
                     <div class="col-sm-9">
-                        <asp:TextBox ID="TxtBxUrl" runat="server" CssClass="form-control"></asp:TextBox>
+                        <asp:TextBox ID="TxtBxUrl" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                     </div>
                 </div>
                 <div class="form-group">
                     <asp:Label AssociatedControlID="TxtBxConStr" runat="server" CssClass="col-sm-3 control-label">Concept String</asp:Label>
                     <div class="col-sm-9">
-                        <asp:TextBox ID="TxtBxConStr" runat="server" CssClass="form-control"></asp:TextBox>
+                        <asp:TextBox ID="TxtBxConStr" runat="server" CssClass="form-control" ReadOnly="true"></asp:TextBox>
                     </div>
                 </div>
                 <div class="form-group">
@@ -64,6 +64,7 @@
                     </div>
                 </div>
             </div>
+            <asp:Label ID="Notification" runat="server" Visible="false"></asp:Label>
         </div>
     </div>
 </asp:Content>
