@@ -19,12 +19,20 @@
                 </asp:DropDownList>
             </div>
             <div>
-                <asp:ListBox
-                    ID="ClassListBox"
+                <asp:Label 
+                    ID="LabelClassListBox"
                     runat="server"
-                    OnSelectedIndexChanged="ClassListBox_SelectedIndexChanged"
-                    AutoPostBack="true">
-                </asp:ListBox>
+                    CssClass="control-label">
+                    Classifiables
+                </asp:Label>
+                <div>
+                    <asp:ListBox
+                        ID="ClassListBox"
+                        runat="server"
+                        OnSelectedIndexChanged="ClassListBox_SelectedIndexChanged"
+                        AutoPostBack="true">
+                    </asp:ListBox>
+                </div>
             </div>
         </div>
         <div class="col-md-9">
