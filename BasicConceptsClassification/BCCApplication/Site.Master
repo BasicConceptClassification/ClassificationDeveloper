@@ -41,6 +41,7 @@
                                             </a>!
                                             <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                             <a id="a1" runat="server" href="~/Roles/Admin/Administration">Administration Tools</a>
+                                            <a id="a2" runat="server" href="~/Account/AdminRemoveClassOb">Remove GLAM Objects</a>
                                         </p>
                                     </ContentTemplate>
                                 </asp:RoleGroup>
