@@ -22,28 +22,37 @@ namespace BCCApplication.Account
     {
         protected void Page_Load(object sender, EventArgs e)
         {
-            try
-            {
-                var dbConn = new Neo4jDB();
-                List<GLAM> GLAMS = dbConn.getAllGlams();
-                if (GLAMS.Count != 0)
-                {
-                    foreach (GLAM g in GLAMS)
-                    {
-                        GLAMListBox.Items.Add(g.name);
-                    }
-                    GLAMListBox.SelectedIndex = 0;
-                }
-            }
-            catch (Exception) { }
+
 
             if (User.IsInRole(RoleActions.ROLE_ADMIN))
             {
                 ClassifierCheckBox.Visible = true;
+                LabelClassifierCheckBox.Visible = true;
+
+                // Generate GLAMs to pick from
+                try
+                {
+                    var dbConn = new Neo4jDB();
+                    List<GLAM> GLAMS = dbConn.getAllGlams();
+                    if (GLAMS.Count != 0)
+                    {
+                        foreach (GLAM g in GLAMS)
+                        {
+                            GLAMListBox.Items.Add(g.name);
+                        }
+                        GLAMListBox.SelectedIndex = 0;
+                        GLAMListBox.Visible = true;
+                        LabelGLAMListBox.Visible = true;
+                    }
+                }
+                catch (Exception) { }
             }
             else
             {
                 ClassifierCheckBox.Visible = false;
+                LabelClassifierCheckBox.Visible = false;
+                LabelGLAMListBox.Visible = false;
+                GLAMListBox.Visible = false;
             }
         }
 
