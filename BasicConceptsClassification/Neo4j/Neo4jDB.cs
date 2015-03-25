@@ -404,20 +404,25 @@ namespace Neo4j
                   // Where c.name =~ "{latter.Upper()}.*" OR c.name =~ "{letter.Lower()}.*"
                   // RETURN c 
                   // ORDER BY c.name
+
+                  string upperMatch = String.Format("{0}.*", char.ToUpper(letter));
+                  string lowerMatch = String.Format("{0}.*", char.ToLower(letter));
+
                   var query = client.Cypher
                       .Match("(c:Classifiable)")
-                      .Where("c.name = \"{letterUpper}.*\"").WithParam("letterUpper", char.ToUpper(letter))
-                      .OrWhere("c.name = \"{letterLower}.*\"").WithParam("letterLower", char.ToLower(letter))
+                      .Where("c.name =~ {letterUpper}").WithParam("letterUpper", upperMatch)
+                      .OrWhere("c.name =~ {letterLower}").WithParam("letterLower", lowerMatch)
                       .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
                       .With("c, t, c.name AS name")
+                      .OrderBy("name")
                       .Return((c, t) => new
                       {
                           classifiable = c.As<Classifiable>(),
                           terms = t.CollectAs<Term>(),
                       })
-                      .OrderBy("name")
                       .Results.ToList();
 
+                 
                   if (query != null)
                   {
                       foreach (var res in query)
@@ -442,9 +447,11 @@ namespace Neo4j
                           res.classifiable.conceptStr = resConStr;
                           rtnColl.data.Add(res.classifiable);
                     }
-                }
+                 
+                } 
             }
             return rtnColl;
+             
         }
 
         /// <summary>
