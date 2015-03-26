@@ -166,6 +166,7 @@
                                     <tr>
                                         <td />
                                         <td />
+                                            <asp:ListBox ID="ListBox1" runat="server"></asp:ListBox>
                                         <td>
                                             <asp:Button ID="AddAddButton" runat="server" Text="ADD" OnClick="AddAddButton_Click" />
                                         </td>

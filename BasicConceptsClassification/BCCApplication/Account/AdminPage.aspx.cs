@@ -83,8 +83,25 @@ namespace BCCApplication.Account
                 rawTerm = new_term_string,
                 lower = new_term_string.ToLower()
             };
+            string teststring1 = "";
+            //TODO:need to tell the user.
+            try
+            {
+                teststring1 = searching_term.ToString();
+            }
+            catch
+            {
 
-            conn.addTerm(new_term, searching_term);
+            }
+
+            if (teststring1 != "")
+            {
+                conn.addTerm(new_term, searching_term);
+            }
+            else
+            {
+
+            }
            
             
 
@@ -106,7 +123,37 @@ namespace BCCApplication.Account
             var conn = new Neo4jDB();
             Term result_1 = conn.getTermByRaw(move_term1);
             Term result_2 = conn.getTermByRaw(move_term2);
-            conn.moveTerm(result_1, result_2);
+            string teststring1 = "";
+            string teststring2 = "";
+            //TODO:need to tell the user.
+            try
+            {
+                teststring1 = result_1.ToString();
+            } 
+            catch 
+            {
+
+            }
+            //TODO:need to tell the user.
+            try
+            {
+                teststring2 = result_2.ToString();
+            }
+            catch
+            {
+
+            }
+            //TODO:need to tell the user.
+            if((teststring1 != "")&&(teststring2 !=""))
+            {
+                conn.moveTerm(result_1, result_2);
+            }
+            else 
+            {
+
+            }
+
+               
             
         }
         protected void RenameUpdateButton_Click(object sender, EventArgs e)
@@ -119,10 +166,32 @@ namespace BCCApplication.Account
             string rename_to_string = RenameToTextBox.Text;
             var conn = new Neo4jDB();
             Term renameterm = conn.getTermByRaw(rename_from_string);
+            string teststring1 = "";
+            string teststring2 = "";
+            //TODO:need to tell the user.
+            try
+            {
+                teststring1 = renameterm.ToString();
+            }
+            catch
+            {
+
+            }
+
             renameterm.rawTerm = rename_to_string;
             renameterm.lower = rename_to_string.ToLower();
-            conn.renameTerm(renameterm, rename_to_string);
-            //conn.delTerm()
+
+            //TODO:need to tell the user.
+            //when didn't enter anything
+            if ((teststring1 != "") && (teststring2 != ""))
+            {
+                conn.renameTerm(renameterm, rename_to_string);
+            }
+            else
+            {
+
+            }
+
 
         }
 
@@ -131,7 +200,26 @@ namespace BCCApplication.Account
             string delete_term = DeleteTextBox.Text;
             var conn = new Neo4jDB();
             Term delete_search_term = conn.getTermByRaw(delete_term);
-            conn.delTermFORCE(delete_search_term);
+            string teststring1 = "";
+            //TODO:need to tell the user.
+            try
+            {
+                teststring1 = delete_search_term.ToString();
+            }
+            catch
+            {
+
+            }
+
+            if (teststring1 != "")
+            {
+                conn.delTermFORCE(delete_search_term);
+            }
+            else
+            {
+
+            }
+            
         }
 
         protected void DeleteSafelyButton_Click(object sender, EventArgs e)
