@@ -1402,7 +1402,7 @@ namespace Neo4j
                         .Cypher
                         .Match("(a:Term)")
                         .Where((Term a) => a.id == parent.id)
-                        .Create("(b:Term{addMe})<-[:SUBTERM_OF]-(a)")
+                        .Create("(b:Term{addMe})-[:SUBTERM_OF]->(a)")
                         .WithParam("addMe", newTerm)
                         .Return(() => Return.As<int>("count(b)"))
                         .Results.DefaultIfEmpty(0).FirstOrDefault();
