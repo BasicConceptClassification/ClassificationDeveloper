@@ -49,6 +49,15 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Button AddUpdateButton;
         
         /// <summary>
+        /// Label1 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label1;
+        
+        /// <summary>
         /// AddAddButton control.
         /// </summary>
         /// <remarks>
@@ -94,6 +103,15 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Button MoveUpdateButton2;
         
         /// <summary>
+        /// Label2 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label2;
+        
+        /// <summary>
         /// MoveAddButton control.
         /// </summary>
         /// <remarks>
@@ -130,6 +148,15 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Button RenameUpdateButton;
         
         /// <summary>
+        /// Label3 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label3;
+        
+        /// <summary>
         /// RenameAddButton control.
         /// </summary>
         /// <remarks>
@@ -146,6 +173,15 @@ namespace BCCApplication.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox DeleteTextBox;
+        
+        /// <summary>
+        /// Label4 control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label Label4;
         
         /// <summary>
         /// DeleteUpdateButton control.

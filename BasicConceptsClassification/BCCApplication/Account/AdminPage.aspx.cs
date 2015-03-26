@@ -12,6 +12,16 @@ namespace BCCApplication.Account
 {
 	public partial class AdminPage : System.Web.UI.Page
 	{
+
+        private string SUCCESS_ADD_TERM = "Successfully added the term.";
+        private string SUCCESS_MOVE_TERM = "Successfully move the term.";
+        private string SUCCESS_RENAME_TERM = "Successfully rename the term.";
+        private string SUCCESS_DEL_TERM = "Successfully delete  the term.";
+        private string FAIL_ADD_TERM = "Fail added the term.";
+        private string FAIL_MOVE_TERM = "Fail move the term.";
+        private string FAIL_RENAME_TERM = "Fail to rename the term.";
+        private string FAIL_DEL_TERM = "Fail to delete  the term.";
+
 		protected void Page_Load(object sender, EventArgs e)
         {
 		// Testing purposes, only loading from BccRoot with a small depth
@@ -97,10 +107,12 @@ namespace BCCApplication.Account
             if (teststring1 != "")
             {
                 conn.addTerm(new_term, searching_term);
+                Label1.Text = SUCCESS_ADD_TERM;
+               
             }
             else
             {
-
+                Label1.Text = FAIL_ADD_TERM;
             }
            
             
@@ -147,10 +159,11 @@ namespace BCCApplication.Account
             if((teststring1 != "")&&(teststring2 !=""))
             {
                 conn.moveTerm(result_1, result_2);
+                Label2.Text = SUCCESS_MOVE_TERM;
             }
             else 
             {
-
+                Label2.Text = FAIL_MOVE_TERM;
             }
 
                
@@ -186,10 +199,11 @@ namespace BCCApplication.Account
             if ((teststring1 != "") && (teststring2 != ""))
             {
                 conn.renameTerm(renameterm, rename_to_string);
+                Label3.Text = SUCCESS_RENAME_TERM;
             }
             else
             {
-
+                Label3.Text = FAIL_RENAME_TERM;
             }
 
 
@@ -214,10 +228,11 @@ namespace BCCApplication.Account
             if (teststring1 != "")
             {
                 conn.delTermFORCE(delete_search_term);
+                Label4.Text = SUCCESS_DEL_TERM;
             }
             else
             {
-
+                Label4.Text = FAIL_DEL_TERM;
             }
             
         }

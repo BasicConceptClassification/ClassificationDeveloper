@@ -149,6 +149,7 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="NewTermTextBox" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator runat="server" ControlToValidate="NewTermTextBox" CssClass="field-validation-error" ErrorMessage="you need to enter the term" />
                                         </td>
                                         <td></td>
                                     </tr>
@@ -158,6 +159,8 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="ParentTermTextBox" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator runat="server" ControlToValidate="ParentTermTextBox" CssClass="field-validation-error" ErrorMessage="you need to enter the term" />
+
                                         </td>
                                         <td>
                                             <asp:Button ID="AddUpdateButton" runat="server" Text="Update" OnClick="AddUpdateButton_Click" />
@@ -166,7 +169,8 @@
                                     <tr>
                                         <td />
                                         <td />
-                                            &nbsp;<td>
+                                            <asp:Label ID="Label1" runat="server" Text=""></asp:Label>
+                                        <td>
                                             <asp:Button ID="AddAddButton" runat="server" Text="ADD" OnClick="AddAddButton_Click" />
                                         </td>
                                     </tr>
@@ -180,6 +184,7 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="MoveTermTextBox" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator runat="server" ControlToValidate="MoveTermTextBox" CssClass="field-validation-error" ErrorMessage="you need to enter the term" />
                                         </td>
                                         <td>
                                             <asp:Button ID="MoveUpdateButton1" runat="server" Text="Update" OnClick="MoveUpdateButton1_Click" />
@@ -191,6 +196,7 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="MoveTermUnderTextBox" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator runat="server" ControlToValidate="MoveTermUnderTextBox" CssClass="field-validation-error" ErrorMessage="you need to enter the term" />
                                         </td>
                                         <td>
                                             <asp:Button ID="MoveUpdateButton2" runat="server" Text="Update" OnClick="MoveUpdateButton2_Click" />
@@ -199,6 +205,8 @@
                                     <tr>
                                         <td />
                                         <td />
+                                            <asp:Label ID="Label2" runat="server" Text=""></asp:Label>
+
                                         <td>
                                             <asp:Button ID="MoveAddButton" runat="server" Text="ADD" OnClick="MoveAddButton_Click" />
                                         </td>
@@ -213,6 +221,7 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="RenameTermTextBox" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator runat="server" ControlToValidate="RenameTermTextBox" CssClass="field-validation-error" ErrorMessage="you need to enter the term" />
                                         </td>
                                         <td></td>
                                     </tr>
@@ -222,6 +231,7 @@
                                         </td>
                                         <td>
                                             <asp:TextBox ID="RenameToTextBox" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator runat="server" ControlToValidate="RenameToTextBox" CssClass="field-validation-error" ErrorMessage="you need to enter the term" />
                                         </td>
                                         <td>
                                             <asp:Button ID="RenameUpdateButton" runat="server" Text="Update" OnClick="RenameUpdateButton_Click" />
@@ -230,6 +240,8 @@
                                     <tr>
                                         <td />
                                         <td />
+                                            <asp:Label ID="Label3" runat="server" Text=""></asp:Label>
+
                                         <td>
                                             <asp:Button ID="RenameAddButton" runat="server" Text="ADD" OnClick="RenameAddButton_Click" />
                                         </td>
@@ -244,7 +256,10 @@
                                         </td>
                                         <td colspan="2">
                                             <asp:TextBox ID="DeleteTextBox" runat="server"></asp:TextBox>
+                                            <asp:RequiredFieldValidator runat="server" ControlToValidate="DeleteTextBox" CssClass="field-validation-error" ErrorMessage="you need to enter the term" />
                                         </td>
+                                            <asp:Label ID="Label4" runat="server" Text=""></asp:Label>
+
                                         <td>
                                             <asp:Button ID="DeleteUpdateButton" runat="server" Text="Detele" OnClick="DeleteUpdateButton_Click" />
                                         </td>
