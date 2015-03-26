@@ -173,6 +173,7 @@
     <Content Include="About.aspx" />
     <Content Include="Account\AccessDenied.aspx" />
     <Content Include="Account\AdminPage.aspx" />
+    <Content Include="Account\AdminRemoveClassOb.aspx" />
     <Content Include="Account\ClassOb.aspx" />
     <Content Include="Account\EditClassifiable.aspx" />
     <Content Include="Account\GLAMClass.aspx" />
@@ -252,6 +253,13 @@
     </Compile>
     <Compile Include="Account\AdminPage.aspx.designer.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\AdminRemoveClassOb.aspx.cs">
+      <DependentUpon>AdminRemoveClassOb.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AdminRemoveClassOb.aspx.designer.cs">
+      <DependentUpon>AdminRemoveClassOb.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\ClassOb.aspx.cs">
       <DependentUpon>ClassOb.aspx</DependentUpon>

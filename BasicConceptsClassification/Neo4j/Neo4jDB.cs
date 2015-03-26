@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -396,37 +396,42 @@ namespace Neo4j
                 data = new List<Classifiable>(),
             };
 
-            this.open();
-            if (client != null)
-            {
-                // Query:
-                // MATCH (c:Classifiable) 
-                // Where c.name =~ "{latter.Upper()}.*" OR c.name =~ "{letter.Lower()}.*"
-                // RETURN c 
-                // ORDER BY c.name
-                var query = client.Cypher
-                    .Match("(c:Classifiable)")
-                    .Where("c.name = \"{letterUpper}.*\"").WithParam("letterUpper", char.ToUpper(letter))
-                    .OrWhere("c.name = \"{letterLower}.*\"").WithParam("letterLower", char.ToLower(letter))
-                    .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
-                    .With("c, t, c.name AS name")
-                    .Return((c, t) => new
-                    {
-                        classifiable = c.As<Classifiable>(),
-                        terms = t.CollectAs<Term>(),
-                    })
-                    .OrderBy("name")
-                    .Results.ToList();
+              this.open();
+              if (client != null)
+              {
+                  // Query:
+                  // MATCH (c:Classifiable) 
+                  // Where c.name =~ "{latter.Upper()}.*" OR c.name =~ "{letter.Lower()}.*"
+                  // RETURN c 
+                  // ORDER BY c.name
 
-                if (query != null)
-                {
-                    foreach (var res in query)
-                    {
-                        // Build the concept string
-                        ConceptString resConStr = new ConceptString
-                        {
-                            terms = new List<Term>(),
-                        };
+                  string upperMatch = String.Format("{0}.*", char.ToUpper(letter));
+                  string lowerMatch = String.Format("{0}.*", char.ToLower(letter));
+
+                  var query = client.Cypher
+                      .Match("(c:Classifiable)")
+                      .Where("c.name =~ {letterUpper}").WithParam("letterUpper", upperMatch)
+                      .OrWhere("c.name =~ {letterLower}").WithParam("letterLower", lowerMatch)
+                      .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
+                      .With("c, t, c.name AS name")
+                      .OrderBy("name")
+                      .Return((c, t) => new
+                      {
+                          classifiable = c.As<Classifiable>(),
+                          terms = t.CollectAs<Term>(),
+                      })
+                      .Results.ToList();
+
+                 
+                  if (query != null)
+                  {
+                      foreach (var res in query)
+                      {
+                          // Build the concept string
+                          ConceptString resConStr = new ConceptString
+                          {
+                              terms = new List<Term>(),
+                          };
 
                         // Get the terms from the concept string
                         foreach (var t in res.terms)
@@ -442,9 +447,11 @@ namespace Neo4j
                         res.classifiable.conceptStr = resConStr;
                         rtnColl.data.Add(res.classifiable);
                     }
-                }
+                 
+                } 
             }
             return rtnColl;
+             
         }
 
         /// <summary>

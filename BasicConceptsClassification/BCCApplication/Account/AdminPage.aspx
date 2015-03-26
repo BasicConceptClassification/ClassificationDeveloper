@@ -166,6 +166,7 @@
                                     <tr>
                                         <td />
                                         <td />
+                                            <asp:Label ID="Label1" runat="server" Text="Label"></asp:Label>
                                         <td>
                                             <asp:Button ID="AddAddButton" runat="server" Text="ADD" OnClick="AddAddButton_Click" />
                                         </td>
@@ -181,6 +182,7 @@
                                         <td>
                                             <asp:TextBox ID="MoveTermTextBox" runat="server"></asp:TextBox>
                                         </td>
+                                        
                                         <td>
                                             <asp:Button ID="MoveUpdateButton1" runat="server" Text="Update" OnClick="MoveUpdateButton1_Click" />
                                         </td>
@@ -199,6 +201,7 @@
                                     <tr>
                                         <td />
                                         <td />
+                                        <asp:Label ID="Label2" runat="server" Text="Label"></asp:Label>
                                         <td>
                                             <asp:Button ID="MoveAddButton" runat="server" Text="ADD" OnClick="MoveAddButton_Click" />
                                         </td>
@@ -223,6 +226,7 @@
                                         <td>
                                             <asp:TextBox ID="RenameToTextBox" runat="server"></asp:TextBox>
                                         </td>
+                                        
                                         <td>
                                             <asp:Button ID="RenameUpdateButton" runat="server" Text="Update" OnClick="RenameUpdateButton_Click" />
                                         </td>
@@ -230,6 +234,7 @@
                                     <tr>
                                         <td />
                                         <td />
+                                        <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
                                         <td>
                                             <asp:Button ID="RenameAddButton" runat="server" Text="ADD" OnClick="RenameAddButton_Click" />
                                         </td>
@@ -248,7 +253,10 @@
                                         <td>
                                             <asp:Button ID="DeleteUpdateButton" runat="server" Text="Detele" OnClick="DeleteUpdateButton_Click" />
                                         </td>
+                                      
+                                        
                                     </tr>
+                                    <tr><asp:Label ID="Label4" runat="server" Text="Label"></asp:Label></tr>
                                     <tr>
                                         <td colspan="4">
                                             <p>GLAM Objects Affected</p>
@@ -270,7 +278,7 @@
                                             <asp:Button ID="DeleteOverwriteButton" runat="server" Text="Delete Term and Overwrite" OnClick="DeleteOverwriteButton_Click" />
                                         </td>
                                     </tr>
-                                </table>
+                                    </table>
                             </div>
                         </div>
                     </td>

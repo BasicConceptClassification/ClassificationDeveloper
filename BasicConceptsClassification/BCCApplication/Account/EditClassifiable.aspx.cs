@@ -7,6 +7,9 @@ using System.Web.UI.WebControls;
 using BCCLib;
 using Neo4j;
 
+using Microsoft.AspNet.Identity;
+using Microsoft.AspNet.Identity.Owin;
+
 namespace BCCApplication.Account
 {
     public partial class EditClassifiable : System.Web.UI.Page
@@ -15,13 +18,33 @@ namespace BCCApplication.Account
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            ListBoxClass.Items.Add("AAAA");
-            ListBoxClass.Items.Add("BBBB");
-            ListBoxClass.Items.Add("CCCC");
-            ListBoxClass.Items.Add("DDDD");
-            ListBoxClass.Items.Add("EEEE");
-            ListBoxClass.Items.Add("FFFF");
+            
+            var dbConn = new Neo4jDB();
+            // Get the logged in user's email
+            var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
+            var currentUser = manager.FindById(User.Identity.GetUserId());
+            string userEmail = currentUser.Email;
 
+
+
+            ClassifiableCollection unclassifieds = dbConn.getAllUnclassified(userEmail);
+            int resultsLength = unclassifieds.data.Count;
+            for (int i = 0; i < resultsLength; i++)
+            {
+                Classifiable currentUNClassifiable = unclassifieds.data[i];
+                ListBox2.Items.Add(currentUNClassifiable.name);
+            }
+
+
+
+
+            ClassifiableCollection classifieds = dbConn.getRecentlyClassified(userEmail);
+            int resultLength = unclassifieds.data.Count;
+            for (int i = 0; i < resultLength; i++)
+            {
+                Classifiable currentClassifiable = classifieds.data[i];
+                ListBoxClass.Items.Add(currentClassifiable.name);
+            }
 
         }
 
@@ -32,6 +55,8 @@ namespace BCCApplication.Account
             string str_n = TextBox_Name.Text;
             string str_u = TextBox_URL.Text;
             string str_c = TextBox_Concept.Text;
+            //string str_perm = EditPerm.SelectedValue;
+            //string str_owner = classifier;
             Application["namepass"] = str_n;
             Application["urlepass"] = str_u;
             Application["conpass"] = str_c;
