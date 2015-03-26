@@ -71,9 +71,9 @@ namespace Neo4j
                         glamUrl = gUrl.As<string>(),
                     })
                     .Results.Single();
-                  
+
                 if (query != null)
-                {          
+                {
                     var rtnGlam = new GLAM(query.glamName);
                     Classifier rtnClassifier = new Classifier(rtnGlam);
                     rtnClassifier.email = query.classifierEmail;
@@ -107,7 +107,7 @@ namespace Neo4j
                             classifierEmail = cEmail.As<string>(),
                             glamName = gName.As<string>(),
                         }).Results.Single();
-                    
+
                     if (query != null)
                     {
                         var rtnGlam = new GLAM(query.glamName);
@@ -115,7 +115,7 @@ namespace Neo4j
                         rtnClassifier.email = query.classifierEmail;
                         return rtnClassifier;
                     }
-                    
+
                 }
                 catch (InvalidOperationException)
                 {
@@ -396,51 +396,51 @@ namespace Neo4j
                 data = new List<Classifiable>(),
             };
 
-              this.open();
-              if (client != null)
-              {
-                  // Query:
-                  // MATCH (c:Classifiable) 
-                  // Where c.name =~ "{latter.Upper()}.*" OR c.name =~ "{letter.Lower()}.*"
-                  // RETURN c 
-                  // ORDER BY c.name
-                  var query = client.Cypher
-                      .Match("(c:Classifiable)")
-                      .Where("c.name = \"{letterUpper}.*\"").WithParam("letterUpper", char.ToUpper(letter))
-                      .OrWhere("c.name = \"{letterLower}.*\"").WithParam("letterLower", char.ToLower(letter))
-                      .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
-                      .With("c, t, c.name AS name")
-                      .Return((c, t) => new
-                      {
-                          classifiable = c.As<Classifiable>(),
-                          terms = t.CollectAs<Term>(),
-                      })
-                      .OrderBy("name")
-                      .Results.ToList();
+            this.open();
+            if (client != null)
+            {
+                // Query:
+                // MATCH (c:Classifiable) 
+                // Where c.name =~ "{latter.Upper()}.*" OR c.name =~ "{letter.Lower()}.*"
+                // RETURN c 
+                // ORDER BY c.name
+                var query = client.Cypher
+                    .Match("(c:Classifiable)")
+                    .Where("c.name = \"{letterUpper}.*\"").WithParam("letterUpper", char.ToUpper(letter))
+                    .OrWhere("c.name = \"{letterLower}.*\"").WithParam("letterLower", char.ToLower(letter))
+                    .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
+                    .With("c, t, c.name AS name")
+                    .Return((c, t) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                        terms = t.CollectAs<Term>(),
+                    })
+                    .OrderBy("name")
+                    .Results.ToList();
 
-                  if (query != null)
-                  {
-                      foreach (var res in query)
-                      {
-                          // Build the concept string
-                          ConceptString resConStr = new ConceptString
-                          {
-                              terms = new List<Term>(),
-                          };
+                if (query != null)
+                {
+                    foreach (var res in query)
+                    {
+                        // Build the concept string
+                        ConceptString resConStr = new ConceptString
+                        {
+                            terms = new List<Term>(),
+                        };
 
-                          // Get the terms from the concept string
-                          foreach (var t in res.terms)
-                          {
-                              t.Data.subTerms = new List<Term>();
-                              resConStr.terms.Add(t.Data);
-                          }
+                        // Get the terms from the concept string
+                        foreach (var t in res.terms)
+                        {
+                            t.Data.subTerms = new List<Term>();
+                            resConStr.terms.Add(t.Data);
+                        }
 
-                          // Maintains order probably because it retained the added order
-                          resConStr.terms.Reverse();
+                        // Maintains order probably because it retained the added order
+                        resConStr.terms.Reverse();
 
-                          // Add the concept string, and then the "finished" Classifiable to the collection
-                          res.classifiable.conceptStr = resConStr;
-                          rtnColl.data.Add(res.classifiable);
+                        // Add the concept string, and then the "finished" Classifiable to the collection
+                        res.classifiable.conceptStr = resConStr;
+                        rtnColl.data.Add(res.classifiable);
                     }
                 }
             }
@@ -454,10 +454,10 @@ namespace Neo4j
         /// <returns>ClassifiableCollection of the Classifier's Classifiables.</returns>
         public ClassifiableCollection getClassifiables(Classifier owner)
         {
-             ClassifiableCollection resColl = new ClassifiableCollection
-            {
-                data = new List<Classifiable>(),
-            };
+            ClassifiableCollection resColl = new ClassifiableCollection
+           {
+               data = new List<Classifiable>(),
+           };
 
             this.open();
             if (client != null)
@@ -615,7 +615,7 @@ namespace Neo4j
                     })
                     .Results.ToList();
 
-                
+
                 if (query != null)
                 {
                     foreach (var res in query)
@@ -831,7 +831,7 @@ namespace Neo4j
                 // SET rNewModify.lastModified = timestamp()
                 // RETURN c.id AS cId
                 // NOTE: Owner isn't returned from the actual DB at this point
-                
+
                 // The query is built and executed in stages to check for proper parameters,
                 // id is unique, etc.
                 var buildQuery = client.Cypher;
@@ -894,11 +894,11 @@ namespace Neo4j
                    .CreateUnique("(c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)")
                    .Set("rNewModify.lastModified = timestamp()")
                    .With("c.id AS newId")
-                   .Return((newId) => new            
+                   .Return((newId) => new
                    {
                        cId = newId.As<string>(),
                    }).Results.Single();
-                 
+
                 if (results != null)
                 {
                     return getClassifiableById(results.cId);
@@ -1684,6 +1684,89 @@ namespace Neo4j
             else
             {
                 return new AffectedNodes();
+            }
+        }
+
+        public int createNotification(String message)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                var notification = client
+                    .Cypher
+                    .Create("(a:Notification{msg:{PARAM1},time:TIMESTAMP()})")
+                    .WithParam("PARAM1", message)
+                    .Return(() => Return.As<Neo4jNotification>("a"))
+                    .Results.ToList().ElementAt(0);
+
+                if (notification != null)
+                {
+                    return client
+                        .Cypher
+                        .Match("(a:Classifier), (b:Notification{msg:{PARAM1},time:{PARAM2}})")
+                        .WithParam("PARAM1", notification.msg)
+                        .WithParam("PARAM2", notification.time)
+                        .Create("(a)-[r:HAS_NOTIFICATION]->(b)")
+                        .Return(() => Return.As<int>("count(r)"))
+                        .Results.DefaultIfEmpty(0).FirstOrDefault();
+                }
+                else return 0;
+            }
+            else
+            {
+                return 0;
+            }
+        }
+
+        public void cleanupTestMess()
+        {
+            this.open();
+
+            if (client != null)
+            {
+                client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM}})-[r]-()")
+                    .WithParam("PARAM", "TEST_1")
+                    .Delete("a, r")
+                    .ExecuteWithoutResults();
+                client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM}})-[r]-()")
+                    .WithParam("PARAM", "TEST_2")
+                    .Delete("a, r")
+                    .ExecuteWithoutResults();
+                client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM}})-[r]-()")
+                    .WithParam("PARAM", "TEST_3")
+                    .Delete("a, r")
+                    .ExecuteWithoutResults();
+                client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM}})-[r]-()")
+                    .WithParam("PARAM", "CHILD_0")
+                    .Delete("a, r")
+                    .ExecuteWithoutResults();
+                client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM}})")
+                    .WithParam("PARAM", "CHILD_0")
+                    .Delete("a")
+                    .ExecuteWithoutResults();
+                client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM}})-[r]-()")
+                    .WithParam("PARAM", "CHILD_1")
+                    .Delete("a, r")
+                    .ExecuteWithoutResults();
+                client
+                    .Cypher
+                    .Match("(a:Term{id:{PARAM}})")
+                    .WithParam("PARAM", "CHILD_1")
+                    .Delete("a")
+                    .ExecuteWithoutResults();
             }
         }
 

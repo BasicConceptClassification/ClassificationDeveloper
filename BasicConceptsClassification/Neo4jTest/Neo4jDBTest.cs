@@ -13,6 +13,14 @@ namespace Neo4jTest
     [TestClass]
     public class Neo4jDBTest
     {
+        [ClassInitialize]
+        public static void ClassInit(TestContext context)
+        {
+            var conn = new Neo4jDB();
+
+            conn.cleanupTestMess();
+        }
+
         [TestMethod]
         public void Neo4jDB_OpenConnection_Successful()
         {
@@ -1974,6 +1982,7 @@ namespace Neo4jTest
             // Cleanup the changes we made to the db.
             t1.rawTerm = "World!";
             t1.lower = "world";
+
             conn.delTermFORCE(t1);
         }
 
@@ -2030,6 +2039,14 @@ namespace Neo4jTest
 
             //      match (a:ConceptString{terms:"(protection)(for)(war)"})-[r:HAS_CONSTR]-(b) count(b)
             Assert.AreEqual<int>(1, result.classifiablesAffected.Count);
+        }
+
+        [TestMethod]
+        public void TestCreateNotificationsRaw()
+        {
+            var conn = new Neo4jDB();
+
+            Assert.AreEqual<int>(3, conn.createNotification("Testing notifications!"));
         }
     }
 }
