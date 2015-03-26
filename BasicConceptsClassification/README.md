@@ -13,6 +13,7 @@ where <DBNAME> is whichever database is currently running on the machine for ASP
   * Select BccApplication-deploy from the list (there should only be one instance running).
   * Actions > Connect
   * Select "Download Remote Desktop File" to get the RDP, and "Get Password" to get the administrator password. You'll need the private key file that I emailed out a while back.
+  
 ##### Deployment Steps
 1. Connect to the server using RDP.
   1. You need to configure the server to accept RDP from your IP address. Navigate to the EC2 instance in the AWS dashboard.
