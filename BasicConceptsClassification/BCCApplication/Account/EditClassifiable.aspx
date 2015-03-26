@@ -10,14 +10,14 @@
              <td>
                  <div class ="td">
                      
-                     <asp:TextBox ID="TextBox_Name" runat="server"></asp:TextBox>
+                     Name:<asp:TextBox ID="TextBox_Name" runat="server"></asp:TextBox>
                  </div>
              </td>
              
              <td>
                  <div class ="td">
                      
-                     <asp:TextBox ID="TextBox_URL" runat="server"></asp:TextBox>
+                     URL:<asp:TextBox ID="TextBox_URL" runat="server"></asp:TextBox>
                  </div>
              </td>
          </tr>
@@ -25,7 +25,7 @@
              <td>
                  <div class ="td">
                      
-                     <asp:TextBox ID="TextBox_Concept" runat="server"></asp:TextBox>
+                     Concept:<asp:TextBox ID="TextBox_Concept" runat="server"></asp:TextBox>
                  </div>
              </td>
              
