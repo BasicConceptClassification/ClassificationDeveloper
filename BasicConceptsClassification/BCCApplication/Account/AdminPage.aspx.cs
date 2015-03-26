@@ -279,7 +279,7 @@ namespace BCCApplication.Account
             if (teststring1 != "")
             {
                 conn.delTermFORCE(delete_search_term);
-               // Label4.Text = SUCCESS_DEL_TERM;
+               //Label4.Text = SUCCESS_DEL_TERM;
             }
             else
             {
