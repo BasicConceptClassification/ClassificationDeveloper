@@ -15,6 +15,9 @@
         Name: John Doe<br />
         Role: Some Role<br />
         Phone: (###)###-####<br />
-        <a href="mailto:someone@example.com?subject=BCC:">Email: someone@example.com</a><br />
+        <a href="mailto:someone@example.com?subject=BCC:">Email: someone@example.com</a>
+        <br />
+        <br />
+        <asp:Button ID="CFormButton" runat="server" Text="Contact Admin" OnClick="CForm_Click" />
     </div>
 </asp:Content>

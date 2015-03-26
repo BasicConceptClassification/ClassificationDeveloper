@@ -11,4 +11,9 @@ public partial class Contact : System.Web.UI.Page
     {
 
     }
+
+    protected void CForm_Click(object sender, EventArgs e)
+    {
+        Response.Redirect("ContactForm.aspx", true);
+    }
 }

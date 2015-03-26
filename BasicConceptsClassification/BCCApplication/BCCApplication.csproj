@@ -185,6 +185,7 @@
     <Content Include="Account\RemoveClassOb.aspx" />
     <Content Include="Classification.aspx" />
     <Content Include="Contact.aspx" />
+    <Content Include="ContactForm.aspx" />
     <Content Include="Content\Site.css" />
     <Content Include="Content\ExpandList.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -368,6 +369,13 @@
     </Compile>
     <Compile Include="Contact.aspx.designer.cs">
       <DependentUpon>Contact.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="ContactForm.aspx.cs">
+      <DependentUpon>ContactForm.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="ContactForm.aspx.designer.cs">
+      <DependentUpon>ContactForm.aspx</DependentUpon>
     </Compile>
     <Compile Include="Default.aspx.cs">
       <DependentUpon>Default.aspx</DependentUpon>
