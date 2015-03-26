@@ -1,9 +1,9 @@
 # DEPLOYMENT NOTES
 The project requires Neo4j to be running on localhost:7474 to provide the NoSQL database. Additionally, the current connection string for SQL database needs to be changed within the root web.config file to:  
 ```
-Server=.\SQLEXPRESS;Database=<DBNAME>;Integrated Security=true  
+Server=.\SQLEXPRESS;Database=DBNAME;Integrated Security=true  
 ```
-where <DBNAME> is whichever database is currently running on the machine for ASP.NET applications ("master" or "aspnet" usually). Ideally, the SQL database should be migrated from express to a more robust version of Microsoft SQL Server, but since we didn't really  have a budget for this project, it's what we've been using for now.
+where DBNAME is whichever database is currently running on the machine for ASP.NET applications ("master" or "aspnet" usually). Ideally, the SQL database should be migrated from express to a more robust version of Microsoft SQL Server, but since we didn't really  have a budget for this project, it's what we've been using for now.
 ### "Foolproof" guide to deployment using Visual Studio
 ##### Before you start
 * Download the AWS Toolkit from [this site](http://aws.amazon.com/visualstudio/) and install it. Note that I've had some trouble with this toolkit on my Windows 7 machine, but AFAIK it can be fixed by re-installing it.
@@ -34,6 +34,6 @@ where <DBNAME> is whichever database is currently running on the machine for ASP
   3. Open Internet Information Services Manager
   4. Navigate to Sites/Default Web Site/
   5. Double click Connection Strings, and select Default Connection.
-  6. Select SQL Server, and fill in <DOMAIN_NAME>\SQLEXPRESS for Server and master for Database (<DOMAIN_NAME> is that domain you noted earlier)
+  6. Select SQL Server, and fill in DOMAIN_NAME\SQLEXPRESS for Server and master for Database (DOMAIN_NAME is that domain you noted earlier)
   7. Press OK to save your changes.
 4. The deployment should now be live. You should be able to navigate to bccapplication-deploy.elasticbeanstalk.com to test.
