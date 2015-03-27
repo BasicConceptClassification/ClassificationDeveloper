@@ -547,6 +547,7 @@ namespace Neo4j
                 var query = client.Cypher
                     .Match("(c:Classifiable)<-[rModified:MODIFIED_BY]-(o:Classifier)")
                     .Where("o.email = {email}").WithParam("email", classifierEmail)
+                    .AndWhere("c.status = {classed}").WithParam("classed", Classifiable.Status.Classified.ToString())
                     .With("c, rModified.lastModified AS date")
                     .Return((c) => new
                     {
@@ -1815,7 +1816,8 @@ namespace Neo4j
                 // If there are no more relationships to this notification, get rid of it.
                 if (removeQ == 0)
                 {
-                    _deleteNotification(nMessage, nTime);
+                    // Uh...doesn't work atm with multiple users, apparently.
+                    //_deleteNotification(nMessage, nTime);
                 }
             }
             return 0;
