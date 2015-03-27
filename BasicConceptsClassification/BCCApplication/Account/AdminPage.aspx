@@ -1,6 +1,7 @@
 ﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminPage.aspx.cs" Inherits="BCCApplication.Account.AdminPage" %>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
+    <%@ Register Assembly="Goldtect.ASTreeView" Namespace="Goldtect" TagPrefix="astv" %>
     <style type="text/css">
 
         .horizontal li
@@ -25,6 +26,10 @@
         }
 
     </style>
+    <link rel="stylesheet" href="../Scripts/astreeview/astreeview.css" type="text/css" />
+    <link rel="stylesheet" href="../Scripts/astreeview/contextmenu.css" type="text/css" />
+    <script src="../Scripts/astreeview/astreeview.min.js" type="text/javascript"></script>
+    <script src="../Scripts/astreeview/contextmenu.min.js" type="text/javascript"></script>
     <script type="text/javascript">
         function setTab(name, cursel) {
 
@@ -36,11 +41,26 @@
 
                 var menudiv = document.getElementById("con_" + name + "_" + i);
 
+                var astree = document.getElementById(asTreeView);
+
+                var normaltree = document.getElementById(regulartree);
+
                 if (i == cursel) {
 
                     menu.className = "off";
 
                     menudiv.style.display = "block";
+
+                    //if (cursel == 2) {
+                    //    astree.style.display = "block";
+
+                    //    normaltree.style.display = "none";
+                    //}
+                    //else {
+                    //    astree.style.display = "none";
+
+                    //    normaltree.style.display = "block";
+                    //}
 
                 }
 
@@ -115,8 +135,31 @@
                     </td>
                 </tr>
                 <tr>
-                    <td rowspan="5" colspan="4" id="Datalist1" >
-                        <div style="width:512px">
+                    <td rowspan="5" colspan="4"
+                        <div>
+                        <div style="width:512px" id="asTreeView">
+                            <astv:ASTreeView ID="astvMyTree"
+                                runat="server"
+                                BasePath="~/Scripts/astreeview/"
+                                DataTableRootNodeValue="0"
+                                EnableRoot="false"
+                                EnableNodeSelection="false"
+                                EnableCheckbox="true"
+                                EnableDragDrop="true"
+                                EnableTreeLines="true"
+                                EnableNodeIcon="true"
+                                EnableCustomizedNodeIcon="true"
+                                EnableContextMenu="true"
+                                EnableDebugMode="false"
+                                EnableContextMenuAdd="false"
+                                EnableAjaxOnEditDelete="true"
+                                OnNodeDragAndDropCompletingScript="dndCompletingHandler( elem, newParent )"
+                                OnNodeDragAndDropCompletedScript="dndCompletedHandler( elem, newParent )"
+                                OnNodeDragAndDropStartScript="dndStartHandler( elem )"
+                                EnableMultiLineEdit="false"
+                                EnableEscapeInput="false" />
+                        </div>
+                        <div style="width:512px;display:none" id="regulartree">
                          <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" OnSelectedNodeChanged="DataSet_SelectedNodeChanged">
                             <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
                             <NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
@@ -124,6 +167,7 @@
                             <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" />
                          </asp:TreeView>
                             </div>
+                        </div>
                     </td>
                     <td colspan="4">
                         <div id="tab1">

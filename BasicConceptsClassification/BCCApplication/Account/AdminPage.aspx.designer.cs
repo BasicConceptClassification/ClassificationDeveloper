@@ -13,6 +13,15 @@ namespace BCCApplication.Account {
     public partial class AdminPage {
         
         /// <summary>
+        /// astvMyTree control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::Goldtect.ASTreeView astvMyTree;
+        
+        /// <summary>
         /// DataSet control.
         /// </summary>
         /// <remarks>

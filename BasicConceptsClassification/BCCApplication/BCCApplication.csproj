@@ -50,6 +50,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AspNet.ScriptManager.jQuery.UI.Combined.1.11.3\lib\net45\AspNet.ScriptManager.jQuery.UI.Combined.dll</HintPath>
     </Reference>
+    <Reference Include="ASTreeView, Version=1.5.8.0, Culture=neutral, PublicKeyToken=521e0b4262a9001c, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>bin\ASTreeView.dll</HintPath>
+    </Reference>
     <Reference Include="AWSSDK, Version=2.3.23.0, Culture=neutral, PublicKeyToken=9f476d3089b52be3, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\AWSSDK.2.3.23.0\lib\net45\AWSSDK.dll</HintPath>
@@ -85,6 +89,9 @@
     <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\EntityFramework.6.1.2\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+    </Reference>
+    <Reference Include="Goldtect.ASTreeView">
+      <HintPath>..\packages\ASTreeView.1.6.0.4\lib\net40\Goldtect.ASTreeView.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.AspNet.FriendlyUrls, Version=1.0.2.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
@@ -240,6 +247,93 @@
     <Content Include="favicon.ico" />
     <Content Include="Global.asax" />
     <Content Include="packages.config" />
+    <Content Include="Scripts\astreeview\astreeview.css" />
+    <Content Include="Scripts\astreeview\astreeview.min.js" />
+    <Content Include="Scripts\astreeview\contextmenu.css" />
+    <Content Include="Scripts\astreeview\contextmenu.min.js" />
+    <Content Include="Scripts\astreeview\dropdowntreeview.css" />
+    <Content Include="Scripts\astreeview\images\astreeview-bottom-line.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-checkbox-checked.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-checkbox-half-checked.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-checkbox-unchecked.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-dragDrop-indicator1.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-dragDrop-indicator2.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-folder-open.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-folder.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-li-bg.jpg" />
+    <Content Include="Scripts\astreeview\images\astreeview-middle-line.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-minus.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-node.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-plus.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-root-line.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-top-line.gif" />
+    <Content Include="Scripts\astreeview\images\astreeview-vertical-line.gif" />
+    <Content Include="Scripts\astreeview\images\windropdown-disabled.gif" />
+    <Content Include="Scripts\astreeview\images\windropdown.gif" />
+    <Content Include="Scripts\astreeview\themes\default\default.css" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-bottom-line.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-checkbox-checked.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-checkbox-half-checked.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-checkbox-unchecked.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-dragDrop-indicator1.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-dragDrop-indicator2.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-folder-open.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-folder.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-middle-line.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-minus.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-node.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-plus.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-root-line.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-top-line.gif" />
+    <Content Include="Scripts\astreeview\themes\default\images\astreeview-vertical-line.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-bottom-line.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-checkbox-checked.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-checkbox-half-checked.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-checkbox-unchecked.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-dragDrop-indicator1.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-dragDrop-indicator2.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-folder-open.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-folder.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-middle-line.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-minus.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-node.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-plus.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-root-line.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-top-line.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\images\astreeview-vertical-line.gif" />
+    <Content Include="Scripts\astreeview\themes\macOS\macOS.css" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-bottom-line.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-checkbox-checked.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-checkbox-half-checked.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-checkbox-unchecked.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-dragDrop-indicator1.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-dragDrop-indicator2.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-folder-open.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-folder.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-middle-line.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-minus.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-node.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-plus.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-root-line.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-top-line.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\images\astreeview-vertical-line.gif" />
+    <Content Include="Scripts\astreeview\themes\right-left\right-left.css" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-bottom-line.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-checkbox-checked.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-checkbox-half-checked.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-checkbox-unchecked.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-dragDrop-indicator1.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-dragDrop-indicator2.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-folder-open.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-folder.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-middle-line.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-minus.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-node.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-plus.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-root-line.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-top-line.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\images\astreeview-vertical-line.gif" />
+    <Content Include="Scripts\astreeview\themes\vista\vista.css" />
     <Content Include="Scripts\jquery-1.4.2.min.js" />
     <Compile Include="Account\AccessDenied.aspx.cs">
       <DependentUpon>AccessDenied.aspx</DependentUpon>
@@ -290,6 +384,9 @@
     <Compile Include="Account\RemoveClassOb.aspx.designer.cs">
       <DependentUpon>RemoveClassOb.aspx</DependentUpon>
     </Compile>
+    <Content Include="Scripts\astreeview\themes\macOS\images\mac_leopard.rar" />
+    <Content Include="Scripts\astreeview\README.MD" />
+    <Content Include="Scripts\astreeview\images\bak_no_used_folder_icon.rar" />
     <None Include="Scripts\jquery-2.1.3.intellisense.js" />
     <Content Include="Scripts\jquery-2.1.3.js" />
     <Content Include="Scripts\jquery-2.1.3.min.js" />
