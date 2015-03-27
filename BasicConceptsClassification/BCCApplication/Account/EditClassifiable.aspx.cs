@@ -18,8 +18,8 @@ namespace BCCApplication.Account
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            ListBox2.Items.Clear();
-            ListBoxClass.Items.Clear();
+            //ListBox2.Items.Clear();
+            //ListBoxClass.Items.Clear();
             var dbConn = new Neo4jDB();
             // Get the logged in user's email
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -138,14 +138,9 @@ namespace BCCApplication.Account
 
             }
 
-            if (teststr != "")
-            {
-                conn.updateClassifiable(matchedClassifiable, newClassifiable, classifier);
-            }
-            else
-            {
-                
-            }
+            
+            conn.updateClassifiable(matchedClassifiable, newClassifiable, classifier);
+            
 
         }
 
