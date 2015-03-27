@@ -1694,7 +1694,13 @@ namespace Neo4j
             }
         }
 
-        public int createNotification(String message)
+        /// <summary>
+        /// Creates a notification for all classifiers. If an email is provided, creates a notification for that user.
+        /// </summary>
+        /// <param name="message">Notification Message</param>
+        /// <param name="classifierEmail">Optional: Create notification for only that user with that email.</param>
+        /// <returns></returns>
+        public int createNotification(String message, string classifierEmail = "")
         {
             this.open();
 
@@ -1707,7 +1713,7 @@ namespace Neo4j
                     .Return(() => Return.As<Neo4jNotification>("a"))
                     .Results.ToList().ElementAt(0);
 
-                if (notification != null)
+                if (notification != null && classifierEmail == "")
                 {
                     return client
                         .Cypher
@@ -1718,6 +1724,18 @@ namespace Neo4j
                         .Return(() => Return.As<int>("count(r)"))
                         .Results.DefaultIfEmpty(0).FirstOrDefault();
                 }
+                else if (notification != null && classifierEmail != "")
+                {
+                    return client
+                         .Cypher
+                         .Match("(a:Classifier{email:{PARAM0}}), (b:Notification{msg:{PARAM1},time:{PARAM2}})")
+                         .WithParam("PARAM0", classifierEmail)
+                         .WithParam("PARAM1", notification.msg)
+                         .WithParam("PARAM2", notification.time)
+                         .Create("(a)-[r:HAS_NOTIFICATION]->(b)")
+                         .Return(() => Return.As<int>("count(r)"))
+                         .Results.DefaultIfEmpty(0).FirstOrDefault();
+                }
                 else return 0;
             }
             else
@@ -1725,6 +1743,34 @@ namespace Neo4j
                 return 0;
             }
         }
+
+
+        
+        /// <summary>
+        /// Gets all notifications for a user.
+        /// </summary>
+        /// <param name="email">Email of a user.</param>
+        /// <returns>Notifications for the user.</returns>
+        public NotificationCollection getNotification(string email)
+        {
+            NotificationCollection rtnNot = new NotificationCollection()
+            {
+                notifications = new List<Dictionary<String, String>>(),
+            };
+
+            return null;
+        }
+
+        /*
+        /// <summary>
+        /// Removes the provided "Notification".
+        /// </summary>
+        /// <param name="notification">Notification: String message, String timestamp</param>
+        /// <returns>Number of relationships left for that notification.</returns>
+        public int deleteNotification(String classifierEmail, Dictionary<String, String> notification)
+        {
+            return 0;
+        } */
 
         public void cleanupTestMess()
         {
