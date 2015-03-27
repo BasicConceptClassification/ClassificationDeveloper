@@ -21,12 +21,29 @@
                  </div>
              </td>
          </tr>
-         <tr>
+            <tr>
              <td>
                  <div class ="td">
                      
                      Concept:<asp:TextBox ID="TextBox_Concept" runat="server"></asp:TextBox>
                  </div>
+             </td>
+             
+             <td>
+                 <div class ="td">
+                    
+                    
+                    
+                 </div>
+             </td>
+         </tr>
+
+         <tr>
+             <td>
+                    <asp:RadioButtonList ID="EditPerm" runat="server" Font-Size="X-Small" RepeatColumns="2">
+                        <asp:ListItem Value="GLAM" Selected="True"/>
+                        <asp:ListItem Value="OwnerOnly"/>
+                    </asp:RadioButtonList>
              </td>
              
              <td>

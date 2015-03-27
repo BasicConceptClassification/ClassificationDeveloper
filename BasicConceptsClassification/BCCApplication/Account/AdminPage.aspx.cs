@@ -194,11 +194,11 @@ namespace BCCApplication.Account
             if((teststring1 != "")&&(teststring2 !=""))
             {
                 conn.moveTerm(result_1, result_2);
-               // Label2.Text = SUCCESS_MOVE_TERM;
+                Label2.Text = SUCCESS_MOVE_TERM;
             }
             else 
             {
-               // Label2.Text = FAIL_MOVE_TERM;
+                Label2.Text = FAIL_MOVE_TERM;
             }
 
                
@@ -279,11 +279,11 @@ namespace BCCApplication.Account
             if (teststring1 != "")
             {
                 conn.delTermFORCE(delete_search_term);
-               // Label4.Text = SUCCESS_DEL_TERM;
+               Label4.Text = SUCCESS_DEL_TERM;
             }
             else
             {
-               // Label4.Text = FAIL_DEL_TERM;
+                Label4.Text = FAIL_DEL_TERM;
             }
             
         }
