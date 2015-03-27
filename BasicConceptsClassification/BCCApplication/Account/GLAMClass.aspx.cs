@@ -24,6 +24,10 @@ namespace BCCApplication.Account
         static Neo4jDB dbConn = new Neo4jDB();
         static string userEmail = ""; 
         static SortedDictionary<string, string> notifications = new SortedDictionary<string, string>();
+        static ClassifiableCollection recentClassifiables = new ClassifiableCollection
+        {
+            data = new List<Classifiable>(),
+        };
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -34,13 +38,15 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             userEmail = currentUser.Email;
 
-            GenerateNotifications(dbConn, userEmail);
+       
+                GenerateNotifications(dbConn, userEmail);
 
-            GenerateRecentlyClassified(dbConn, userEmail);
+                GenerateRecentlyClassified(dbConn, userEmail);
 
-            GenerateUnclassified(dbConn, userEmail);
+                GenerateUnclassified(dbConn, userEmail);
 
-            GenerateUnclassifiedSpecial(dbConn, userEmail);
+                GenerateUnclassifiedSpecial(dbConn, userEmail);
+            
         }
 
         protected void GenerateNotifications(Neo4jDB conn, string classifierEmail)
@@ -115,12 +121,14 @@ namespace BCCApplication.Account
         {
             try
             {
-                ClassifiableCollection classifiables = conn.getRecentlyClassified(classifierEmail);
-                if (classifiables.data.Count > 0)
+                recentClassifiables = conn.getRecentlyClassified(classifierEmail);
+                
+                if (recentClassifiables.data.Count > 0)
                 {
-                    for (int i = 0; i < classifiables.data.Count; i++)
+                    RecClassObj.Items.Clear();
+                    for (int i = 0; i < recentClassifiables.data.Count; i++)
                     {
-                        String RecClassT = classifiables.data[i].name;
+                        String RecClassT = recentClassifiables.data[i].name;
                         RecClassObj.Items.Add(new ListItem(RecClassT));
                     }
                     LabelRecClassObj.Visible = false;
@@ -152,6 +160,7 @@ namespace BCCApplication.Account
                 {
                     for (int i = 0; i < classifiables.data.Count; i++)
                     {
+                        UnClassList.Items.Clear();
                         String unClassified = classifiables.data[i].name;
                         UnClassList.Items.Add(new ListItem(unClassified));
                     }
@@ -190,6 +199,7 @@ namespace BCCApplication.Account
 
                 if (classifiables.data.Count > 0)
                 {
+                    UnClassAdminCause.Items.Clear();
                     for (int i = 0; i < classifiables.data.Count; i++)
                     {
                         String unClassified = classifiables.data[i].name;
@@ -239,7 +249,7 @@ namespace BCCApplication.Account
 
         protected void ClassNow_Click(object sender, EventArgs e)
         {
-            Response.Redirect("ClassOb.aspx", true);
+            Response.Redirect("EditClassifiable.aspx", true);
         }
 
         protected void AddNew_Click(object sender, EventArgs e)
@@ -254,7 +264,7 @@ namespace BCCApplication.Account
 
         protected void ReClassNow_Click(object sender, EventArgs e)
         {
-            Response.Redirect("ClassOb.aspx", true);
+            Response.Redirect("EditClassifiable.aspx", true);
         }
     }
 }

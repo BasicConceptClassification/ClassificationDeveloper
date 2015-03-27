@@ -126,6 +126,7 @@ namespace BCCApplication.Account
                 {
                     conn.addTerm(new_term, searching_term);
                     Label1.Text = SUCCESS_ADD_TERM;
+                    conn.createNotification(String.Format("Added new Term: {0}", new_term.rawTerm));
 
                 }
                 else
@@ -280,6 +281,7 @@ namespace BCCApplication.Account
             {
                 conn.delTermFORCE(delete_search_term);
                Label4.Text = SUCCESS_DEL_TERM;
+               conn.createNotification(String.Format("Removed Term: {0}", delete_term));
             }
             else
             {
