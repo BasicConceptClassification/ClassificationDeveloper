@@ -2046,7 +2046,53 @@ namespace Neo4jTest
         {
             var conn = new Neo4jDB();
 
-            Assert.AreEqual<int>(3, conn.createNotification("Testing notifications!"));
+            GLAM g = new GLAM("Notifications!");
+            Classifier user = new Classifier(g);
+            user.email = "notifyMeCreate@someplace.com";
+            conn.addClassifier(user);
+
+            Assert.AreEqual<int>(1, conn.createNotification("Testing notifications!", user.email));
+        }
+
+        [TestMethod]
+        public void GetNotification_Exists()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM g = new GLAM("Notifications!");
+            Classifier user = new Classifier(g);
+            user.email = "notifyMeGetSome@someplace.com";
+            conn.addClassifier(user);
+
+            conn.createNotification("Testing GET notifications!", user.email);
+
+            SortedDictionary<string, string> myNotifications = conn.getNotifications(user.email);
+
+            Assert.AreEqual(1, myNotifications.Count);
+            Assert.AreEqual("Testing GET notifications!", myNotifications.ElementAt(0).Value);
+        }
+
+        [TestMethod]
+        public void GetNotification_NoneExists()
+        {
+            Assert.Fail();
+
+            var conn = new Neo4jDB();
+
+            GLAM g = new GLAM("Notifications!");
+            Classifier user = new Classifier(g);
+            user.email = "notifyMeGetNone@someplace.com";
+            conn.addClassifier(user);
+
+            SortedDictionary<string, string> noNotifications = conn.getNotifications(user.email);
+
+            Assert.AreEqual(0,noNotifications.Count);
+        }
+
+        [TestMethod]
+        public void RemoveNotification_RemoveAll()
+        {
+            Assert.Fail();
         }
     }
 }

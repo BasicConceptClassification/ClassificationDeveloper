@@ -1744,33 +1744,79 @@ namespace Neo4j
             }
         }
 
-
-        
         /// <summary>
         /// Gets all notifications for a user.
         /// </summary>
         /// <param name="email">Email of a user.</param>
         /// <returns>Notifications for the user.</returns>
-        public NotificationCollection getNotification(string email)
+        public SortedDictionary<string, string> getNotifications(string email)
         {
-            NotificationCollection rtnNot = new NotificationCollection()
-            {
-                notifications = new List<Dictionary<String, String>>(),
-            };
+            SortedDictionary<string, string> rtnNotifications = new SortedDictionary<string, string>();
 
-            return null;
+            this.open();
+
+            if (client != null)
+            {
+                // Query
+                // MATCH (n:Notification)<-[:HAS_NOTIFICATION]-(c:Classifier)
+                // WHERE c.email = {email}
+                // RETURN n.msg AS message, n.time as TIME
+                var notificationQ = client.Cypher
+                    .Match("(n:Notification)<-[:HAS_NOTIFICATION]-(c:Classifier)")
+                    .Where("c.email = {email}").WithParam("email", email)
+                    .With("n.msg AS message, ToInt(n.time) AS time")
+                    .Return((message, time) => new
+                    {
+                        nTime = time.As<string>(),
+                        nMsg = message.As<string>(),
+                    }).Results.ToList();
+
+                if (notificationQ != null)
+                {
+                    foreach (var note in notificationQ)
+                    {
+                        rtnNotifications.Add(note.nTime, note.nMsg);
+                    }
+                }
+            }
+            return rtnNotifications;
         }
 
-        /*
+        
         /// <summary>
         /// Removes the provided "Notification".
         /// </summary>
         /// <param name="notification">Notification: String message, String timestamp</param>
         /// <returns>Number of relationships left for that notification.</returns>
-        public int deleteNotification(String classifierEmail, Dictionary<String, String> notification)
+        public int removeNotification(String email, string nMessage, string nTime)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                // Query
+                // MATCH (n:Notification)<-[r:HAS_NOTIFICATION]-(c:Classifier)
+                // WHERE c.email = {email} AND n.msg = {nMessage} AND n.time = {nTime}
+                // DELETE r
+                // WITH n
+                // MATCH (n)<-[remaining:HAS_NOTIFCATION]-()
+                // RETURN COUNT(remaining)
+                //var removeQ = client.Cypher
+                //    .Match();
+            }
+            return 0;
+        }
+
+        /// <summary>
+        /// Actually remove the notification. Call only when there are no relationships left!
+        /// </summary>
+        /// <param name="message">The notification's message.</param>
+        /// <param name="timestamp">The notification's timestamp.</param>
+        /// <returns>The number of relationships left. 0 means success!</returns>
+        public int _deleteNotification(string message, string timestamp)
         {
             return 0;
-        } */
+        }
 
         public void cleanupTestMess()
         {
