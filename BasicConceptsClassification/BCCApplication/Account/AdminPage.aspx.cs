@@ -248,7 +248,6 @@ namespace BCCApplication.Account
             var conn = new Neo4jDB();
             Term renameterm = conn.getTermByRaw(rename_from_string);
             string teststring1 = "";
-            string teststring2 = "";
             //won't let the page crush
             try
             {
@@ -264,12 +263,11 @@ namespace BCCApplication.Account
             renameterm.lower = rename_to_string.ToLower();
 
             //return the result to let user know.
-            if ((teststring1 != "") && (teststring2 != ""))
-            {
+            try{
                 conn.renameTerm(renameterm, rename_to_string);
                 Label3.Text = SUCCESS_RENAME_TERM;
             }
-            else
+            catch
             {
                 Label3.Text = FAIL_RENAME_TERM;
             }
