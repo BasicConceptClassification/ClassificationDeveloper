@@ -7,6 +7,8 @@ using System.Web.UI.WebControls;
 
 using Neo4j;
 using BCCLib;
+using Goldtect;
+using Goldtect.Utilities.Xml;
 
 namespace BCCApplication.Account
 {
@@ -36,9 +38,12 @@ namespace BCCApplication.Account
 
             // Create a starting TreeNode as the root to generate the BCC
             TreeNode currentNode = new TreeNode();
+            ASTreeViewLinkNode asnode = new ASTreeViewLinkNode("","");
+            astvMyTree.RootNode.AppendChild(generateASTree(bccRootTerm, asnode));
             DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
 
             // By default, leave collapsed
+            astvMyTree.GetCollapseAllScript();
             DataSet.CollapseAll();
             DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
         }
@@ -71,6 +76,25 @@ namespace BCCApplication.Account
             foreach (var childTerm in currentTerm.subTerms)
             {
                 currentNode.ChildNodes.Add(generateBccTree(childTerm, currentNode));
+            }
+            return currentNode;
+        }
+
+        protected ASTreeViewLinkNode generateASTree(Term currentTerm, ASTreeViewLinkNode currentNode)
+        {
+            String nodeTerm = currentTerm.rawTerm;
+
+            // Create/set the current node we're on: the text displayed with the
+            // node and the action when selected.
+            currentNode = new ASTreeViewLinkNode(nodeTerm,nodeTerm);
+
+            // Sort subTerms by alphabetical order
+            currentTerm.sortSubTerms();
+
+            // Foreach child, recursively build this up
+            foreach (var childTerm in currentTerm.subTerms)
+            {
+                currentNode.AppendChild(generateASTree(childTerm, currentNode));
             }
             return currentNode;
         }
