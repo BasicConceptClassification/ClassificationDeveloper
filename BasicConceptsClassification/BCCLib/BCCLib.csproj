@@ -58,7 +58,6 @@
     <Compile Include="ConceptString.cs" />
     <Compile Include="DataPasser.cs" />
     <Compile Include="GLAM.cs" />
-    <Compile Include="NotificationCollection.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Term.cs" />
   </ItemGroup>

@@ -2075,8 +2075,6 @@ namespace Neo4jTest
         [TestMethod]
         public void GetNotification_NoneExists()
         {
-            Assert.Fail();
-
             var conn = new Neo4jDB();
 
             GLAM g = new GLAM("Notifications!");
@@ -2090,9 +2088,48 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void RemoveNotification_RemoveAll()
+        public void RemoveNotification_RemoveOne()
         {
-            Assert.Fail();
+            var conn = new Neo4jDB();
+
+            GLAM g = new GLAM("Notifications!");
+            Classifier user = new Classifier(g);
+            user.email = "notifyMeRemoveOne@someplace.com";
+            conn.addClassifier(user);
+
+            conn.createNotification("Testing RemoveME notifications!", user.email);
+            conn.createNotification("Testing DoNOTRemoveMe notifications!", user.email);
+
+            SortedDictionary<string, string> myNotifications = conn.getNotifications(user.email);
+            Assert.AreEqual(2, myNotifications.Count);
+
+            conn.removeNotification(user.email, myNotifications.ElementAt(0).Value, myNotifications.ElementAt(0).Key);
+            
+            SortedDictionary<string, string> myNotificationsAfterDel = conn.getNotifications(user.email);
+            Assert.AreEqual(1, myNotificationsAfterDel.Count);
+        }
+
+        [TestMethod]
+        public void RemoveNotification_OneClassifier_AllAreRemoved()
+        {
+            var conn = new Neo4jDB();
+
+            GLAM g = new GLAM("Notifications!");
+            Classifier user = new Classifier(g);
+            user.email = "notifyMeRemoveAll@someplace.com";
+            conn.addClassifier(user);
+
+            conn.createNotification("Testing RemoveMePlease notifications!", user.email);
+            conn.createNotification("Testing RemoveMePrettyPlease notifications!", user.email);
+
+            SortedDictionary<string, string> myNotifications = conn.getNotifications(user.email);
+            Assert.AreEqual(2, myNotifications.Count);
+
+            conn.removeNotification(user.email, myNotifications.ElementAt(0).Value, myNotifications.ElementAt(0).Key);
+            conn.removeNotification(user.email, myNotifications.ElementAt(1).Value, myNotifications.ElementAt(1).Key);
+
+            SortedDictionary<string, string> myNotificationsNone = conn.getNotifications(user.email);
+            Assert.AreEqual(0, myNotificationsNone.Count);
         }
     }
 }

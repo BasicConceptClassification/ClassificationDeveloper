@@ -1796,13 +1796,27 @@ namespace Neo4j
             {
                 // Query
                 // MATCH (n:Notification)<-[r:HAS_NOTIFICATION]-(c:Classifier)
-                // WHERE c.email = {email} AND n.msg = {nMessage} AND n.time = {nTime}
+                // WHERE c.email = {email} AND n.msg = {nMessage} AND n.time = ToInt({nTime})
                 // DELETE r
                 // WITH n
                 // MATCH (n)<-[remaining:HAS_NOTIFCATION]-()
                 // RETURN COUNT(remaining)
-                //var removeQ = client.Cypher
-                //    .Match();
+                var removeQ = client.Cypher
+                    .Match("(n:Notification)<-[r:HAS_NOTIFICATION]-(c:Classifier)")
+                    .Where("c.email = {email}").WithParam("email", email)
+                    .AndWhere("n.msg = {nMessage}").WithParam("nMessage", nMessage)
+                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", nTime)
+                    .Delete("r")
+                    .With("n")
+                    .Match("(n)<-[remaining:HAS_NOTIFCATION]-()")
+                    .Return(() => Return.As<int>("count(remaining)"))
+                    .Results.DefaultIfEmpty(0).FirstOrDefault();
+
+                // If there are no more relationships to this notification, get rid of it.
+                if (removeQ == 0)
+                {
+                    _deleteNotification(nMessage, nTime);
+                }
             }
             return 0;
         }
@@ -1813,9 +1827,22 @@ namespace Neo4j
         /// <param name="message">The notification's message.</param>
         /// <param name="timestamp">The notification's timestamp.</param>
         /// <returns>The number of relationships left. 0 means success!</returns>
-        public int _deleteNotification(string message, string timestamp)
+        public void _deleteNotification(string message, string timestamp)
         {
-            return 0;
+            this.open();
+
+            if (client != null)
+            {
+                // Query
+                // MATCH (n:Notification)
+                // WHERE n.msg = {message} AND n.time = ToInt({time})
+                // DELETE n
+                client.Cypher
+                    .Match("(n:Notification)")
+                    .Where("n.msg = {nMessage}").WithParam("nMessage", message)
+                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", timestamp)
+                    .Delete("n").ExecuteWithoutResults();
+            }
         }
 
         public void cleanupTestMess()
@@ -1866,6 +1893,61 @@ namespace Neo4j
                     .WithParam("PARAM", "CHILD_1")
                     .Delete("a")
                     .ExecuteWithoutResults();
+
+                // Deleting Notifications
+                List<string> notifications = new List<string>
+                {
+                    "Testing notifications!",
+                    "notifyMeGetNone@someplace.com",
+                    "Testing GET notifications!",
+                    "Testing RemoveME notifications!",
+                    "Testing DoNOTRemoveMe notifications!",
+                    "Testing RemoveMePlease notifications!",
+                    "Testing RemoveMePrettyPlease notifications!",
+                };
+                foreach (string message in notifications)
+                {
+                    client.Cypher
+                        .Match("(n:Notification)")
+                        .Where("n.msg = {message}").WithParam("message", message)
+                        .OptionalMatch("(n)<-[r:HAS_NOTIFICATION]-()")
+                        .Delete("n, r")
+                        .ExecuteWithoutResults();
+                }
+
+                // Deleting classifiers
+                List<string> classEmails = new List<string>
+                {
+                    "notifyMeCreate@someplace.com",
+                    "notifyMeGetSome@someplace.com",
+                    "notifyMeGetNone@someplace.com",
+                    "notifyMeRemoveOne@someplace.com",
+                    "notifyMeRemoveAll@someplace.com",
+                };
+
+                foreach (string email in classEmails)
+                {
+                    client.Cypher
+                          .Match("(o:Classifier{email: {em} })")
+                          .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
+                          .WithParam("em", email)
+                          .Delete("o,r")
+                          .ExecuteWithoutResults();
+                }
+
+                // Deleting GLAMs
+                List<string> glamNames = new List<string>
+                {
+                    "Notifications!",
+                };
+                foreach (string name in glamNames)
+                {
+                    client.Cypher
+                        .Match("(g:GLAM)")
+                        .Where("g.name = {name}").WithParam("name", name)
+                        .Delete("g")
+                        .ExecuteWithoutResults();
+                }
             }
         }
 
