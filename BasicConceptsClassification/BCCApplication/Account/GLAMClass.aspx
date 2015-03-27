@@ -9,8 +9,6 @@
             <table style="width:100%;">
                 <tr>
                     <td class="auto-style1">
-                        <h3>BCC Term Updates:</h3>
-                        <select id="RecAddedTerms" name="D1" size="8" runat="server"></select><br /><br />
                         <h3>Your Recently Classified:</h3>
                         <select id="RecClassObj" name="D1" size="8" runat="server"></select>
                         <div>
@@ -19,27 +17,19 @@
                     </td>
                     <td><center><h1>Welcome, Classifier!</h1>
                         <p>Search for items below, add new or classify items waiting to be classified! (And other instructions.)</p>
-                        <p>Search: <asp:TextBox ID="TextBox2" runat="server" placeholder="(term1)(term2)"></asp:TextBox>
+                        <p>Search: <asp:TextBox ID="TextBox2" runat="server" placeholder="(Search)(by)(Terms)"></asp:TextBox>
                             <asp:Button ID="Button1" runat="server" Text="Search" OnClick="Button1_Click"/>
                         </p>
                         <form action="SearchResults.aspx" method="get" target="_self">
                         </form>
                         </center>
                         
-                         <table style="width:100%;" id ="NewsBoxClass" runat="server">
-                            <tr>
-                                <td>
-                                    <asp:Label ID="Label2" runat="server" Text="News:" Font-Bold="True" Font-Size="Medium"></asp:Label>
-                                    <br />
-                                    <center><asp:TextBox ID="NewsBox" runat="server" Height="222px" Width="648px"></asp:TextBox></center>
-                                    <br />
-
-                                </td>
-                            </tr>
-                        </table>
+                        <h3>Notifications</h3>
+                        <asp:Table runat="server" ID="TableNotification" BorderWidth="1" CellPadding="2" GridLines="Both"></asp:Table>
                         <div>
-                            <asp:Label ID="Label1" runat="server" Text="Manage Classifiables" Font-Bold="True" Font-Size="Medium"></asp:Label>
+                            <asp:Label runat="server" ID="LabelTableNotification" Visiable="false"></asp:Label>
                         </div>
+                        <h3>Manage Classifiables</h3>
                         <table style="width:100%;">
                             <tr>
                                 <td>

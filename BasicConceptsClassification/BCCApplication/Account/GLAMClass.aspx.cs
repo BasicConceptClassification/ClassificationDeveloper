@@ -14,10 +14,16 @@ namespace BCCApplication.Account
 {
     public partial class GLAMClass : System.Web.UI.Page
     {
+        private string NOTIFICATIONS_NONE = "You have no notifications.";
+
         private string RECENTCLASSIFIED_NONE = "No GLAM objects have been recently classified.";
         private string UNCLASSFIED_NONE = "All your GLAM objects are classified!";
         private string UNCLASSFIED_SPECIAL_NONE = "No GLAM OBjects require special attention!";
         private string ERROR_SERVER = "Having server issues, sorry!";
+
+        static Neo4jDB dbConn = new Neo4jDB();
+        static string userEmail = ""; 
+        static SortedDictionary<string, string> notifications = new SortedDictionary<string, string>();
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -26,11 +32,9 @@ namespace BCCApplication.Account
             // See "Getting Profile Information"
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = manager.FindById(User.Identity.GetUserId());
-            string userEmail = currentUser.Email;
+            userEmail = currentUser.Email;
 
-            var dbConn = new Neo4jDB();
-
-            GenerateTermUpdates();
+            GenerateNotifications(dbConn, userEmail);
 
             GenerateRecentlyClassified(dbConn, userEmail);
 
@@ -39,25 +43,70 @@ namespace BCCApplication.Account
             GenerateUnclassifiedSpecial(dbConn, userEmail);
         }
 
-        protected void GenerateTermUpdates()
+        protected void GenerateNotifications(Neo4jDB conn, string classifierEmail)
         {
-            // TODO: Need to turn this into a notification system?
             try
             {
-                // Dealing with list of recently added terms hooked up to respective Classifier
-                int numRecAdd = 7;     //have read number of unclassified objects
-                for (int i = 0; i < numRecAdd; i++)
+                notifications = conn.getNotifications(classifierEmail);
+                
+                if (notifications.Count > 0)
                 {
-                    String RecAddT = "New Term " + i + 1;          // change to read actual recently added string
-                    RecAddedTerms.Items.Add(new ListItem(RecAddT));
+                    // Remove the old stuff
+                    TableNotification.Rows.Clear();
+
+                    // Add the header row/cells
+                    TableRow tRowHead = new TableHeaderRow();
+                    TableCell tCellHead = new TableHeaderCell();
+
+                    tCellHead.Text = "Message";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+
+                    tCellHead.Text = "Action";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    TableNotification.Rows.Add(tRowHead);
+
+                    // Add the regular rows/cells
+                    foreach ( var note in notifications)
+                    {
+                        TableRow tRow = new TableRow();
+                        TableCell tCell = new TableCell();
+
+                        tCell.Text = note.Value;
+                        tRow.Cells.Add(tCell);
+
+                        tCell = new TableCell();
+
+                        Button btn = new Button();
+                        btn.Text = "Delete";
+                        btn.ID = note.Key;
+                        btn.Click += new EventHandler(btnDelete_Click);
+                        tCell.Controls.Add(btn);
+
+                        tRow.Cells.Add(tCell);
+
+                        TableNotification.Rows.Add(tRow);
+                    }
+
+                    TableNotification.Visible = true;
+                    LabelTableNotification.Visible = false;
+                }
+                else
+                {
+                    LabelTableNotification.Visible = true;
+                    LabelTableNotification.Text = NOTIFICATIONS_NONE;
+                    TableNotification.Visible = false;
                 }
             }
             catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine("GLAMClass_Exception: {0}", ex.Message);
-                // Some sort of notification?
-                String RecAddT = "Sorry, server is having issues!";
-                RecAddedTerms.Items.Add(new ListItem(RecAddT));          
+
+                LabelTableNotification.Visible = true;
+                LabelTableNotification.Text = ERROR_SERVER;
+                TableNotification.Visible = false;
             }
         }
 
@@ -93,7 +142,6 @@ namespace BCCApplication.Account
                 RecClassObj.Visible = false;
             }
         }
-
 
         protected void GenerateUnclassified(Neo4jDB conn, string classifierEmail)
         {
@@ -168,6 +216,18 @@ namespace BCCApplication.Account
                 UnClassAdminCause.Visible = false;
                 ButtGLAMClassReClassNow.Visible = false;
             }
+        }
+
+        void btnDelete_Click(object sender, EventArgs e)
+        {
+            Button button = (Button)sender;
+            string timestamp = button.ID;
+            string message = notifications[timestamp];
+            System.Diagnostics.Debug.WriteLine(timestamp);
+            System.Diagnostics.Debug.WriteLine(message);
+
+            dbConn.removeNotification(userEmail, message, timestamp);
+            GenerateNotifications(dbConn, userEmail);
         }
 
         protected void Button1_Click(object sender, EventArgs e)
