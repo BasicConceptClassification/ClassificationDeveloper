@@ -22,7 +22,7 @@ namespace BCCApplication.Account
         private string FAIL_ADD_TERM = "Fail added the term.";
         private string FAIL_MOVE_TERM = "Fail move the term.";
         private string FAIL_RENAME_TERM = "Fail to rename the term.";
-        private string FAIL_DEL_TERM = "Fail to delete  the term.";
+        private string FAIL_DEL_TERM = "Fail to delete the term.";
 
 		protected void Page_Load(object sender, EventArgs e)
         {
@@ -150,6 +150,7 @@ namespace BCCApplication.Account
                 {
                     conn.addTerm(new_term, searching_term);
                     Label1.Text = SUCCESS_ADD_TERM;
+                    // Notify classifiers that a Term was created.
                     conn.createNotification(String.Format("Added new Term: {0}", new_term.rawTerm));
 
                 }
@@ -266,6 +267,8 @@ namespace BCCApplication.Account
             try{
                 conn.renameTerm(renameterm, rename_to_string);
                 Label3.Text = SUCCESS_RENAME_TERM;
+                // Notify classifiers that a Term was renamed.
+                conn.createNotification(String.Format("Renamed Term: {0} to {1}.", rename_from_string, rename_to_string));
             }
             catch
             {
@@ -302,8 +305,11 @@ namespace BCCApplication.Account
             if (teststring1 != "")
             {
                 conn.delTermFORCE(delete_search_term);
-               Label4.Text = SUCCESS_DEL_TERM;
-               conn.createNotification(String.Format("Removed Term: {0}", delete_term));
+                Label4.Text = SUCCESS_DEL_TERM;
+                // Notify classifiers that a Term was deleted.
+                // TODO: create additional notification to the classifiers whose classifiable's ConStr
+                // were affect by the Term deletion.
+                conn.createNotification(String.Format("Removed Term: {0}", delete_term));
             }
             else
             {
