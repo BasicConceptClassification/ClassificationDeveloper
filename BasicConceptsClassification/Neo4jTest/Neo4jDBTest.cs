@@ -81,7 +81,34 @@ namespace Neo4jTest
             {
             }
             conn.deleteClassifier(addedClassifier);
-            
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException), "Classifier's email is not set.")]
+        public void AddClassifier_NoEmail_ThrowsException()
+        {
+            GLAM glam = new GLAM("BCCNeo4jTests");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.username = "usernames are not unique";
+
+            var conn = new Neo4jDB();
+
+            Classifier addedClassifier = conn.addClassifier(classifier);      
+        }
+
+        [TestMethod]
+        [ExpectedException(typeof(ArgumentNullException), "Classifier's username is not set.")]
+        public void AddClassifier_NoUsername_ThrowsException()
+        {
+            GLAM glam = new GLAM("BCCNeo4jTests");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "nousername@BCCNeo4j.com";
+
+            var conn = new Neo4jDB();
+
+            Classifier addedClassifier = conn.addClassifier(classifier);   
         }
 
         [TestMethod]

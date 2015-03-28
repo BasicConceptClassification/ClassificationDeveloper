@@ -52,11 +52,11 @@ namespace Neo4j
             // Argument checking. Throw an exception if there's a problem
             if (newClassifier.email == null || newClassifier.email == "")
             {
-                throw new ArgumentNullException("Classifier's email is null", "newClassifier.email");
+                throw new ArgumentNullException("Classifier's email is not set.", "newClassifier.email");
             }
             if (newClassifier.username == null || newClassifier.username == "")
             {
-                throw new ArgumentNullException("Classifier's name is null", "newClassifier.name");
+                throw new ArgumentNullException("Classifier's username is not set.", "newClassifier.name");
             }
 
             this.open();
