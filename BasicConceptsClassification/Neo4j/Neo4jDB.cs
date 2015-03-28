@@ -1824,20 +1824,24 @@ namespace Neo4j
                 // WITH n
                 // MATCH (n)<-[remaining:HAS_NOTIFCATION]-()
                 // RETURN COUNT(remaining)
-                var removeQ = client.Cypher
+                client.Cypher
                     .Match("(n:Notification)<-[r:HAS_NOTIFICATION]-(c:Classifier)")
                     .Where("c.email = {email}").WithParam("email", email)
                     .AndWhere("n.msg = {nMessage}").WithParam("nMessage", nMessage)
                     .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", nTime)
-                    .Delete("r")
-                    .With("n")
-                    .Match("(n)<-[remaining:HAS_NOTIFCATION]-()")
-                    .Return(() => Return.As<int>("count(remaining)"))
-                    .Results.DefaultIfEmpty(0).FirstOrDefault();
+                    .Delete("r").ExecuteWithoutResults();
+                    
+                int removeQ = client.Cypher
+                    .Match("(n:Notification)<-[r:HAS_NOTIFICATION]-()")
+                    .Where("n.msg = {nMessage}").WithParam("nMessage", nMessage)
+                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", nTime)
+                    .Return(() => Return.As<int>("count(*)"))
+                    .Results.Single();
 
                 // If there are no more relationships to this notification, get rid of it.
                 if (removeQ == 0)
                 {
+                    System.Diagnostics.Debug.WriteLine(String.Format("Neo4jDB_num of relationships left: {0:D}", removeQ));
                     _deleteNotification(nMessage, nTime);
                 }
             }
