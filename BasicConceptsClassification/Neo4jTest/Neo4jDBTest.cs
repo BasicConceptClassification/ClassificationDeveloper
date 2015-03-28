@@ -21,6 +21,14 @@ namespace Neo4jTest
             conn.cleanupTestMess();
         }
 
+        [ClassCleanup]
+        public static void ClassCleanup()
+        {
+            var conn = new Neo4jDB();
+
+            conn.cleanupTestMess();
+        }
+
         [TestMethod]
         public void Neo4jDB_OpenConnection_Successful()
         {
@@ -2084,7 +2092,8 @@ namespace Neo4jTest
 
             SortedDictionary<string, string> noNotifications = conn.getNotifications(user.email);
 
-            Assert.AreEqual(0,noNotifications.Count);
+            Assert.AreEqual(0, noNotifications.Count);
+            
         }
 
         [TestMethod]
@@ -2107,6 +2116,7 @@ namespace Neo4jTest
             
             SortedDictionary<string, string> myNotificationsAfterDel = conn.getNotifications(user.email);
             Assert.AreEqual(1, myNotificationsAfterDel.Count);
+            Assert.AreEqual(0, conn._notificationExists(myNotifications.ElementAt(0).Value, myNotifications.ElementAt(0).Key));
         }
 
         [TestMethod]
@@ -2130,6 +2140,50 @@ namespace Neo4jTest
 
             SortedDictionary<string, string> myNotificationsNone = conn.getNotifications(user.email);
             Assert.AreEqual(0, myNotificationsNone.Count);
+
+            // Make sure they're both gone
+            Assert.AreEqual(0, conn._notificationExists(myNotifications.ElementAt(0).Value, myNotifications.ElementAt(0).Key));
+            Assert.AreEqual(0, conn._notificationExists(myNotifications.ElementAt(1).Value, myNotifications.ElementAt(1).Key));
+   
+        }
+
+        [TestMethod]
+        public void RemoveNotification_YoursGoneOthersHave()
+        { 
+            var conn = new Neo4jDB();
+
+            GLAM g = new GLAM("Notifications!");
+            Classifier user1 = new Classifier(g);
+            user1.email = "notifyMeRemoveMine@someplace.com";
+            conn.addClassifier(user1);
+
+            Classifier user2 = new Classifier(g);
+            user2.email = "notifyMeKeepMine@someplace.com";
+            conn.addClassifier(user2);
+
+            string notification = "Testing AnotherUserHasMine notifications!";
+
+            conn.createNotification(notification, user1.email);
+            conn.createNotification(notification, user2.email);
+
+            // Verify that they both have that one notification
+            SortedDictionary<string, string> user1Notifications = conn.getNotifications(user1.email);
+            Assert.AreEqual(1, user1Notifications.Count);
+
+            SortedDictionary<string, string> user2Notifications = conn.getNotifications(user2.email);
+            Assert.AreEqual(1, user1Notifications.Count);
+
+            conn.removeNotification(user1.email, user1Notifications.ElementAt(0).Value, user1Notifications.ElementAt(0).Key);
+
+            SortedDictionary<string,string> user1NotificationsAfter = conn.getNotifications(user1.email);
+            Assert.AreEqual(0, user1NotificationsAfter.Count);
+
+            SortedDictionary<string, string> user2NotificationsAfter = conn.getNotifications(user2.email);
+            Assert.AreEqual(1, user2NotificationsAfter.Count);
+
+            // Make sure it still exists, despite getting the notifications from above 
+            Assert.AreEqual(1, conn._notificationExists(user2Notifications.ElementAt(0).Value, user2Notifications.ElementAt(0).Key));
+   
         }
     }
 }

@@ -1783,6 +1783,28 @@ namespace Neo4j
             return rtnNotifications;
         }
 
+        /// <summary>
+        /// Returns the number of notifications that have that message and timestamp.
+        /// <para>Created for testing purposes.</para>
+        /// </summary>
+        /// <param name="message"></param>
+        /// <param name="timestamp"></param>
+        /// <returns>Number of notifications with that message and timestamp.</returns>
+        public int _notificationExists(string message, string timestamp)
+        {
+            this.open();
+
+            if (client != null)
+            {
+                return client.Cypher
+                        .Match("(n:Notification)")
+                        .Where("n.msg = {nMessage}").WithParam("nMessage", message)
+                        .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", timestamp)
+                        .Return(() => Return.As<int>("count(*)"))
+                        .Results.DefaultIfEmpty(0).FirstOrDefault();
+            }
+            return 0;
+        }
         
         /// <summary>
         /// Removes the provided "Notification".
