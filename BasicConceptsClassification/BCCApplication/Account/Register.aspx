@@ -9,6 +9,10 @@
     <div class="form-horizontal">
         <h4>Create a new account</h4>
         <hr />
+        <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+        <div>
+            <asp:Label ID ="LabelNotification" runat="server" Visible="false"></asp:Label>
+        </div>
         <asp:ValidationSummary runat="server" CssClass="text-danger" />
         <div class="form-group">
             <asp:Label runat="server" AssociatedControlID="Username" CssClass="col-md-2 control-label">Username</asp:Label>
@@ -51,9 +55,16 @@
             </div>
         </div>
         <div class="form-group">
-            <asp:Label runat="server" ID="LabelGLAMListBox" CssClass="col-md-2 control-label">Associated With</asp:Label>
+            <asp:Label runat="server" ID="LabelGLAMListBox" CssClass="col-md-2 control-label">Choose GLAM</asp:Label>
             <div class="col-md-10">
                 <asp:ListBox runat="server" ID="GLAMListBox"></asp:ListBox>
+            </div>
+            <div>
+                <asp:CheckBox runat="server" ID="CheckBxCreateNewGLAM" />
+                <asp:Label runat="server" ID="LabelCheckBxCreateNewGLAM" CssClass="checkbox">Create New GLAM</asp:Label>
+                <div>
+                    <asp:TextBox runat="server" ID="TxtBxNewGLAM" Placeholder="New GLAM Name"></asp:TextBox>
+                </div>
             </div>
         </div>
         <div class="form-group">

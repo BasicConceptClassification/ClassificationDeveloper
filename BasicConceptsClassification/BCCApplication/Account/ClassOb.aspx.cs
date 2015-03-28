@@ -129,7 +129,7 @@ namespace BCCApplication.Account
             // id - created by "<GLAM_NAME>_<CLASSIFIABLE_NAME>
             Classifiable newClassifiable = new Classifiable
             {
-                id = classifier.username + "_" + inputName,
+                id = classifier.getOrganizationName() + "_" + inputName,
                 name = inputName,
                 url = inputUrl,
                 perm = EditPerm.SelectedValue,
