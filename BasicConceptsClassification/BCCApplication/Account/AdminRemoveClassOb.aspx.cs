@@ -79,6 +79,11 @@ namespace BCCApplication.Account
             }
         }
 
+        /// <summary>
+        /// When the user selects a letter from the dropdown list, goes to fetch the classifiables that start with that letter.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void AlphabetDDL_SelectedIndexChanged(object sender, EventArgs e)
         {
             System.Diagnostics.Debug.WriteLine(ALPHABET[AlphabetDDL.SelectedIndex]);
@@ -92,10 +97,16 @@ namespace BCCApplication.Account
             }
         }
 
+        /// <summary>
+        /// When the user selects a classifiable from the list of them, fill in that classifiable's data.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void ClassListBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             int selectedClassIndex = ClassListBox.SelectedIndex;
 
+            // Check for out of range, just in case.
             if (selectedClassIndex >= 0 && selectedClassIndex < alphaClassCollection.data.Count)
             {
                 TxtBxName.Text = alphaClassCollection.data[selectedClassIndex].name;
@@ -117,6 +128,11 @@ namespace BCCApplication.Account
             TxtBxUrl.Text = "";
         }
 
+        /// <summary>
+        /// On RemoveButton click, attempts to remove that classifiable.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void BtnRemove_Click(object sender, EventArgs e)
         {
             int selectedIndex = ClassListBox.SelectedIndex;
@@ -129,7 +145,16 @@ namespace BCCApplication.Account
                 try
                 {
                     var dbConn = new Neo4jDB();
+
+                    // TODO: FIX. Don't query the DB again for owner's email?
+                    Classifier owner = dbConn.getClassifiableById(toRemove.id).owner;
+
+                    System.Diagnostics.Debug.WriteLine("AdminRemoveClassOb_Removing: {0}; Owner: {1}", toRemove.id, owner.email);
+
                     dbConn.deleteClassifiable(toRemove);
+                    dbConn.createNotification(
+                        String.Format("Admin has removed your GLAM Object called {0}.", toRemove.name), 
+                        owner.email);
 
                     Notification.Text = REMOVE_SUCESS;
 
