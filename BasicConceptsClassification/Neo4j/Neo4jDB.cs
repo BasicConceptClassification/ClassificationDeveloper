@@ -1816,8 +1816,7 @@ namespace Neo4j
                 // If there are no more relationships to this notification, get rid of it.
                 if (removeQ == 0)
                 {
-                    // Uh...doesn't work atm with multiple users, apparently.
-                    //_deleteNotification(nMessage, nTime);
+                    _deleteNotification(nMessage, nTime);
                 }
             }
             return 0;
@@ -1906,11 +1905,12 @@ namespace Neo4j
                     "Testing DoNOTRemoveMe notifications!",
                     "Testing RemoveMePlease notifications!",
                     "Testing RemoveMePrettyPlease notifications!",
+                    "Testing AnotherUserHasMine notifications!",
                 };
                 foreach (string message in notifications)
                 {
                     client.Cypher
-                        .Match("(n:Notification)")
+                        .OptionalMatch("(n:Notification)")
                         .Where("n.msg = {message}").WithParam("message", message)
                         .OptionalMatch("(n)<-[r:HAS_NOTIFICATION]-()")
                         .Delete("n, r")
@@ -1925,12 +1925,21 @@ namespace Neo4j
                     "notifyMeGetNone@someplace.com",
                     "notifyMeRemoveOne@someplace.com",
                     "notifyMeRemoveAll@someplace.com",
+                    "notifyMeRemoveMine@someplace.com",
+                    "notifyMeKeepMine@someplace.com",
                 };
 
                 foreach (string email in classEmails)
                 {
+                    // DELETE ALL NOTIFICATIONS for the test users
                     client.Cypher
-                          .Match("(o:Classifier{email: {em} })")
+                        .Match("(n:Notification)<-[r:HAS_NOTIFICATION]-(c:Classifier)")
+                        .Where("c.email = {em}").WithParam("em", email)
+                        .Delete("n, r")
+                        .ExecuteWithoutResults();
+
+                    client.Cypher
+                          .OptionalMatch("(o:Classifier{email: {em} })")
                           .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
                           .WithParam("em", email)
                           .Delete("o,r")
@@ -1945,7 +1954,7 @@ namespace Neo4j
                 foreach (string name in glamNames)
                 {
                     client.Cypher
-                        .Match("(g:GLAM)")
+                        .OptionalMatch("(g:GLAM)")
                         .Where("g.name = {name}").WithParam("name", name)
                         .Delete("g")
                         .ExecuteWithoutResults();
