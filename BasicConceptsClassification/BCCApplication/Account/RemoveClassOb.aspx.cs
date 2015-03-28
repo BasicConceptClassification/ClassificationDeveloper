@@ -47,7 +47,7 @@ namespace BCCApplication.Account
                 GLAM gl = dbConn.getGlamOfClassifier(userEmail);
 
                 Classifier classifier = new Classifier(gl);
-                classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
+                classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
                 classifier.email = userEmail;
 
                 classifiables = dbConn.getClassifiables(classifier);

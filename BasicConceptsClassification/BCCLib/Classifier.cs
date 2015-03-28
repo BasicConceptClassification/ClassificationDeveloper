@@ -12,7 +12,7 @@ namespace BCCLib
             organization = _organization;
         }
 
-        public String name
+        public string username
         {
             get;
             set;
@@ -37,7 +37,7 @@ namespace BCCLib
 
         public override string ToString()
         {
-            return name + " " + organization.ToString();
+            return username + " at " + organization.ToString();
         }
     }
 }

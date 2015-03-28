@@ -92,7 +92,7 @@ namespace BCCApplication.Account
             GLAM gl = conn.getGlamOfClassifier(userEmail);
 
             Classifier classifier = new Classifier(gl);
-            classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
+            classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
 
             // TODO: either make a constructor for ConceptString to take (this)(format) and have it parse
@@ -129,7 +129,7 @@ namespace BCCApplication.Account
             // id - created by "<GLAM_NAME>_<CLASSIFIABLE_NAME>
             Classifiable newClassifiable = new Classifiable
             {
-                id = classifier.name + "_" + inputName,
+                id = classifier.username + "_" + inputName,
                 name = inputName,
                 url = inputUrl,
                 perm = EditPerm.SelectedValue,

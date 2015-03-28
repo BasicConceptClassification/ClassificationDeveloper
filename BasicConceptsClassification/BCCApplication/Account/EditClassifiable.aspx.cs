@@ -76,7 +76,7 @@ namespace BCCApplication.Account
             GLAM gl = conn.getGlamOfClassifier(userEmail);
 
             Classifier classifier = new Classifier(gl);
-            classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
+            classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
 
             // TODO: either make a constructor for ConceptString to take (this)(format) and have it parse
@@ -112,7 +112,7 @@ namespace BCCApplication.Account
 
             Classifiable newClassifiable = new Classifiable
             {
-                id = classifier.name + "_" + str_n,
+                id = classifier.username + "_" + str_n,
                 name = str_n,
                 url = str_u,
                 perm = EditPerm.SelectedValue,
@@ -162,7 +162,7 @@ namespace BCCApplication.Account
             GLAM gl = conn.getGlamOfClassifier(userEmail);
 
             Classifier classifier = new Classifier(gl);
-            classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
+            classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
 
 
@@ -189,11 +189,11 @@ namespace BCCApplication.Account
             GLAM gl = conn.getGlamOfClassifier(userEmail);
 
             Classifier classifier = new Classifier(gl);
-            classifier.name = Context.GetOwinContext().Authentication.User.Identity.Name;
+            classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
 
             Classifiable matchedClassifiable = dbConn.getClassifiableById(/*classifier.name*/ "_" + select_string);
-            TextBox_Name.Text = classifier.name + "_" + select_string;
+            TextBox_Name.Text = classifier.username + "_" + select_string;
             TextBox_URL.Text = matchedClassifiable.url;
             TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
         }

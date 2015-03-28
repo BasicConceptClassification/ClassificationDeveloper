@@ -43,11 +43,22 @@ namespace Neo4j
 
         /// <summary>
         /// Add a new Classifier. Will create a new GLAM if the one provided 
-        /// does not currently exist
+        /// does not currently exist.
         /// </summary>
-        /// <param name="newClassifier"></param>
+        /// <exception cref="ArgumentNullException">Thrown when the Classifier's name or email is null.</exception>
+        /// <param name="newClassifier">Returns the new Classifier.</param>
         public Classifier addClassifier(Classifier newClassifier)
         {
+            // Argument checking. Throw an exception if there's a problem
+            if (newClassifier.email == null || newClassifier.email == "")
+            {
+                throw new ArgumentNullException("Classifier's email is null", "newClassifier.email");
+            }
+            if (newClassifier.username == null || newClassifier.username == "")
+            {
+                throw new ArgumentNullException("Classifier's name is null", "newClassifier.name");
+            }
+
             this.open();
             if (client != null)
             {
@@ -62,13 +73,14 @@ namespace Neo4j
                     .WithParam("glamName", newClassifier.getOrganizationName())
                     .Create("(c:Classifier {email: {email}})")
                     .WithParam("email", newClassifier.email)
+                    .Set("c.username = {username}").WithParam("username", newClassifier.username)
                     .Create("(c)-[:ASSOCIATED_WITH]->(g)")
-                    .With("c.email as newEmail, g.name AS gName, g.homeUrl AS gUrl")
-                    .Return((newEmail, gName, gUrl) => new
+                    .With("c.email as newEmail, c.username as newName, g.name AS gName")
+                    .Return((newEmail, newName, gName) => new
                     {
                         classifierEmail = newEmail.As<string>(),
+                        classifierName = newName.As<string>(),
                         glamName = gName.As<string>(),
-                        glamUrl = gUrl.As<string>(),
                     })
                     .Results.Single();
 
@@ -77,6 +89,7 @@ namespace Neo4j
                     var rtnGlam = new GLAM(query.glamName);
                     Classifier rtnClassifier = new Classifier(rtnGlam);
                     rtnClassifier.email = query.classifierEmail;
+                    rtnClassifier.username = query.classifierName;
                     return rtnClassifier;
                 }
             }
