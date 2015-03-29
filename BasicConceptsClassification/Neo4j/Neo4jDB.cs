@@ -825,6 +825,8 @@ namespace Neo4j
         /// <param name="oldClassifiable">The old information.</param>
         /// <param name="updatedClassifiable">The updated information.</param>
         /// <param name="modifier">The Classifier who modified the Classifiable.</param>
+        /// <exception cref="ArgumentException">Thrown when not all the terms in the updated
+        /// Classifiable are in the Classification.</exception>
         /// <returns>The classifiable with the basic updated information 
         /// and concept string (no owner information).</returns>
         public Classifiable updateClassifiable(Classifiable oldClass, Classifiable updatedClass, Classifier modifier)
@@ -833,7 +835,7 @@ namespace Neo4j
             // TODO: Ummm decide on something else maybe?
             if (countNumTermsExist(updatedClass.conceptStr.terms) != updatedClass.conceptStr.terms.Count)
             {
-                throw new Exception("Some Terms are not in the Classification!");
+                throw new ArgumentException("Some Terms are not in the Classification!", "updatedClass.conceptStr");
             }
 
             // Try to update
@@ -1966,12 +1968,31 @@ namespace Neo4j
                 List<string> classEmails02 = new List<string>
                 {
                     "testingGetMyClassifiables@BCCNeo4j.com",
-                    "testingEditUnclassedOwner@BCCNeo4j.com",
-                    "testingEditUnclassedAnother@BCCNeo4j.com",
+                    "testingRecent@BCCNeo4j.com",
+                    "testingRecentA@BCCNeo4j.com",
+                    "testingRecentB@BCCNeo4j.com",
+                    "user2@USNationalParks.com",
                     "testingUnclassedA@BCCNeo4j.com",
                     "testingUnclassedB@BCCNeo4j.com",
+                    "testingAddClassi@BCCNeo4j.com",
+                    "testingClassiAlreadyExists@BCCNeo4j.com",
+                    "testingNoTermsExist@BCCNeo4j.com",
+                    "testingNoTerms@BCCNeo4j.com",
+                    "testingUpdateSimple@BCCNeo4j.com",
+                    "testingUpdateSimpleOwner@BCCNeo4j.com",
+                    "testingUpdateSimpleAnother@BCCNeo4j.com",
+                    "testingUpdateConStrAdd@BCCNeo4j.com",
+                    "testingUpdateConStrRemove@BCCNeo4j.com",
+                    "testingUpdateViolateId@BCCNeo4j.com",
+                    "testingUpdatingImproperTerms@BCCNeo4j.com",
                     "testingEditUnclassedOwner@BCCNeo4j.com",
                     "testingEditUnclassedAnother@BCCNeo4j.com",
+                    "testingEditRecentOwner@BCCNeo4j.com",
+                    "testingEditUnclassedOwner@BCCNeo4j.com",
+                    "testingEditUnclassedAnother@BCCNeo4j.com",
+                    "testingToDel@BCCNeo4j.com",
+                    "testingToDelNoTerms@BCCNeo4j.com",
+                    "testingToDel03@BCCNeo4j.com",
                 };
                 foreach (string email in classEmails02)
                 {
@@ -2032,9 +2053,18 @@ namespace Neo4j
                     "Test",
                     "Fetched GLAM",
                     "GettingClassifiables01",
+                    "Recently Classified",
+                    "Recent A vs B",
+                    "AddingClassifiableSuccess",
+                    "AddClassifiable But Exists",
+                    "AddClassifiable ButBadTerms",
+                    "AddingWithNoTerms",
+                    "Updating GLAM",
                     "Notifications!",
                     "Recent Uncclassified YoursandOthers",
                     "Recent Unclassified Update Perm",
+                    "Recent Unclassified Update Yours",
+                    "DeletingAClassifiable",
                 };
                 foreach (string name in glamNames)
                 {
