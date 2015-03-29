@@ -2,6 +2,7 @@ using System;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 using Neo4j;
+using Neo4jClient;
 using BCCLib;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,10 +41,10 @@ namespace Neo4jTest
         [TestMethod]
         public void AddClassiier_Successful()
         {
-            GLAM glam = new GLAM("US National Parks Service");
+            GLAM glam = new GLAM("Test");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "user99@USNationalParks.com";
+            classifier.email = "newUser@Test.com";
             classifier.username = "usernames are not unique";
             
             var conn = new Neo4jDB();
@@ -54,17 +55,16 @@ namespace Neo4jTest
             Assert.AreEqual(classifier.email, addedClassifier.email);
             Assert.AreEqual(classifier.username, addedClassifier.username);
             Assert.AreEqual(glam.name, addedClassifier.getOrganizationName());
-
-            conn.deleteClassifier(addedClassifier);
         }
 
         [TestMethod]
+        [ExpectedException(typeof(Neo4jClient.NeoException))]
         public void AddClassifier_AlreadyExists_ThrowException()
         {
-            GLAM glam = new GLAM("US National Parks Service");
+            GLAM glam = new GLAM("Test");
 
             Classifier classifier = new Classifier(glam);
-            classifier.email = "user99@USNationalParks.com";
+            classifier.email = "userRepeat@Test.com";
             classifier.username = "usernames are not unique";
 
             var conn = new Neo4jDB();
@@ -73,14 +73,7 @@ namespace Neo4jTest
            
             // TODO: once we have test setup and cleanup, use those instead
             // of try-catch to do the clean up...
-            try
-            {
-                Classifier addedClassifier2 = conn.addClassifier(addedClassifier);
-            }
-            catch (Exception)
-            {
-            }
-            conn.deleteClassifier(addedClassifier);
+            Classifier addedClassifier2 = conn.addClassifier(addedClassifier);
         }
 
         [TestMethod]
@@ -114,21 +107,29 @@ namespace Neo4jTest
         [TestMethod]
         public void GetClassifier_ByEmail_Exists()
         {
-            string classifierEmail = "user1@USNationalParks.com";
-
             var conn = new Neo4jDB();
 
-            Classifier foundClassifier = conn.getClassifier(classifierEmail);
+            GLAM glam = new GLAM("Test");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "findByEmail@Test.com";
+            classifier.username = "usernames are not unique";
+
+            Classifier added = conn.addClassifier(classifier);
+            Assert.IsNotNull(added.username);
+
+            Classifier foundClassifier = conn.getClassifier(classifier.email);
 
             Assert.IsNotNull(foundClassifier);
-            Assert.AreEqual(classifierEmail, foundClassifier.email);
+            Assert.AreEqual(classifier.email, foundClassifier.email);
+            Assert.AreEqual(classifier.username, foundClassifier.username);
              
         }
 
         [TestMethod]
         public void GetClassifier_ByEmail_DoesNotExist()
         {
-            string classifierEmail = "userDoesNotExist@USNationalParks.com";
+            string classifierEmail = "userDoesNotExist@test.com";
 
             var conn = new Neo4jDB();
 
@@ -140,9 +141,9 @@ namespace Neo4jTest
         [TestMethod]
         public void DeleteClassifier_Successful()
         {
-            GLAM glam = new GLAM("US National Parks Service");
+            GLAM glam = new GLAM("Test");
             Classifier classifier = new Classifier(glam);
-            classifier.email = "userDeleteMe@USNationalParks.com";
+            classifier.email = "userDeleteMe@Test.com";
             classifier.username = "usernames are not unique";
 
             var conn = new Neo4jDB();
@@ -171,9 +172,6 @@ namespace Neo4jTest
             GLAM fetchedG = conn.getGlamOfClassifier(classifier.email);
 
             Assert.AreEqual(glam.name, fetchedG.name);
-
-            conn.deleteClassifier(classifier);
-            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -186,38 +184,6 @@ namespace Neo4jTest
             // TODO: sample data should have a GLAM called AAAAAAAA
             // and therefore it would be the first one alphabetically.
             Assert.AreNotEqual(0, resGlam.Count);
-            Assert.AreEqual("Achaemenid GLAM", resGlam[0].name);
-        }
-
-        [TestMethod]
-        public void GetClassifiableById_IsClassified_IdExists()
-        {
-            var conn = new Neo4jDB();
-
-            String searchById = "US National Parks Service_Adze Blade";
-            Classifiable classifiedWithGoodId = conn.getClassifiableById(searchById);
-
-            Assert.IsNotNull(classifiedWithGoodId);
-            Assert.AreEqual(searchById.ToString(), classifiedWithGoodId.id);
-            Assert.AreEqual("Adze Blade", classifiedWithGoodId.name);
-            Assert.AreEqual(6, classifiedWithGoodId.conceptStr.terms.Count);
-            Assert.AreEqual("(blade)(of)(Tool)(for)(carving)(wood)", classifiedWithGoodId.conceptStr.ToString());
-            Assert.IsNotNull(classifiedWithGoodId.owner.email);
-            Assert.AreEqual("US National Parks Service", classifiedWithGoodId.owner.getOrganizationName());
-        }
-
-        [TestMethod]
-        public void GetClassifiableById_NotClassified_IdExists()
-        {
-            var conn = new Neo4jDB();
-
-            String searchById = "US National Parks Service_Atlatl Foreshaft";
-            Classifiable notClassifiedWithGoodId = conn.getClassifiableById(searchById);
-
-            Assert.IsNotNull(notClassifiedWithGoodId);
-            Assert.AreEqual(searchById.ToString(), notClassifiedWithGoodId.id);
-            Assert.AreEqual(0, notClassifiedWithGoodId.conceptStr.terms.Count);
-            Assert.AreEqual("", notClassifiedWithGoodId.conceptStr.ToString());
         }
 
         [TestMethod]
@@ -231,6 +197,7 @@ namespace Neo4jTest
             Assert.IsNull(doesNotExistClassifiable);
         }
 
+        // TODO: add proper test data for this one.
         [TestMethod]
         public void GetClassiablesByName_ExistsOne()
         {
@@ -258,6 +225,8 @@ namespace Neo4jTest
             Assert.AreEqual(0, noMatchedName.data.Count);
         }
 
+        // TODO: proper test data for this one. Add one with captital A 
+        // and one with lower case a
         [TestMethod]
         public void GetClassifiablesByAlpha_LetterACaseInsensitive()
         {
@@ -329,7 +298,6 @@ namespace Neo4jTest
 
             conn.addClassifier(classifier);
 
-
             Classifiable result = conn.addClassifiable(newClassifiable);
 
             // Create the second classifiable
@@ -343,12 +311,6 @@ namespace Neo4jTest
             ClassifiableCollection resCollection = conn.getClassifiables(classifier);
 
             Assert.AreEqual(2, resCollection.data.Count);
-
-            // Clean up
-            conn.deleteClassifiable(result);
-            conn.deleteClassifiable(result2);
-            conn.deleteClassifier(classifier);
-            conn.deleteGlam(glam);
         }
         
 
@@ -668,14 +630,6 @@ namespace Neo4jTest
 
             Assert.AreEqual(3, recentA.data.Count);
             Assert.AreEqual(2, recentB.data.Count);
-
-            // Clean up
-            conn.deleteClassifiable(resA1);
-            conn.deleteClassifiable(resA2);
-            conn.deleteClassifiable(resB1);
-            conn.deleteClassifier(classifierA);
-            conn.deleteClassifier(classifierB);
-            conn.deleteGlam(glam);
         }
 
         [TestMethod]
@@ -1374,12 +1328,6 @@ namespace Neo4jTest
 
             Assert.AreEqual(1, recentA.data.Count);
             Assert.AreEqual(0, recentB.data.Count);
-
-            // Clean up
-            conn.deleteClassifiable(changedClassifiable);
-            conn.deleteClassifier(classifierA);
-            conn.deleteClassifier(classifierB);
-            conn.deleteGlam(glam);
         }
 
         [TestMethod]

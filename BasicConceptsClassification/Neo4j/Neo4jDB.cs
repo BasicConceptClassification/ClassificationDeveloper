@@ -114,10 +114,11 @@ namespace Neo4j
                     var query = client.Cypher
                         .Match("(c:Classifier {email: {email} })-[:ASSOCIATED_WITH]->(g:GLAM)")
                         .WithParam("email", email)
-                        .With("c.email AS cEmail, g.name AS gName")
-                        .Return((cEmail, gName) => new
+                        .With("c.email AS cEmail, c.username as cName, g.name AS gName")
+                        .Return((cEmail, cName, gName) => new
                         {
                             classifierEmail = cEmail.As<string>(),
+                            classifierName = cName.As<string>(),
                             glamName = gName.As<string>(),
                         }).Results.Single();
 
@@ -126,6 +127,7 @@ namespace Neo4j
                         var rtnGlam = new GLAM(query.glamName);
                         Classifier rtnClassifier = new Classifier(rtnGlam);
                         rtnClassifier.email = query.classifierEmail;
+                        rtnClassifier.username = query.classifierName;
                         return rtnClassifier;
                     }
 
@@ -626,8 +628,9 @@ namespace Neo4j
                         classifiable = c.As<Classifiable>(),
                     })
                     .Union()
-                    .Match("(c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(:GLAM)<-[:ASSOCIATED_WITH]-(o)")
-                    .Where("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
+                    .Match("(c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(:GLAM)<-[:ASSOCIATED_WITH]-(oAgain:Classifier)")
+                    .Where("oAgain.email = {emailAgain}").WithParam("emailAgain", classifierEmail)
+                    .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM)
                     .AndWhere("c2.status <> {status}")
                     .AndWhere("o2.email <> {email}")
                     .Return((c2) => new
@@ -1939,29 +1942,61 @@ namespace Neo4j
                     .Delete("a")
                     .ExecuteWithoutResults();
 
-                // Deleting Notifications
-                List<string> notifications = new List<string>
+                // Just some classifiers
+                List<string> classEmails01 = new List<string>
                 {
-                    "Testing notifications!",
-                    "notifyMeGetNone@someplace.com",
-                    "Testing GET notifications!",
-                    "Testing RemoveME notifications!",
-                    "Testing DoNOTRemoveMe notifications!",
-                    "Testing RemoveMePlease notifications!",
-                    "Testing RemoveMePrettyPlease notifications!",
-                    "Testing AnotherUserHasMine notifications!",
+                    "newUser@Test.com",
+                    "userRepeat@Test.com",
+                    "findByEmail@Test.com",
+                    "userDeleteMe@Test.com",
+                    "testingGetGlamOfMe@BCCNeo4j.com",
                 };
-                foreach (string message in notifications)
+                foreach (string email in classEmails01)
                 {
+                    // Delete all the classifiers
                     client.Cypher
-                        .OptionalMatch("(n:Notification)")
-                        .Where("n.msg = {message}").WithParam("message", message)
-                        .OptionalMatch("(n)<-[r:HAS_NOTIFICATION]-()")
-                        .Delete("n, r")
-                        .ExecuteWithoutResults();
+                          .OptionalMatch("(o:Classifier{email: {em} })")
+                          .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
+                          .WithParam("em", email)
+                          .Delete("o,r")
+                          .ExecuteWithoutResults();
                 }
 
-                // Deleting classifiers
+                // Classifiers with classifiables to remove
+                List<string> classEmails02 = new List<string>
+                {
+                    "testingGetMyClassifiables@BCCNeo4j.com",
+                    "testingEditUnclassedOwner@BCCNeo4j.com",
+                    "testingEditUnclassedAnother@BCCNeo4j.com",
+                    "testingUnclassedA@BCCNeo4j.com",
+                    "testingUnclassedB@BCCNeo4j.com",
+                    "testingEditUnclassedOwner@BCCNeo4j.com",
+                    "testingEditUnclassedAnother@BCCNeo4j.com",
+                };
+                foreach (string email in classEmails02)
+                {
+                    // Delete all the CLASSIFIABLES of the test users
+                    // and any other relationships they might have?
+                    client.Cypher
+                        .Match("(owner:Classifier {email: {em}})-[r:OWNS]->(c:Classifiable)")
+                        .OptionalMatch("(c)-[r1:HAS_CONSTR]->(cs:ConceptString)")
+                        .OptionalMatch("(cs)-[r2:HAS_TERM]->(:Term)")
+                        .OptionalMatch("(c)-[rOther]-()")
+                        .WithParam("em", email)
+                        .Delete("r2, r1, cs, r, c, rOther")
+                        .ExecuteWithoutResults();
+
+                    // Delete all the classifiers
+                    client.Cypher
+                          .OptionalMatch("(o:Classifier{email: {em} })")
+                          .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
+                          .WithParam("em", email)
+                          .Delete("o,r")
+                          .ExecuteWithoutResults();
+                }
+
+
+                // List of all the classifier emails in testing...
                 List<string> classEmails = new List<string>
                 {
                     "notifyMeCreate@someplace.com",
@@ -1982,6 +2017,7 @@ namespace Neo4j
                         .Delete("n, r")
                         .ExecuteWithoutResults();
 
+                    // Delete all the classifiers
                     client.Cypher
                           .OptionalMatch("(o:Classifier{email: {em} })")
                           .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
@@ -1993,7 +2029,12 @@ namespace Neo4j
                 // Deleting GLAMs
                 List<string> glamNames = new List<string>
                 {
+                    "Test",
+                    "Fetched GLAM",
+                    "GettingClassifiables01",
                     "Notifications!",
+                    "Recent Uncclassified YoursandOthers",
+                    "Recent Unclassified Update Perm",
                 };
                 foreach (string name in glamNames)
                 {
