@@ -308,7 +308,7 @@ namespace Neo4jTest
             // Add the second classifiable
             Classifiable result2 = conn.addClassifiable(newClassifiable2);
 
-            ClassifiableCollection resCollection = conn.getClassifiables(classifier);
+            ClassifiableCollection resCollection = conn.getOwnedClassifiables(classifier);
 
             Assert.AreEqual(2, resCollection.data.Count);
         }
@@ -493,7 +493,7 @@ namespace Neo4jTest
 
             var conn = new Neo4jDB();
 
-            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier.email);
+            ClassifiableCollection unclassifieds = conn.getAllowedClassifiables(classifier.email, Classifiable.Status.Unclassified.ToString());
 
             // TODO: fix: Bad test without sample data, but will do for now
             Assert.AreNotEqual(0, unclassifieds.data.Count);
@@ -520,7 +520,7 @@ namespace Neo4jTest
 
             conn.addClassifier(classifier);
 
-            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier.email);
+            ClassifiableCollection unclassifieds = conn.getAllowedClassifiables(classifier.email, Classifiable.Status.Unclassified.ToString());
 
             // TODO: fix: Bad test without sample data, but will do for now
             Assert.AreNotEqual(0, unclassifieds.data.Count);
@@ -608,8 +608,8 @@ namespace Neo4jTest
             Classifiable resA2 = conn.addClassifiable(A2OwnerOnly);
             Classifiable resB1 = conn.addClassifiable(B1GLAM);
 
-            ClassifiableCollection recentA = conn.getAllUnclassified(classifierA.email);
-            ClassifiableCollection recentB = conn.getAllUnclassified(classifierB.email);
+            ClassifiableCollection recentA = conn.getAllowedClassifiables(classifierA.email, Classifiable.Status.Unclassified.ToString());
+            ClassifiableCollection recentB = conn.getAllowedClassifiables(classifierB.email, Classifiable.Status.Unclassified.ToString());
 
             Assert.AreEqual(3, recentA.data.Count);
             Assert.AreEqual(2, recentB.data.Count);
@@ -632,7 +632,7 @@ namespace Neo4jTest
 
             var conn = new Neo4jDB();
 
-            ClassifiableCollection unclassifieds = conn.getAllUnclassified(classifier.email);
+            ClassifiableCollection unclassifieds = conn.getAllowedClassifiables(classifier.email, Classifiable.Status.Unclassified.ToString());
 
             Assert.AreEqual(0, unclassifieds.data.Count);
         }
@@ -1217,8 +1217,8 @@ namespace Neo4jTest
             // Add the Classifiables in this order
             Classifiable originalClassifiable = conn.addClassifiable(changingClassifiable);
 
-            ClassifiableCollection recentA = conn.getAllUnclassified(classifierA.email);
-            ClassifiableCollection recentB = conn.getAllUnclassified(classifierB.email);
+            ClassifiableCollection recentA = conn.getAllowedClassifiables(classifierA.email, Classifiable.Status.Unclassified.ToString());
+            ClassifiableCollection recentB = conn.getAllowedClassifiables(classifierB.email, Classifiable.Status.Unclassified.ToString());
 
             Assert.AreEqual(1, recentA.data.Count);
             Assert.AreEqual(1, recentB.data.Count);
@@ -1228,8 +1228,8 @@ namespace Neo4jTest
 
             Classifiable changedClassifiable = conn.updateClassifiable(originalClassifiable, changingClassifiable, classifierA);
 
-            recentA = conn.getAllUnclassified(classifierA.email);
-            recentB = conn.getAllUnclassified(classifierB.email);
+            recentA = conn.getAllowedClassifiables(classifierA.email, Classifiable.Status.Unclassified.ToString());
+            recentB = conn.getAllowedClassifiables(classifierB.email, Classifiable.Status.Unclassified.ToString());
 
             Assert.AreEqual(1, recentA.data.Count);
             Assert.AreEqual(0, recentB.data.Count);

@@ -65,6 +65,15 @@ namespace BCCLib
         }
 
         /// <summary>
+        /// The Classifier who last editied the Classifiable.
+        /// </summary>
+        public Classifier classifierLastEdited
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
         /// To set/check permissions of a Classifiable.
         /// <para>
         /// Would like these to be enums once pulling that format from the DB is better?
