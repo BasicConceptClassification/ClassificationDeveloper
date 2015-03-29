@@ -2133,12 +2133,13 @@ namespace Neo4jTest
 
             conn.createNotification("Testing GET notifications!", user.email);
 
-            SortedDictionary<string, string> myNotifications = conn.getNotifications(user.email);
+            List<Neo4jNotification> myNotifications = conn.getNotifications(user.email);
 
             Assert.AreEqual(1, myNotifications.Count);
-            Assert.AreEqual("Testing GET notifications!", myNotifications.ElementAt(0).Value);
+            Assert.AreEqual("Testing GET notifications!", myNotifications[0].msg);
         }
 
+        
         [TestMethod]
         public void GetNotification_NoneExists()
         {
@@ -2150,10 +2151,9 @@ namespace Neo4jTest
             user.username = "usernames are not unique";
             conn.addClassifier(user);
 
-            SortedDictionary<string, string> noNotifications = conn.getNotifications(user.email);
+            List<Neo4jNotification> noNotifications = conn.getNotifications(user.email);
 
             Assert.AreEqual(0, noNotifications.Count);
-            
         }
 
         [TestMethod]
@@ -2170,16 +2170,17 @@ namespace Neo4jTest
             conn.createNotification("Testing RemoveME notifications!", user.email);
             conn.createNotification("Testing DoNOTRemoveMe notifications!", user.email);
 
-            SortedDictionary<string, string> myNotifications = conn.getNotifications(user.email);
+            List<Neo4jNotification> myNotifications = conn.getNotifications(user.email);
             Assert.AreEqual(2, myNotifications.Count);
 
-            conn.removeNotification(user.email, myNotifications.ElementAt(0).Value, myNotifications.ElementAt(0).Key);
+            conn.removeNotification(user.email, myNotifications[0]);
             
-            SortedDictionary<string, string> myNotificationsAfterDel = conn.getNotifications(user.email);
+            List<Neo4jNotification> myNotificationsAfterDel = conn.getNotifications(user.email);
             Assert.AreEqual(1, myNotificationsAfterDel.Count);
-            Assert.AreEqual(0, conn._notificationExists(myNotifications.ElementAt(0).Value, myNotifications.ElementAt(0).Key));
+            Assert.AreEqual(0, conn._notificationExists(myNotifications[0]));
         }
 
+        
         [TestMethod]
         public void RemoveNotification_OneClassifier_AllAreRemoved()
         {
@@ -2194,18 +2195,18 @@ namespace Neo4jTest
             conn.createNotification("Testing RemoveMePlease notifications!", user.email);
             conn.createNotification("Testing RemoveMePrettyPlease notifications!", user.email);
 
-            SortedDictionary<string, string> myNotifications = conn.getNotifications(user.email);
+            List<Neo4jNotification> myNotifications = conn.getNotifications(user.email);
             Assert.AreEqual(2, myNotifications.Count);
 
-            conn.removeNotification(user.email, myNotifications.ElementAt(0).Value, myNotifications.ElementAt(0).Key);
-            conn.removeNotification(user.email, myNotifications.ElementAt(1).Value, myNotifications.ElementAt(1).Key);
+            conn.removeNotification(user.email, myNotifications[0]);
+            conn.removeNotification(user.email, myNotifications[1]);
 
-            SortedDictionary<string, string> myNotificationsNone = conn.getNotifications(user.email);
+            List<Neo4jNotification> myNotificationsNone = conn.getNotifications(user.email);
             Assert.AreEqual(0, myNotificationsNone.Count);
 
             // Make sure they're both gone
-            Assert.AreEqual(0, conn._notificationExists(myNotifications.ElementAt(0).Value, myNotifications.ElementAt(0).Key));
-            Assert.AreEqual(0, conn._notificationExists(myNotifications.ElementAt(1).Value, myNotifications.ElementAt(1).Key));
+            Assert.AreEqual(0, conn._notificationExists(myNotifications[0]));
+            Assert.AreEqual(0, conn._notificationExists(myNotifications[1]));
    
         }
 
@@ -2231,23 +2232,24 @@ namespace Neo4jTest
             conn.createNotification(notification, user2.email);
 
             // Verify that they both have that one notification
-            SortedDictionary<string, string> user1Notifications = conn.getNotifications(user1.email);
+            List<Neo4jNotification> user1Notifications = conn.getNotifications(user1.email);
             Assert.AreEqual(1, user1Notifications.Count);
 
-            SortedDictionary<string, string> user2Notifications = conn.getNotifications(user2.email);
+            List<Neo4jNotification> user2Notifications = conn.getNotifications(user2.email);
             Assert.AreEqual(1, user1Notifications.Count);
 
-            conn.removeNotification(user1.email, user1Notifications.ElementAt(0).Value, user1Notifications.ElementAt(0).Key);
+            conn.removeNotification(user1.email, user1Notifications[0]);
 
-            SortedDictionary<string,string> user1NotificationsAfter = conn.getNotifications(user1.email);
+            List<Neo4jNotification> user1NotificationsAfter = conn.getNotifications(user1.email);
             Assert.AreEqual(0, user1NotificationsAfter.Count);
 
-            SortedDictionary<string, string> user2NotificationsAfter = conn.getNotifications(user2.email);
+            List<Neo4jNotification> user2NotificationsAfter = conn.getNotifications(user2.email);
             Assert.AreEqual(1, user2NotificationsAfter.Count);
 
             // Make sure it still exists, despite getting the notifications from above 
-            Assert.AreEqual(1, conn._notificationExists(user2Notifications.ElementAt(0).Value, user2Notifications.ElementAt(0).Key));
+            Assert.AreEqual(1, conn._notificationExists(user2Notifications[0]));
    
         }
+        
     }
 }

@@ -1763,9 +1763,9 @@ namespace Neo4j
         /// </summary>
         /// <param name="email">Email of a user.</param>
         /// <returns>Notifications for the user.</returns>
-        public SortedDictionary<string, string> getNotifications(string email)
+        public List<Neo4jNotification> getNotifications(string email)
         {
-            SortedDictionary<string, string> rtnNotifications = new SortedDictionary<string, string>();
+            List<Neo4jNotification> rtnNotifications = new List<Neo4jNotification>();
 
             this.open();
 
@@ -1778,10 +1778,10 @@ namespace Neo4j
                 var notificationQ = client.Cypher
                     .Match("(n:Notification)<-[:HAS_NOTIFICATION]-(c:Classifier)")
                     .Where("c.email = {email}").WithParam("email", email)
-                    .With("n.msg AS message, ToInt(n.time) AS time")
+                    .With("n.msg AS message, n.time AS time")
                     .Return((message, time) => new
                     {
-                        nTime = time.As<string>(),
+                        nTime = time.As<long>(),
                         nMsg = message.As<string>(),
                     }).Results.ToList();
 
@@ -1789,7 +1789,12 @@ namespace Neo4j
                 {
                     foreach (var note in notificationQ)
                     {
-                        rtnNotifications.Add(note.nTime, note.nMsg);
+                        Neo4jNotification tmp = new Neo4jNotification
+                        {
+                            msg = note.nMsg,
+                            time = note.nTime,
+                        };
+                        rtnNotifications.Add(tmp);
                     }
                 }
             }
@@ -1803,7 +1808,7 @@ namespace Neo4j
         /// <param name="message"></param>
         /// <param name="timestamp"></param>
         /// <returns>Number of notifications with that message and timestamp.</returns>
-        public int _notificationExists(string message, string timestamp)
+        public int _notificationExists(Neo4jNotification notification)
         {
             this.open();
 
@@ -1811,8 +1816,8 @@ namespace Neo4j
             {
                 return client.Cypher
                         .Match("(n:Notification)")
-                        .Where("n.msg = {nMessage}").WithParam("nMessage", message)
-                        .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", timestamp)
+                        .Where("n.msg = {nMessage}").WithParam("nMessage", notification.msg)
+                        .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", notification.time)
                         .Return(() => Return.As<int>("count(*)"))
                         .Results.DefaultIfEmpty(0).FirstOrDefault();
             }
@@ -1824,7 +1829,7 @@ namespace Neo4j
         /// </summary>
         /// <param name="notification">Notification: String message, String timestamp</param>
         /// <returns>Number of relationships left for that notification.</returns>
-        public int removeNotification(String email, string nMessage, string nTime)
+        public int removeNotification(String email, Neo4jNotification notification)
         {
             this.open();
 
@@ -1840,14 +1845,14 @@ namespace Neo4j
                 client.Cypher
                     .Match("(n:Notification)<-[r:HAS_NOTIFICATION]-(c:Classifier)")
                     .Where("c.email = {email}").WithParam("email", email)
-                    .AndWhere("n.msg = {nMessage}").WithParam("nMessage", nMessage)
-                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", nTime)
+                    .AndWhere("n.msg = {nMessage}").WithParam("nMessage", notification.msg)
+                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", notification.time)
                     .Delete("r").ExecuteWithoutResults();
                     
                 int removeQ = client.Cypher
                     .Match("(n:Notification)<-[r:HAS_NOTIFICATION]-()")
-                    .Where("n.msg = {nMessage}").WithParam("nMessage", nMessage)
-                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", nTime)
+                    .Where("n.msg = {nMessage}").WithParam("nMessage", notification.msg)
+                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", notification.time)
                     .Return(() => Return.As<int>("count(*)"))
                     .Results.Single();
 
@@ -1855,7 +1860,7 @@ namespace Neo4j
                 if (removeQ == 0)
                 {
                     System.Diagnostics.Debug.WriteLine(String.Format("Neo4jDB_num of relationships left: {0:D}", removeQ));
-                    _deleteNotification(nMessage, nTime);
+                    _deleteNotification(notification);
                 }
             }
             return 0;
@@ -1867,7 +1872,7 @@ namespace Neo4j
         /// <param name="message">The notification's message.</param>
         /// <param name="timestamp">The notification's timestamp.</param>
         /// <returns>The number of relationships left. 0 means success!</returns>
-        public void _deleteNotification(string message, string timestamp)
+        public void _deleteNotification(Neo4jNotification notification)
         {
             this.open();
 
@@ -1879,8 +1884,8 @@ namespace Neo4j
                 // DELETE n
                 client.Cypher
                     .Match("(n:Notification)")
-                    .Where("n.msg = {nMessage}").WithParam("nMessage", message)
-                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", timestamp)
+                    .Where("n.msg = {nMessage}").WithParam("nMessage", notification.msg)
+                    .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", notification.time)
                     .Delete("n").ExecuteWithoutResults();
             }
         }

@@ -27,7 +27,7 @@ namespace BCCApplication.Account
 
         static Neo4jDB dbConn = new Neo4jDB();
         static string userEmail = ""; 
-        static SortedDictionary<string, string> notifications = new SortedDictionary<string, string>();
+        static List<Neo4jNotification> notifications = new List<Neo4jNotification>();
         static ClassifiableCollection recentClassifiables = new ClassifiableCollection
         {
             data = new List<Classifiable>(),
@@ -43,14 +43,14 @@ namespace BCCApplication.Account
             userEmail = currentUser.Email;
 
             LabelDescription.Text = DESCRIPTION;
+       
+                GenerateNotifications(dbConn, userEmail);
 
-            GenerateNotifications(dbConn, userEmail);
+                GenerateRecentlyClassified(dbConn, userEmail);
 
-            GenerateRecentlyClassified(dbConn, userEmail);
+                GenerateUnclassified(dbConn, userEmail);
 
-            GenerateUnclassified(dbConn, userEmail);
-
-            GenerateUnclassifiedSpecial(dbConn, userEmail);
+                GenerateUnclassifiedSpecial(dbConn, userEmail);
             
         }
 
@@ -85,20 +85,21 @@ namespace BCCApplication.Account
                     TableNotification.Rows.Add(tRowHead);
 
                     // Add the regular rows/cells
-                    foreach ( var note in notifications)
+                    for (int i = 0; i < notifications.Count; i++)
                     {
                         TableRow tRow = new TableRow();
                         TableCell tCell = new TableCell();
 
-                        tCell.Text = note.Value;
+                        tCell.Text = notifications[i].msg;
                         tRow.Cells.Add(tCell);
 
                         tCell = new TableCell();
 
                         Button btn = new Button();
                         btn.Text = "Delete";
-                        btn.ID = note.Key;
+                        btn.ID = i.ToString();
                         btn.Click += new EventHandler(btnDeleteNotification_Click);
+                        
                         tCell.Controls.Add(btn);
 
                         tRow.Cells.Add(tCell);
@@ -262,10 +263,9 @@ namespace BCCApplication.Account
         void btnDeleteNotification_Click(object sender, EventArgs e)
         {
             Button button = (Button)sender;
-            string timestamp = button.ID;
-            string message = notifications[timestamp];
+            int index = int.Parse(button.ID);
 
-            dbConn.removeNotification(userEmail, message, timestamp);
+            dbConn.removeNotification(userEmail, notifications[index]);
             GenerateNotifications(dbConn, userEmail);
         }
 
