@@ -290,7 +290,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyAdd01",
                 name = "dummyAdd01",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -348,7 +348,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyAdd01",
                 name = "dummyAdd01",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -420,7 +420,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "A1 GLAM",
                 name = "A1 GLAM",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifierA,
                 conceptStr = conStr,
@@ -431,7 +431,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "A2 OwnerOnly",
                 name = "A2 OwnerOnly",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.OwnerOnly.ToString(),
+                perm = Classifiable.Permission.OwnerOnly.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifierA,
                 conceptStr = conStr,
@@ -442,7 +442,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "A3 GLAM",
                 name = "A3 GLAM",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifierA,
                 conceptStr = conStr,
@@ -453,7 +453,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "B1 GLAM",
                 name = "B1 GLAM",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifierB,
                 conceptStr = conStr,
@@ -533,7 +533,7 @@ namespace Neo4jTest
             // have the permission OwnerOnly.
             foreach (var unclassified in unclassifieds.data)
             {
-                Assert.AreNotEqual(Classifiable.Persmission.OwnerOnly,
+                Assert.AreNotEqual(Classifiable.Permission.OwnerOnly,
                     unclassified.perm);
                 Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
                 Assert.AreEqual("", unclassified.conceptStr.ToString());
@@ -569,7 +569,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "A1 GLAM",
                 name = "A1 GLAM",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifierA,
                 conceptStr = conStr,
@@ -580,7 +580,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "A2 OwnerOnly",
                 name = "A2 OwnerOnly",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.OwnerOnly.ToString(),
+                perm = Classifiable.Permission.OwnerOnly.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifierA,
                 conceptStr = conStr,
@@ -591,7 +591,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "B1 GLAM",
                 name = "B1 GLAM",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifierB,
                 conceptStr = conStr,
@@ -666,7 +666,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyName1",
                 name = "dummyName1",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -723,7 +723,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyName2",
                 name = "dummyName2",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 conceptStr = conStr,
             };
@@ -761,7 +761,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyName3",
                 name = "dummyName3",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -808,7 +808,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyName4",
                 name = "dummyName4",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -839,7 +839,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyName5",
                 name = "dummyName5",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -872,7 +872,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyName1",
                 name = "dummyName1",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -888,7 +888,7 @@ namespace Neo4jTest
             // Make changes and update
             newClassifiable.name = "newName";
             newClassifiable.url = "newUrl";
-            newClassifiable.perm = Classifiable.Persmission.OwnerOnly.ToString();
+            newClassifiable.perm = Classifiable.Permission.OwnerOnly.ToString();
             
             Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
 
@@ -927,7 +927,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "UpdateClassi",
                 name = "UpdateClassi",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = ownerClassifier,
                 conceptStr = conStr,
@@ -944,7 +944,7 @@ namespace Neo4jTest
             // Make changes and update
             newClassifiable.name = "newNameForAnotehrSimple";
             newClassifiable.url = "newUrl";
-            newClassifiable.perm = Classifiable.Persmission.OwnerOnly.ToString();
+            newClassifiable.perm = Classifiable.Permission.OwnerOnly.ToString();
             
             Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, editingClassifier);
 
@@ -986,7 +986,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyNameCSAdd",
                 name = "dummyNameCSAdd",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1050,7 +1050,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyNameCSrm",
                 name = "dummyNameCSrm",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1103,7 +1103,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "unique",
                 name = "unique",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1114,7 +1114,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "original",
                 name = "original",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1155,7 +1155,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyName4",
                 name = "dummyName4",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1202,7 +1202,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "A1 GLAM",
                 name = "A1 GLAM",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Unclassified.ToString(),
                 owner = classifierA,
                 conceptStr = conStr,
@@ -1224,7 +1224,7 @@ namespace Neo4jTest
             Assert.AreEqual(1, recentB.data.Count);
 
             // Change permission so that Classifier B can't see it anymore
-            changingClassifiable.perm = Classifiable.Persmission.OwnerOnly.ToString();
+            changingClassifiable.perm = Classifiable.Permission.OwnerOnly.ToString();
 
             Classifiable changedClassifiable = conn.updateClassifiable(originalClassifiable, changingClassifiable, classifierA);
 
@@ -1267,7 +1267,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "A",
                 name = "A",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1278,7 +1278,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "B",
                 name = "B",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1334,7 +1334,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyNameToDelete",
                 name = "dummyNameToDelete",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1371,7 +1371,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyNameToDelete02",
                 name = "dummyNameToDelete02",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,
@@ -1416,7 +1416,7 @@ namespace Neo4jTest
                 id = glam.name + "_" + "dummyNameToDelete03",
                 name = "dummyNameToDelete03",
                 url = "dummyURL",
-                perm = Classifiable.Persmission.GLAM.ToString(),
+                perm = Classifiable.Permission.GLAM.ToString(),
                 status = Classifiable.Status.Classified.ToString(),
                 owner = classifier,
                 conceptStr = conStr,

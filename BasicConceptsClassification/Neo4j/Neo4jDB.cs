@@ -671,7 +671,7 @@ namespace Neo4j
                     .Union()
                     .Match("(c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(:GLAM)<-[:ASSOCIATED_WITH]-(oAgain:Classifier)")
                     .Where("oAgain.email = {emailAgain}").WithParam("emailAgain", classifierEmail)
-                    .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Persmission.GLAM);
+                    .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Permission.GLAM);
 
                 if (filter == true)
                 {

@@ -7,7 +7,7 @@ namespace BCCLib
 {
     public class Classifiable
     {
-        public enum Persmission
+        public enum Permission
         {
             GLAM,
             OwnerOnly,
