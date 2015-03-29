@@ -177,6 +177,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Content\bootstrap.css" />
     <Content Include="Help.aspx" />
     <Content Include="Account\AccessDenied.aspx" />
     <Content Include="Account\AdminPage.aspx" />
