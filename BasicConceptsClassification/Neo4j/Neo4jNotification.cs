@@ -5,7 +5,7 @@ using System.Text;
 
 namespace Neo4j
 {
-    class Neo4jNotification
+    public class Neo4jNotification
     {
         public String msg
         {

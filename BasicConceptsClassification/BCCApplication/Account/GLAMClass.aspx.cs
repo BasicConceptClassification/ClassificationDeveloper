@@ -22,8 +22,8 @@ namespace BCCApplication.Account
         private string ERROR_SERVER = "Having server issues, sorry!";
 
         static Neo4jDB dbConn = new Neo4jDB();
-        static string userEmail = ""; 
-        static SortedDictionary<string, string> notifications = new SortedDictionary<string, string>();
+        static string userEmail = "";
+        static List<Neo4jNotification> notifications = new List<Neo4jNotification>();
         static ClassifiableCollection recentClassifiables = new ClassifiableCollection
         {
             data = new List<Classifiable>(),
@@ -75,19 +75,19 @@ namespace BCCApplication.Account
                     TableNotification.Rows.Add(tRowHead);
 
                     // Add the regular rows/cells
-                    foreach ( var note in notifications)
+                    for (int i = 0; i < notifications.Count; i++)
                     {
                         TableRow tRow = new TableRow();
                         TableCell tCell = new TableCell();
 
-                        tCell.Text = note.Value;
+                        tCell.Text = notifications[i].msg;
                         tRow.Cells.Add(tCell);
 
                         tCell = new TableCell();
 
                         Button btn = new Button();
                         btn.Text = "Delete";
-                        btn.ID = note.Key;
+                        btn.ID = i.ToString();
                         btn.Click += new EventHandler(btnDelete_Click);
                         tCell.Controls.Add(btn);
 
@@ -231,12 +231,9 @@ namespace BCCApplication.Account
         void btnDelete_Click(object sender, EventArgs e)
         {
             Button button = (Button)sender;
-            string timestamp = button.ID;
-            string message = notifications[timestamp];
-            System.Diagnostics.Debug.WriteLine(timestamp);
-            System.Diagnostics.Debug.WriteLine(message);
+            int index = int.Parse(button.ID);
 
-            dbConn.removeNotification(userEmail, message, timestamp);
+            dbConn.removeNotification(userEmail, notifications[index]);
             GenerateNotifications(dbConn, userEmail);
         }
 
