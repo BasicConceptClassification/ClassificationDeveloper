@@ -13,11 +13,17 @@ using System.Diagnostics;
 
 public partial class Search : System.Web.UI.Page
 {
+     private string DESCRIPTION = @"<p>Here on the search page, you can enter in Terms found in the Controlled Vocabulary
+                                    to search for items found in GLAMs. Once you have entered the Terms you want to search
+                                    by, click the Jump to Search Page button to go to the Search Results. There you will
+                                    have the option to choose what search options you want before the search starts.</p>";
     
     protected void Page_Load(object sender, EventArgs e)
     {
         if (!Page.IsPostBack)
         {
+            LabelDescription.Text = DESCRIPTION;
+
             // Testing purposes, only loading from BccRoot with a small depth
             int expandDepth = -1;
 

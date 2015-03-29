@@ -14,7 +14,8 @@ namespace BCCApplication.Account
 {
     public partial class RemoveClassOb : System.Web.UI.Page
     {
-
+        private string DESCRIPTION = @"<p>Select a Classifiable from the list on the left side of the page to get more information about it. 
+                                        Then, you can click the Remove button to remove the Classifiable.</p>";
 
         protected ClassifiableCollection classifiables = new ClassifiableCollection();
         protected int currentIndex = 0;
@@ -30,6 +31,7 @@ namespace BCCApplication.Account
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            LabelDescription.Text = DESCRIPTION;
             GetClassifiables();
         }
 

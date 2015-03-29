@@ -1,10 +1,15 @@
-﻿<%@ Page Title="Clasify" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ClassOb.aspx.cs" Inherits="BCCApplication.Account.ClassOb" %>
+﻿<%@ Page Title="Classifying a GLAM Object" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ClassOb.aspx.cs" Inherits="BCCApplication.Account.ClassOb" %>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
+    <h1><%: Title %></h1>
+    <div>
+        <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+    </div>
     <asp:RequiredFieldValidator runat="server" ControlToValidate="ObName" CssClass="text-danger" 
         ErrorMessage="The name of the object is required." />
     <asp:RequiredFieldValidator runat="server" ControlToValidate="ObUrl" CssClass="text-danger" 
         ErrorMessage="The URL of the object is required." />
+    <h3>GLAM Object Information</h3>
     <table style="width:100%;">
         <tr>
             <td>

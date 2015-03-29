@@ -1,12 +1,11 @@
-﻿<%@ Page Title="Home Page" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="BCCApplication._Default" %>
+﻿<%@ Page Title="Basic Concepts Classification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="Default.aspx.cs" Inherits="BCCApplication._Default" %>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <h1>Basic Concepts Classification</h1>
-        <p>
-            Welcome to the Basic Concepts Classification. Here you can search for items found in the 
-            galleries, archieves, and museums. Each Item can be searched for by terms in the classification.
-        </p>
+        <h2><%: Title %></h2>
+        <div>
+            <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+        </div>
         <center>
             <asp:Label ID="SearchPrompt" runat="server" CssClass="control-label">Search for:</asp:Label>
             <asp:TextBox ID="TextBox2" runat="server" CssClass="input-xxlarge search-query" placeholder="(Search)(by)(Terms)"></asp:TextBox>

@@ -15,6 +15,16 @@ namespace BCCApplication.Account
 {
     public partial class ClassOb : System.Web.UI.Page
     {
+        private string DESCRIPTION = @"<p>Fill in the required fields below about your GLAM object. The name of the GLAM object and
+                                        the URL where a user can find more information about the object are required. 
+                                        The name of the GLAM object must be unique to your GLAM. </p>
+                                        <p>You can set the permission of the GLAM object to allow only you to edit it or you can set it
+                                        so that other classifiers in your GLAM can edit it. 
+                                        When adding the GLAM object's Concept String, you may only use the Terms provided. 
+                                        If you leave the Concept String blank it will be considered Not Classified. </p>
+                                        <p>You can edit any of these later.</p>";
+
+
         private string SUCCESS_ADD = "Successfully added: ";
         private string FAIL_UNIQUE = "Failed: Another GLAM Object with that name already exists in your GLAM.";
         private string FAIL_TERMS = "Not all the terms in the concept string are from the controlled vocabulary.";
@@ -22,6 +32,7 @@ namespace BCCApplication.Account
 
         protected void Page_Load(object sender, EventArgs e)
         {
+            // TODO: What is this for?
             if (counter_once == 1)
             {
                 string getinput_name = "";
@@ -46,6 +57,8 @@ namespace BCCApplication.Account
             }
             if (!Page.IsPostBack)
             {
+                LabelDescription.Text = DESCRIPTION;
+
                 // At the moment, generates another tree after clicking the Submit button.
                 int expandDepth = 3;
 

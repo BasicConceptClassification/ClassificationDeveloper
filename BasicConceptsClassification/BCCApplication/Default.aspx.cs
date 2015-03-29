@@ -13,10 +13,17 @@ namespace BCCApplication
 {
     public partial class _Default : Page
     {
+        private string DESCRIPTION = @"<p>Welcome to the Basic Concepts Classification. Here you can search for items found in the 
+                                        galleries, archieves, and museums (GLAM). Each Item can be searched for by terms in the classification.</p>
+                                        <p>Use the menu at the top of the to learn more about the Classification, start searching,
+                                        or contact the admin to help classify GLAM objects today!</p>";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
+                LabelDescription.Text = DESCRIPTION;
+
                 // Testing purposes, only loading from BccRoot with a small depth
                 int expandDepth = 2;
                 

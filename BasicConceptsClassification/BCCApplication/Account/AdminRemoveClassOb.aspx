@@ -2,9 +2,11 @@
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
       <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
 </asp:Content>
-<asp:Content ID="Content2" ContentPlaceHolderID="FeaturedContent" runat="server">
-</asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
+    <h2><%: Title %></h2>
+    <div>
+        <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+    </div>
     <div class="row">
         <div class="col-md-3">
             <div>
@@ -29,6 +31,7 @@
                     <asp:ListBox
                         ID="ClassListBox"
                         runat="server"
+                        Rows="6"
                         OnSelectedIndexChanged="ClassListBox_SelectedIndexChanged"
                         AutoPostBack="true">
                     </asp:ListBox>

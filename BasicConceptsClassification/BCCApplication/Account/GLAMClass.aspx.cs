@@ -14,6 +14,10 @@ namespace BCCApplication.Account
 {
     public partial class GLAMClass : System.Web.UI.Page
     {
+        private string DESCRIPTION = @"<p>Below you can see your notifications, your recently classified GLAM objects, those not classified,
+                                        or those that might need some special attention.
+                                        You can also Add new GLAM objects to your GLAM or remove any GLAM objects that you have added.</p>";
+
         private string NOTIFICATIONS_NONE = "You have no notifications.";
 
         private string RECENTCLASSIFIED_NONE = "No GLAM objects have been recently classified.";
@@ -38,17 +42,23 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             userEmail = currentUser.Email;
 
-       
-                GenerateNotifications(dbConn, userEmail);
+            LabelDescription.Text = DESCRIPTION;
 
-                GenerateRecentlyClassified(dbConn, userEmail);
+            GenerateNotifications(dbConn, userEmail);
 
-                GenerateUnclassified(dbConn, userEmail);
+            GenerateRecentlyClassified(dbConn, userEmail);
 
-                GenerateUnclassifiedSpecial(dbConn, userEmail);
+            GenerateUnclassified(dbConn, userEmail);
+
+            GenerateUnclassifiedSpecial(dbConn, userEmail);
             
         }
 
+        /// <summary>
+        /// Fetchs and displays notifications for the currently logged in user.
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="classifierEmail"></param>
         protected void GenerateNotifications(Neo4jDB conn, string classifierEmail)
         {
             try
@@ -88,7 +98,7 @@ namespace BCCApplication.Account
                         Button btn = new Button();
                         btn.Text = "Delete";
                         btn.ID = note.Key;
-                        btn.Click += new EventHandler(btnDelete_Click);
+                        btn.Click += new EventHandler(btnDeleteNotification_Click);
                         tCell.Controls.Add(btn);
 
                         tRow.Cells.Add(tCell);
@@ -116,7 +126,12 @@ namespace BCCApplication.Account
             }
         }
 
-
+        /// <summary>
+        /// Fetches and fills in the classifier's recently classified GLAM objects,
+        /// ordered by most recent.
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="classifierEmail"></param>
         protected void GenerateRecentlyClassified(Neo4jDB conn, string classifierEmail)
         {
             try
@@ -151,6 +166,11 @@ namespace BCCApplication.Account
             }
         }
 
+        /// <summary>
+        /// Fetches and fills in the unclassified classifiables that the Classifier has persmission to access.
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="classifierEmail"></param>
         protected void GenerateUnclassified(Neo4jDB conn, string classifierEmail)
         {
             try
@@ -187,6 +207,12 @@ namespace BCCApplication.Account
             }
         }
 
+        /// <summary>
+        /// Fetches and displays all the Classifiables that the classifier has persmission to access that
+        /// are not quite classified. Such as their Concept String is incomplete.
+        /// </summary>
+        /// <param name="conn"></param>
+        /// <param name="classifierEmail"></param>
         protected void GenerateUnclassifiedSpecial(Neo4jDB conn, string classifierEmail)
         {
             try
@@ -228,23 +254,19 @@ namespace BCCApplication.Account
             }
         }
 
-        void btnDelete_Click(object sender, EventArgs e)
+        /// <summary>
+        /// On Click, the notification that the button corresponds to gets removed.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
+        void btnDeleteNotification_Click(object sender, EventArgs e)
         {
             Button button = (Button)sender;
             string timestamp = button.ID;
             string message = notifications[timestamp];
-            System.Diagnostics.Debug.WriteLine(timestamp);
-            System.Diagnostics.Debug.WriteLine(message);
 
             dbConn.removeNotification(userEmail, message, timestamp);
             GenerateNotifications(dbConn, userEmail);
-        }
-
-        protected void Button1_Click(object sender, EventArgs e)
-        {
-            string str = TextBox2.Text;
-            Application["textpass"] = str;
-            Response.Redirect("~/SearchResults.aspx", true);
         }
 
         protected void ClassNow_Click(object sender, EventArgs e)

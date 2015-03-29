@@ -20,11 +20,10 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <div>
         <div>
-            <h2>Remove Classifiable</h2>
-            <p>
-                Select a Classifiable from the list on the left side of the page to get more information about it. 
-                Then, you can click the Remove button to remove the Classifiable.
-            </p>
+            <h2><%: Title %></h2>
+            <div>
+                <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+            </div>
             <asp:Label ID="Notification" runat="server"></asp:Label>
         </div>
        <table style="width:100%;" border="1">

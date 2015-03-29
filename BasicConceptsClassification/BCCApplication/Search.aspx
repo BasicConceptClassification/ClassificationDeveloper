@@ -1,11 +1,12 @@
-﻿<%@ Page Title="Search" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="True" Inherits="Search" Codebehind="Search.aspx.cs" %>
+﻿<%@ Page Title="Search Aid" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="True" Inherits="Search" Codebehind="Search.aspx.cs" %>
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <center><h1>Search Builder</h1></center>
-        <p>Quick explanation on how to use with or w/out the buttons. For more information please go <a href="About.aspx" target="_self">about/help page</a>.</p>
-        <br />
+        <h2><%: Title %></h2>
+        <div>
+            <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+        </div>
         <center>
             <asp:Label ID="SearchPrompt" runat="server" CssClass="control-label">Search for:</asp:Label>
             <asp:TextBox ID="TextBox2" runat="server" CssClass="input-xxlarge search-query" placeholder="(Search)(by)(Terms)"></asp:TextBox>

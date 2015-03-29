@@ -1,9 +1,11 @@
-﻿<%@ Page Title="Search" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="True" Inherits="SearchResults" CodeBehind="SearchResults.aspx.cs" %>
+﻿<%@ Page Title="Search Results" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="True" Inherits="SearchResults" CodeBehind="SearchResults.aspx.cs" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <center><h1>Search Results</h1></center>
-        <br />
+        <h2><%: Title %></h2>
+        <div>
+            <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+        </div>
         <center>
             <asp:Label ID="SearchPrompt" runat="server" CssClass="control-label">Search for:</asp:Label>
             <asp:TextBox ID="searching_textbox" runat="server" CssClass="input-xxlarge search-query" placeholder="(Search)(by)(Terms)"/>

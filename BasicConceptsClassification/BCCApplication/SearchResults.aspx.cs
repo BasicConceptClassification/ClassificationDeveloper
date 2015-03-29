@@ -8,9 +8,6 @@ using System.Web.UI.WebControls;
 using BCCLib;
 using Neo4j;
 
-
-
-
 class objects
 {
     public string name;
@@ -32,6 +29,9 @@ class objects
 
 public partial class SearchResults : System.Web.UI.Page
 {
+    private string DESCRIPTION = @"<p>To view the search results, please click the Search button below.
+                                    You can choose order you want the results in by selecting any one of
+                                    the <em>Sort By...</em> butttons below.</p>";
 
     static List<objects> obj_results = new List<objects>();
     static List<objects> dis_results = new List<objects>();
@@ -42,11 +42,7 @@ public partial class SearchResults : System.Web.UI.Page
     {
         
         obj_results.Clear();
-        // List<objects> dis_results = new List<objects>();
 
-        // **** This section should not be done here! **** //
-        // Using same example from the Neo4jTest.cs
-        // CREATING TERMS FOR MAKING SAMPLE CONCEPT STRING 
         if (counter_once == 1)
         {
             string getinput = "";
@@ -63,6 +59,10 @@ public partial class SearchResults : System.Web.UI.Page
 
         }
         
+        if(!Page.IsPostBack)
+        {
+            LabelDescription.Text = DESCRIPTION;
+        }
         
         
 
@@ -75,7 +75,6 @@ public partial class SearchResults : System.Web.UI.Page
 
         String user_searching = searching_textbox.Text;
 
-        //string input_str = "[pig],[dog],[cat]";
         string Triminput_str = user_searching.Trim();
         string sstring = Triminput_str.Replace(")(", ",");
         sstring = sstring.Replace(")", "");
@@ -88,7 +87,6 @@ public partial class SearchResults : System.Web.UI.Page
         {
             //change to terms
             Term terterma = new Term{rawTerm = things,};
-            //ListBox1.Items.Add(things);
             new_terms.Add(terterma);
         }
 
@@ -120,10 +118,6 @@ public partial class SearchResults : System.Web.UI.Page
               int scores = 0;
 
               int set_s1 = 0;
-              
-
-              //List<string> terms_two = new List<string>(new string[] { "pig", "cat" });
-              
 
               name = currentClassifiable.name;
               url = currentClassifiable.url;
@@ -134,14 +128,12 @@ public partial class SearchResults : System.Web.UI.Page
               {
                   string newthings = things.Replace("(", "");
                   string new_t_things = newthings.Replace(")", "");
-                  //ListBox1.Items.Add(new_t_things);
                   check_list.Add(new_t_things);
               }
 
 
               foreach (string items in new_str)
               {
-                  //ListBox1.Items.Add(items);
                   foreach (string thing in check_list)
                   {
                       if (items == thing)
@@ -161,27 +153,23 @@ public partial class SearchResults : System.Web.UI.Page
                       if (items == things)
                       {
                           counter_str.Add(things);
-                          //ListBox1.Items.Add(things);
                       }
 
                   }
               }
-
-              //ListBox1.Items.Add("----------------------------");
 
 
               foreach (string items in new_str)
               {
                   set_s1++;
                   int set_s2 = 0;
-                  //ListBox1.Items.Add("&&&&&&&&&" + items);
 
                   foreach (string things in counter_str)
                   {
                       set_s2++;
                       if (items == things)
                       {
-                        //scores = scores + Math.Abs(set_s1 - set_s2);
+                        
                           if (set_s2 == set_s1)
                           {
                               scores = scores + 50;
@@ -190,29 +178,22 @@ public partial class SearchResults : System.Web.UI.Page
                           {
                               scores = scores + 1;
                           }
-                          //ListBox1.Items.Add(things);
+                          
                       }
                       
                   }
                   
               }
               
-
-
-              //ListBox1.Items.Add(scores.ToString());
               int decreasecounter = counter;
               while (decreasecounter != 0)
               {
                   scores = scores + 100;
                   decreasecounter--;
               }
-              //ListBox1.Items.Add(scores.ToString());
-              //ListBox1.Items.Add("********************************");
-
 
               obj_results.Add(new objects(name, terms_term, counter, concept, url, scores));
               dis_results.Add(new objects(name, terms_term, counter, concept, url, scores));
-              
           }
 
           var sort_result = from element in obj_results orderby element.counter select element;
@@ -220,8 +201,6 @@ public partial class SearchResults : System.Web.UI.Page
 
           foreach (objects things in sort_result.Reverse())
           {
-
-              //Classifiable currentClassifiable = searchResults.data[i];
 
               ObName = new Label();
 
@@ -265,8 +244,6 @@ public partial class SearchResults : System.Web.UI.Page
         foreach (objects things in sort_result.Reverse().ToList())
         {
 
-            //Classifiable currentClassifiable = searchResults.data[i];
-
             Label ObName = new Label();
 
             // Set this label to diaply the name of the Classifiable
@@ -306,8 +283,6 @@ public partial class SearchResults : System.Web.UI.Page
 
         foreach (objects things in sort_result)
         {
-
-            //Classifiable currentClassifiable = searchResults.data[i];
 
             Label ObName = new Label();
 
@@ -349,8 +324,6 @@ public partial class SearchResults : System.Web.UI.Page
         foreach (objects things in sort_result.Reverse().ToList())
         {
 
-            //Classifiable currentClassifiable = searchResults.data[i];
-
             Label ObName = new Label();
 
             // Set this label to diaply the name of the Classifiable
@@ -383,13 +356,5 @@ public partial class SearchResults : System.Web.UI.Page
         }
 
     }
-
-/*
-    protected void generateSearchResults(List<objects> searchResults)
-    {
-        //int resultsLength = searchResults.data.Count;  
-        
-    }*/
-
 
 }
