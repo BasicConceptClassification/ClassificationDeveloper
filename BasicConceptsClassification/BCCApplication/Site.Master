@@ -80,7 +80,7 @@
                             <li><a runat="server" href="~/Default">Home</a></li>
                             <li><a runat="server" href="~/Search">Search Aid</a></li>
                             <li><a runat="server" href="~/Classification">The Classification</a></li>
-                            <li><a runat="server" href="~/About">Help/About</a></li>
+                            <li><a runat="server" href="~/Help">Help</a></li>
                             <li><a runat="server" href="~/Contact">Contact Us</a></li>
                         </ul>
                     </nav>
