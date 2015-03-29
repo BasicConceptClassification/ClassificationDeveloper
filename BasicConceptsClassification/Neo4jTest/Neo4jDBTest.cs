@@ -487,25 +487,38 @@ namespace Neo4jTest
         [TestMethod]
         public void GetAllUnclassified_YourOwn_Exists()
         {
-            GLAM glam = new GLAM("US National Parks Service");
+            GLAM glam = new GLAM("Unclassified My Own");
             Classifier classifier = new Classifier(glam);
-            classifier.email = "user1@USNationalParks.com";
+            classifier.email = "testingUnclassifiedMyOwn@testing.com";
+            classifier.username = "a username";
 
             var conn = new Neo4jDB();
 
-            ClassifiableCollection unclassifieds = conn.getAllowedClassifiables(classifier.email, Classifiable.Status.Unclassified.ToString());
-
-            // TODO: fix: Bad test without sample data, but will do for now
-            Assert.AreNotEqual(0, unclassifieds.data.Count);
-
-            // check cases:
-            // not all may have a null constr
-            // some may not have a ConceptString
-            foreach (var unclassified in unclassifieds.data)
+            Classifiable myUnclassified = new Classifiable
             {
-                Assert.AreEqual(0, unclassified.conceptStr.terms.Count);
-                Assert.AreEqual("", unclassified.conceptStr.ToString());
-            }
+                id = glam.name + "_" + "Unclassed GLAM",
+                name = "Unclassed GLAM",
+                url = "dummyURL",
+                perm = Classifiable.Permission.GLAM.ToString(),
+                status = Classifiable.Status.Unclassified.ToString(),
+                owner = classifier,
+                conceptStr = new ConceptString { terms = new List<Term>(), },
+            };
+
+            conn.addClassifier(classifier);
+
+            // Add the Classifiables in this order
+            conn.addClassifiable(myUnclassified);
+
+            ClassifiableCollection unclassifieds = conn.getAllowedClassifiables(classifier.email, Classifiable.Status.Unclassified.ToString());
+            Assert.AreEqual(1, unclassifieds.data.Count);
+            Assert.AreEqual(myUnclassified.name, unclassifieds.data[0].name);
+            // Check that it's unclassified
+            Assert.AreEqual(myUnclassified.conceptStr.ToString(), unclassifieds.data[0].conceptStr.ToString());
+            Assert.AreEqual(0, unclassifieds.data[0].conceptStr.terms.Count);
+            // Check owner and who last modified it (shoudl be the same)
+            Assert.AreEqual(myUnclassified.owner.ToString(), unclassifieds.data[0].owner.ToString());
+            Assert.AreEqual(myUnclassified.owner.ToString(), unclassifieds.data[0].classifierLastEdited.ToString());
         }
 
         [TestMethod]
