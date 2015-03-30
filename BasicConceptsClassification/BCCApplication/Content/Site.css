@@ -576,7 +576,8 @@ tr.pager td {
     padding: 0 0.25em 0 0;
 }
 
-/* BOOTSTRAP modification */
+/* Table modification: When table cells overflow, cut off with ellipsis (..) 
+    ref: http://www.bootply.com/9njmoY2CmS#*/
 .table-fixed-width {
     table-layout:fixed
 }
