@@ -7,7 +7,7 @@ namespace BCCLib
 {
     public class Classifiable
     {
-        public enum Persmission
+        public enum Permission
         {
             GLAM,
             OwnerOnly,
@@ -59,6 +59,15 @@ namespace BCCLib
         /// A Classifier that has added the Classifiable.
         /// </summary>
         public Classifier owner
+        {
+            get;
+            set;
+        }
+
+        /// <summary>
+        /// The Classifier who last editied the Classifiable.
+        /// </summary>
+        public Classifier classifierLastEdited
         {
             get;
             set;
