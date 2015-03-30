@@ -22,16 +22,12 @@ namespace BCCApplication.Account
 
         private string RECENTCLASSIFIED_NONE = "No GLAM objects have been recently classified.";
         private string UNCLASSFIED_NONE = "All your GLAM objects are classified!";
-        private string UNCLASSFIED_SPECIAL_NONE = "No GLAM OBjects require special attention!";
+        private string UNCLASSFIED_SPECIAL_NONE = "No GLAM Objects require special attention!";
         private string ERROR_SERVER = "Having server issues, sorry!";
 
         static Neo4jDB dbConn = new Neo4jDB();
         static string userEmail = ""; 
         static List<Neo4jNotification> notifications = new List<Neo4jNotification>();
-        static ClassifiableCollection recentClassifiables = new ClassifiableCollection
-        {
-            data = new List<Classifiable>(),
-        };
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -46,11 +42,11 @@ namespace BCCApplication.Account
        
                 GenerateNotifications(dbConn, userEmail);
 
-                GenerateRecentlyClassified(dbConn, userEmail);
+                GenerateRecentlyClassified(dbConn, userEmail, TableRecClassObj);
 
-                GenerateUnclassified(dbConn, userEmail);
+                GenerateUnclassified(dbConn, userEmail, TableUnClassList);
 
-                GenerateUnclassifiedSpecial(dbConn, userEmail);
+                GenerateUnclassifiedSpecial(dbConn, userEmail, TableUnClassAdminCause);
             
         }
 
@@ -72,13 +68,12 @@ namespace BCCApplication.Account
 
                     // Add the header row/cells
                     TableRow tRowHead = new TableHeaderRow();
-                    TableCell tCellHead = new TableHeaderCell();
 
+                    TableCell tCellHead = new TableHeaderCell();
                     tCellHead.Text = "Message";
                     tRowHead.Cells.Add(tCellHead);
 
                     tCellHead = new TableHeaderCell();
-
                     tCellHead.Text = "Action";
                     tRowHead.Cells.Add(tCellHead);
 
@@ -133,28 +128,74 @@ namespace BCCApplication.Account
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="classifierEmail"></param>
-        protected void GenerateRecentlyClassified(Neo4jDB conn, string classifierEmail)
+        protected void GenerateRecentlyClassified(Neo4jDB conn, string classifierEmail, Table ClassifableTable)
         {
             try
             {
-                recentClassifiables = conn.getRecentlyClassified(classifierEmail);
+                ClassifiableCollection recentClassifiables = conn.getRecentlyClassified(classifierEmail);
                 
                 if (recentClassifiables.data.Count > 0)
                 {
-                    RecClassObj.Items.Clear();
-                    for (int i = 0; i < recentClassifiables.data.Count; i++)
+                    // Remove the old stuff
+                    ClassifableTable.Rows.Clear();
+
+                    // Add the header row/cells
+                    TableRow tRowHead = new TableHeaderRow();
+
+                    TableCell tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "Name";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "Concept String";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "URL";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "Last Modified By";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    ClassifableTable.Rows.Add(tRowHead);
+
+                    foreach (Classifiable recent in recentClassifiables.data)
                     {
-                        String RecClassT = recentClassifiables.data[i].name;
-                        RecClassObj.Items.Add(new ListItem(RecClassT));
+                        TableRow tRow = new TableRow();
+
+                        // Name
+                        TableCell tCell = new TableCell();
+                        tCell.Text = recent.name;
+                        tRow.Cells.Add(tCell);
+
+                        // Concept String
+                        tCell = new TableCell();
+                        //tCell.Text = recent.conceptStr.ToString();
+                        tCell.Text = "Coming Soon!";
+                        tRow.Cells.Add(tCell);
+
+                        // Url
+                        tCell = new TableCell();
+                        tCell.Text = recent.url;
+                        tRow.Cells.Add(tCell);
+
+                        // Last Modified By
+                        tCell = new TableCell();
+                        //tCell.Text = recent.classifierLastModified.username;
+                        tCell.Text = " Also Coming Soon!";
+                        tRow.Cells.Add(tCell);
+
+                        ClassifableTable.Rows.Add(tRow);
                     }
                     LabelRecClassObj.Visible = false;
-                    RecClassObj.Visible = true;
+                    ClassifableTable.Visible = true;
                 }
                 else
                 {
                     LabelRecClassObj.Visible = true;
                     LabelRecClassObj.Text = RECENTCLASSIFIED_NONE;
-                    RecClassObj.Visible = false;
+                    ClassifableTable.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -163,7 +204,7 @@ namespace BCCApplication.Account
 
                 LabelRecClassObj.Visible = true;
                 LabelRecClassObj.Text = ERROR_SERVER;
-                RecClassObj.Visible = false;
+                ClassifableTable.Visible = false;
             }
         }
 
@@ -172,29 +213,63 @@ namespace BCCApplication.Account
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="classifierEmail"></param>
-        protected void GenerateUnclassified(Neo4jDB conn, string classifierEmail)
+        protected void GenerateUnclassified(Neo4jDB conn, string classifierEmail, Table ClassifableTable)
         {
             try
             {
                 ClassifiableCollection classifiables = conn.getAllUnclassified(classifierEmail);
                 if (classifiables.data.Count > 0)
                 {
-                    for (int i = 0; i < classifiables.data.Count; i++)
+                    // Remove the old stuff
+                    ClassifableTable.Rows.Clear();
+
+                    // Add the header row/cells
+                    TableRow tRowHead = new TableHeaderRow();
+
+                    TableCell tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "Name";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "URL";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "Last Modified By";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    ClassifableTable.Rows.Add(tRowHead);
+
+                    foreach (Classifiable unclassified in classifiables.data)
                     {
-                        UnClassList.Items.Clear();
-                        String unClassified = classifiables.data[i].name;
-                        UnClassList.Items.Add(new ListItem(unClassified));
+                        TableRow tRow = new TableRow();
+
+                        // Name
+                        TableCell tCell = new TableCell();
+                        tCell.Text = unclassified.name;
+                        tRow.Cells.Add(tCell);
+
+                        // Url
+                        tCell = new TableCell();
+                        tCell.Text = unclassified.url;
+                        tRow.Cells.Add(tCell);
+
+                        // Last Modified By
+                        tCell = new TableCell();
+                        //tCell.Text = unclassified.classifierLastModified.username;
+                        tCell.Text = " Also Coming Soon!";
+                        tRow.Cells.Add(tCell);
+
+                        ClassifableTable.Rows.Add(tRow);
                     }
                     LabelNotClassified.Visible = false;
-                    UnClassList.Visible = true;
-                    ButtGLAMClassClassNow.Visible = true;
+                    ClassifableTable.Visible = true;
                 }
                 else
                 {
                     LabelNotClassified.Visible = true;
                     LabelNotClassified.Text = UNCLASSFIED_NONE;
-                    UnClassList.Visible = false;
-                    ButtGLAMClassClassNow.Visible = false;
+                    ClassifableTable.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -203,8 +278,7 @@ namespace BCCApplication.Account
                 
                 LabelNotClassified.Visible = true;
                 LabelNotClassified.Text = ERROR_SERVER;
-                UnClassList.Visible = false;
-                ButtGLAMClassClassNow.Visible = false;
+                ClassifableTable.Visible = false;
             }
         }
 
@@ -214,7 +288,7 @@ namespace BCCApplication.Account
         /// </summary>
         /// <param name="conn"></param>
         /// <param name="classifierEmail"></param>
-        protected void GenerateUnclassifiedSpecial(Neo4jDB conn, string classifierEmail)
+        protected void GenerateUnclassifiedSpecial(Neo4jDB conn, string classifierEmail, Table ClassifableTable)
         {
             try
             {
@@ -226,22 +300,67 @@ namespace BCCApplication.Account
 
                 if (classifiables.data.Count > 0)
                 {
-                    UnClassAdminCause.Items.Clear();
-                    for (int i = 0; i < classifiables.data.Count; i++)
+                    // Remove the old stuff
+                    ClassifableTable.Rows.Clear();
+
+                    // Add the header row/cells
+                    TableRow tRowHead = new TableHeaderRow();
+
+                    TableCell tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "Name";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "Concept String";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "URL";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    tCellHead = new TableHeaderCell();
+                    tCellHead.Text = "Last Modified By";
+                    tRowHead.Cells.Add(tCellHead);
+
+                    ClassifableTable.Rows.Add(tRowHead);
+
+                    foreach (Classifiable unclassified in classifiables.data)
                     {
-                        String unClassified = classifiables.data[i].name;
-                        UnClassAdminCause.Items.Add(new ListItem(unClassified));
+                        TableRow tRow = new TableRow();
+
+                        // Name
+                        TableCell tCell = new TableCell();
+                        tCell.Text = unclassified.name;
+                        tRow.Cells.Add(tCell);
+
+                        // Concept String
+                        tCell = new TableCell();
+                        //tCell.Text = unclassified.conceptStr.ToString();
+                        tCell.Text = "Coming Soon!";
+                        tRow.Cells.Add(tCell);
+
+                        // Url
+                        tCell = new TableCell();
+                        tCell.Text = unclassified.url;
+                        tRow.Cells.Add(tCell);
+
+                        // Last Modified By
+                        tCell = new TableCell();
+                        //tCell.Text = unclassified.classifierLastModified.username;
+                        tCell.Text = " Also Coming Soon!";
+                        tRow.Cells.Add(tCell);
+
+                        ClassifableTable.Rows.Add(tRow);
                     }
+
                     LabelNotClassifiedSpecial.Visible = false;
-                    UnClassAdminCause.Visible = true;
-                    ButtGLAMClassReClassNow.Visible = true;
+                    ClassifableTable.Visible = true;
                 }
                 else
                 {
                     LabelNotClassifiedSpecial.Visible = true;
                     LabelNotClassifiedSpecial.Text = UNCLASSFIED_SPECIAL_NONE;
-                    UnClassAdminCause.Visible = false;
-                    ButtGLAMClassReClassNow.Visible = false;
+                    ClassifableTable.Visible = false;
                 }
             }
             catch (Exception ex)
@@ -250,8 +369,7 @@ namespace BCCApplication.Account
                 
                 LabelNotClassifiedSpecial.Visible = true;
                 LabelNotClassifiedSpecial.Text = ERROR_SERVER;
-                UnClassAdminCause.Visible = false;
-                ButtGLAMClassReClassNow.Visible = false;
+                ClassifableTable.Visible = false;
             }
         }
 

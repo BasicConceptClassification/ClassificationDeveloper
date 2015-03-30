@@ -576,6 +576,17 @@ tr.pager td {
     padding: 0 0.25em 0 0;
 }
 
+/* BOOTSTRAP modification */
+.table-fixed-width {
+    table-layout:fixed
+}
+
+.table-fixed-width td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 
 /********************
 *   Mobile Styles   *
@@ -708,7 +719,7 @@ tr.pager td {
         width: 90%;
     }
 
-    
+        
     
     /* login page */
     #loginForm {
