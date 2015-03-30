@@ -577,7 +577,7 @@ tr.pager td {
 }
 
 /* Table modification: When table cells overflow, cut off with ellipsis (..) 
-    ref: http://www.bootply.com/9njmoY2CmS#*/
+    ref: http://www.bootply.com/9njmoY2CmS# */
 .table-fixed-width {
     table-layout:fixed
 }

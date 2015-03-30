@@ -30,7 +30,13 @@ namespace Neo4j
 
         protected internal const string REL_SUBTERMOF_LABEL = "SUBTERM_OF";
 
-
+        // For getRecentlyClassified, etc, if for some reason they don't exist...
+        protected internal const string UNKNOWN_GLAM = "Unknown GLAM";
+        protected internal const string UNKNOWN_OWNER_EMAIL = "Unknown Owner Email";
+        protected internal const string UNKNOWN_OWNER_USERNAME = "Unknown Owner Username";
+        protected internal const string UNKNOWN_EDITOR_EMAIL = "Unknown Last Edited Email";
+        protected internal const string UNKNOWN_EDITOR_USERNAME = "Unknown Last Edited Username";
+        
 
         /// <summary>
         /// Open the connection to the database.
@@ -570,10 +576,12 @@ namespace Neo4j
         /// <summary>
         /// Get the classifier's recently classified classifiables.
         /// </summary>
-        /// <param name="classifier">Classifier who owns the classifiables returned.</param>
+        /// <param name="classifierEmail">Classifier who owns the classifiables returned.</param>
+        /// <param name="limit">Limit number of results. Default 10. If set to a number 
+        /// greater than 0, then it will limit to that many results. 0 or less, and it will grab them all.</param>
         /// <returns>Classifiables without their concept string, owner, who recently classified them,
         /// etc.</returns>
-        public ClassifiableCollection getRecentlyClassified(string classifierEmail)
+        public ClassifiableCollection getRecentlyClassified(string classifierEmail, int limit = 10)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
             {
@@ -588,30 +596,95 @@ namespace Neo4j
                 // WHERE o.email = "testingRecent@BCCNeo4j.com"
                 // RETURN c AS classifiable, rModify.lastModified as date
                 // ORDER BY date
-                var query = client.Cypher
-                    .Match("(c:Classifiable)<-[rModified:MODIFIED_BY]-(o:Classifier)")
+                var queryBuild = client.Cypher
+                    .Match("(c:Classifiable)<-[rModified:MODIFIED_BY]-(o:Classifier)-[:ASSOCIATED_WITH]->(g1:GLAM)")
                     .Where("o.email = {email}").WithParam("email", classifierEmail)
                     .AndWhere("c.status = {classed}").WithParam("classed", Classifiable.Status.Classified.ToString())
-                    .With("c, rModified.lastModified AS date")
-                    .Return((c) => new
+                    .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
+                    .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
+                    .OptionalMatch("(g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)")
+                    .With(@"c, t, rModified.lastModified AS date,
+                            g1.name AS ownerG, o.email AS ownerE, o.username AS ownerN,
+                            g2.name AS editorG, lastEditor.email AS editorE, lastEditor.username AS editorN")
+                    
+                    .Return((c, t, ownerG, ownerE, ownerN, editorG, editorE, editorN, date) => new
                     {
                         classifiable = c.As<Classifiable>(),
+                        terms = t.CollectAs<Term>(),
+                        ownerGlam = ownerG.As<string>(),
+                        ownerEmail = ownerE.As<string>(),
+                        ownerName = ownerN.As<string>(),
+                        editorGlam = editorG.As<string>(),
+                        editorEmail = editorE.As<string>(),
+                        editorName = editorN.As<string>(),
+                        date = date.As<long>(),
                     })
-                    .OrderByDescending("date")
+                    .OrderByDescending("date");
+
+                if (limit > 0){
+                    queryBuild = queryBuild.Limit(limit);
+                }
+
+                var query = queryBuild
                     .Results.ToList();
 
                 if (query != null)
                 {
                     foreach (var res in query)
                     {
-                        // if the union has no data, returns as null,
-                        // so need to check that we actually have a result
+                        // if one set of union has no data, it will return as null,
+                        // so need to check that we actually have results from each set
                         if (res.classifiable != null)
                         {
-                            res.classifiable.conceptStr = new ConceptString
+                            // TODO: reorder terms to match concept string
+                            ConceptString resConStr = new ConceptString
                             {
                                 terms = new List<Term>(),
                             };
+
+                            foreach (var t in res.terms)
+                            {
+                                t.Data.subTerms = new List<Term>();
+                                resConStr.terms.Add(t.Data);
+                            }
+
+                            // A bit of a hack for now. But it maintains order because of
+                            // ...some reason.
+                            resConStr.terms.Reverse();
+                            res.classifiable.conceptStr = resConStr;
+
+                            // If these are not null...
+                            if (res.ownerGlam != null && res.ownerEmail != null && res.ownerName != null)
+                            {
+                                GLAM tmpG = new GLAM(res.ownerGlam);
+                                res.classifiable.owner = new Classifier(tmpG);
+                                res.classifiable.owner.email = res.ownerEmail;
+                                res.classifiable.owner.username = res.ownerName;
+                            }
+                            else
+                            {
+                                GLAM tmpG = new GLAM(UNKNOWN_GLAM);
+                                res.classifiable.owner = new Classifier(tmpG);
+                                res.classifiable.owner.email = UNKNOWN_OWNER_EMAIL;
+                                res.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
+                            }
+
+                            // If these two are not null...
+                            if (res.editorGlam != null && res.editorEmail != null && res.editorName != null)
+                            {
+                                GLAM tmpG = new GLAM(res.editorGlam);
+                                res.classifiable.classifierLastEdited = new Classifier(tmpG);
+                                res.classifiable.classifierLastEdited.email = res.editorEmail;
+                                res.classifiable.classifierLastEdited.username = res.editorName;
+                            }
+                            else
+                            {
+                                GLAM tmpG = new GLAM(UNKNOWN_GLAM);
+                                res.classifiable.classifierLastEdited = new Classifier(tmpG);
+                                res.classifiable.classifierLastEdited.email = UNKNOWN_EDITOR_EMAIL;
+                                res.classifiable.classifierLastEdited.username = UNKNOWN_EDITOR_USERNAME;
+                            }
+
                             resColl.data.Add(res.classifiable);
                         }
                     }
@@ -946,7 +1019,7 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Not finished. Will do as name implies.
+        /// Given an old classifiable and the updated version, will update the old classifiable to the new one.
         /// </summary>
         /// <param name="oldClassifiable">The old information.</param>
         /// <param name="updatedClassifiable">The updated information.</param>

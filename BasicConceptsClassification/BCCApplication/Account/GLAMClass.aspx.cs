@@ -171,8 +171,8 @@ namespace BCCApplication.Account
 
                         // Concept String
                         tCell = new TableCell();
-                        //tCell.Text = recent.conceptStr.ToString();
-                        tCell.Text = "Coming Soon!";
+                        tCell.Text = recent.conceptStr.ToString();
+                       // tCell.Text = "Coming Soon!";
                         tRow.Cells.Add(tCell);
 
                         // Url
@@ -182,8 +182,8 @@ namespace BCCApplication.Account
 
                         // Last Modified By
                         tCell = new TableCell();
-                        //tCell.Text = recent.classifierLastModified.username;
-                        tCell.Text = " Also Coming Soon!";
+                        tCell.Text = recent.classifierLastEdited.ToString();
+                        //tCell.Text = " Also Coming Soon!";
                         tRow.Cells.Add(tCell);
 
                         ClassifableTable.Rows.Add(tRow);

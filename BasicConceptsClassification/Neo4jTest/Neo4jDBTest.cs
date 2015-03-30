@@ -360,10 +360,6 @@ namespace Neo4jTest
             Classifiable result = conn.addClassifiable(newClassifiable);
             ClassifiableCollection recent1 = conn.getRecentlyClassified(classifier.email);
 
-            // Test to make sure we got one result for that new classifier
-            Assert.AreEqual(1, recent1.data.Count);
-            Assert.AreEqual(newClassifiable.name, recent1.data[0].name);
-
             // Create the second classifiable
             Classifiable newClassifiable2 = newClassifiable;
             newClassifiable2.name = "dummyAdd02";
@@ -377,6 +373,14 @@ namespace Neo4jTest
             Assert.AreEqual(2, recent2.data.Count);
             Assert.AreEqual(result2.name, recent2.data[0].name);
             Assert.AreEqual(result.name, recent2.data[1].name);
+
+            // SInce the classifier just added them, they should be the owner and the
+            // classifier who last edited it
+            foreach (Classifiable c in recent2.data)
+            {
+                Assert.AreEqual(classifier.ToString(), c.owner.ToString());
+                Assert.AreEqual(classifier.ToString(), c.classifierLastEdited.ToString());
+            }
         }
 
         [TestMethod]
