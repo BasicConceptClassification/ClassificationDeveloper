@@ -256,8 +256,7 @@ namespace BCCApplication.Account
 
                         // Last Modified By
                         tCell = new TableCell();
-                        //tCell.Text = unclassified.classifierLastModified.username;
-                        tCell.Text = " Also Coming Soon!";
+                        tCell.Text = unclassified.classifierLastEdited.ToString();
                         tRow.Cells.Add(tCell);
 
                         ClassifableTable.Rows.Add(tRow);
