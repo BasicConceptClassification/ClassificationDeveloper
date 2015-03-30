@@ -1,6 +1,6 @@
 ﻿<%@ Page Title="Admin - Remove Classifiable" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminRemoveClassOb.aspx.cs" Inherits="BCCApplication.Account.AdminRemoveClassOb" %>
 <asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
-      <link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.2.0/css/bootstrap.min.css">
+    <link href="/Content/bootstrap.css" rel="stylesheet" />
 </asp:Content>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <h2><%: Title %></h2>

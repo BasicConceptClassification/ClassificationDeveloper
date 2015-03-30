@@ -1,5 +1,6 @@
 ﻿<%@ Page Title="Classifying a GLAM Object" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="ClassOb.aspx.cs" Inherits="BCCApplication.Account.ClassOb" %>
-
+<asp:Content ID="Content1" ContentPlaceHolderID="HeadContent" runat="server">
+</asp:Content>
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
     <h1><%: Title %></h1>
     <div>
@@ -27,9 +28,9 @@
         </tr>
         <tr>
             <td>
-                <div class="form-group">
+                <div>
                     <asp:Label runat="server" AssociatedControlID="EditPerm" CssClass="control-label">Edit Permissions</asp:Label>    
-                    <asp:RadioButtonList ID="EditPerm" runat="server" Font-Size="X-Small" RepeatColumns="2">
+                    <asp:RadioButtonList ID="EditPerm" runat="server" CssClass="radioButtonList" RepeatDirection="Horizontal">
                         <asp:ListItem Value="GLAM" Selected="True"/>
                         <asp:ListItem Value="OwnerOnly"/>
                     </asp:RadioButtonList>
@@ -74,5 +75,4 @@
         </tr>
     </table> 
     <br />
-&nbsp; 
 </asp:Content>

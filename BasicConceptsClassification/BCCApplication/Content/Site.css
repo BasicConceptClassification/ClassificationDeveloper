@@ -446,6 +446,20 @@ fieldset {
         margin-right: 4px;
     }
 
+     /* http://stackoverflow.com/questions/17670479/display-radiobuttonlist-inline */
+    .radioButtonList { list-style:none; margin: 0; padding: 0; }
+    
+    .radioButtonList.horizontal li { display: inline; }
+
+    .radioButtonList label{
+        display:inline;
+     }
+
+    /* Added for our case. */
+    .radioButtonList input {
+        width: auto;
+    }
+
 /* info and errors */
 .message-info {
     border: 1px solid;
@@ -560,6 +574,18 @@ td {
 
 tr.pager td {
     padding: 0 0.25em 0 0;
+}
+
+/* Table modification: When table cells overflow, cut off with ellipsis (..) 
+    ref: http://www.bootply.com/9njmoY2CmS# */
+.table-fixed-width {
+    table-layout:fixed
+}
+
+.table-fixed-width td {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 
 
@@ -694,7 +720,7 @@ tr.pager td {
         width: 90%;
     }
 
-    
+        
     
     /* login page */
     #loginForm {
