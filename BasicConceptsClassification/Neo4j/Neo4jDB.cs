@@ -319,7 +319,7 @@ namespace Neo4j
 
                     // A bit of a hack for now. But it maintains order because of
                     // ...some reason.
-                    resConStr.terms.Reverse();
+                    //resConStr.terms.Reverse();
                     query.classifiable.conceptStr = resConStr;
 
                     // If these are not null...
@@ -1108,7 +1108,10 @@ namespace Neo4j
                 }
 
                 // Update 3) update who last modified this
-                // TODO: use case statements to only update the classifier if necessary
+                // TODO: Uh, not quite sure why there are multiple results being returned,
+                // when multiple terms are being added...maybe has to do with creating the
+                // multiple term links?
+                // But FirstOrDefault fixes it.
                 var results = buildQuery
                    .With("c")
                    .Match("(c)<-[rModify:MODIFIED_BY]-(prevClassifier:Classifier)")
@@ -1122,7 +1125,7 @@ namespace Neo4j
                    .Return((newId) => new
                    {
                        cId = newId.As<string>(),
-                   }).Results.Single();
+                   }).Results.FirstOrDefault();
 
                 if (results != null)
                 {

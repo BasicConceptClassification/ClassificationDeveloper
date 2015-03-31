@@ -1021,7 +1021,15 @@ namespace Neo4jTest
             {
                 rawTerm = "Tool",
             };
+
+            // Make changes and update
+            Term termWood = new Term
+            {
+                rawTerm = "wood",
+            };
+
             newClassifiable.conceptStr.terms.Add(termTool);
+            newClassifiable.conceptStr.terms.Add(termWood);
 
             Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
 
@@ -1033,7 +1041,7 @@ namespace Neo4jTest
             Assert.AreEqual(newClassifiable.perm, updatedClassifiable.perm);
             Assert.AreEqual(newClassifiable.status, updatedClassifiable.status);
 
-            Assert.AreEqual(1, newClassifiable.conceptStr.terms.Count);
+            Assert.AreEqual(2, newClassifiable.conceptStr.terms.Count);
             Assert.AreEqual(newClassifiable.conceptStr.ToString(),
                             updatedClassifiable.conceptStr.ToString());
         }
