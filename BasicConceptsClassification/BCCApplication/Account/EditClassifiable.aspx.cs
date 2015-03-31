@@ -36,19 +36,35 @@ namespace BCCApplication.Account
                 ListBox2.Items.Add(currentUNClassifiable.name);
                 ListBox2.Items.Add(currentUNClassifiable.id);
             }
-            ListBox2.Items.Add("things");
+           
 
 
 
 
             ClassifiableCollection classifieds = dbConn.getRecentlyClassified(userEmail);
-            int resultLength = unclassifieds.data.Count;
+            int resultLength = classifieds.data.Count;
             for (int i = 0; i < resultLength; i++)
             {
                 Classifiable currentClassifiable = classifieds.data[i];
                 ListBoxClass.Items.Add(currentClassifiable.name);
+               // ListBox4.Items.Add("-------------------------------------");
+                //ListBox4.Items.Add(classifieds.data[i].id);
+                //ListBox4.Items.Add(classifieds.data[i].name);
+                //ListBox4.Items.Add(classifieds.data[i].owner.ToString());
+                //ListBox4.Items.Add(classifieds.data[i].perm);
+                //ListBox4.Items.Add(classifieds.data[i].status);
+                //classifieds.data[i].conceptStr
+               // List<string> TERMS = classifieds.data[i].conceptStr.ToListstring();
+               // foreach (string things in TERMS)
+                //{
+                //    ListBox4.Items.Add(things);
+               // }
+                //ListBox4.Items.Add(classifieds.data[i].conceptStr.ToString());
+                //ListBox4.Items.Add("-------------------------------------");
             }
 
+            
+            
         }
 
        
@@ -58,11 +74,7 @@ namespace BCCApplication.Account
             string str_n = TextBox_Name.Text;
             string str_u = TextBox_URL.Text;
             string str_c = TextBox_Concept.Text;
-            //string str_perm = EditPerm.SelectedValue;
-            //string str_owner = classifier;
-            Application["namepass"] = str_n;
-            Application["urlepass"] = str_u;
-            Application["conpass"] = str_c;
+
 
 
 
@@ -108,24 +120,47 @@ namespace BCCApplication.Account
             {
                 terms = newTerms,
             };
-
-
+            string the_status;
+            if (str_c != "")
+            {
+                the_status = Classifiable.Status.Classified.ToString();
+            }
+            else{
+                the_status = Classifiable.Status.Unclassified.ToString();
+            }
             Classifiable newClassifiable = new Classifiable
             {
-                id = classifier.username + "_" + str_n,
+                id = gl.name + "_" + str_n,
                 name = str_n,
                 url = str_u,
-                perm = EditPerm.SelectedValue,
+                perm = Classifiable.Permission.GLAM.ToString(),
+                status = the_status,
                 owner = classifier,
                 conceptStr = newConceptStr,
             };
+
+
+            //ListBox3.Items.Add(newClassifiable.id);
+            //ListBox3.Items.Add(newClassifiable.name);
+            //ListBox3.Items.Add(newClassifiable.owner.ToString());
+            //ListBox3.Items.Add(newClassifiable.perm);
+           // ListBox3.Items.Add(newClassifiable.status);
+            //ListBox3.Items.Add(newClassifiable.conceptStr.ToString());
+
+            //List<string> TERMS = newClassifiable.conceptStr.ToListstring();
+            //foreach (string things in TERMS)
+            //{
+            //    ListBox3.Items.Add(things);
+           // }
+            
+
             //-------------------------------------------------------------------------------------------
 
 
            // var dbConn = new Neo4jDB();
 
 
-            Classifiable matchedClassifiable = conn.getClassifiableById(/*classifier.name +*/ "_" + select_string);
+            Classifiable matchedClassifiable = conn.getClassifiableById(gl.name+ "_" + select_string);
 
             string teststr = "";
 
@@ -166,7 +201,7 @@ namespace BCCApplication.Account
             classifier.email = userEmail;
 
 
-            Classifiable matchedClassifiable = dbConn.getClassifiableById(/*classifier.name +*/ "_" + select_string);
+            Classifiable matchedClassifiable = dbConn.getClassifiableById(gl.name+ "_" + select_string);
             TextBox_Name.Text = matchedClassifiable.name;
             TextBox_URL.Text = matchedClassifiable.url;
             TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
@@ -192,8 +227,8 @@ namespace BCCApplication.Account
             classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
 
-            Classifiable matchedClassifiable = dbConn.getClassifiableById(/*classifier.name*/ "_" + select_string);
-            TextBox_Name.Text = classifier.username + "_" + select_string;
+            Classifiable matchedClassifiable = dbConn.getClassifiableById(gl.name+ "_" + select_string);
+            TextBox_Name.Text = select_string;
             TextBox_URL.Text = matchedClassifiable.url;
             TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
         }
