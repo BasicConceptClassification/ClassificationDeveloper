@@ -67,6 +67,15 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.Button RemoveClass;
         
         /// <summary>
+        /// LabelDescRecClassObj control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LabelDescRecClassObj;
+        
+        /// <summary>
         /// TableRecClassObj control.
         /// </summary>
         /// <remarks>

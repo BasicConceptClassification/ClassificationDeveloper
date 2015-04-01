@@ -40,17 +40,18 @@
                         <h3>Notifications</h3>
                         <asp:Table runat="server" ID="TableNotification" BorderWidth="1" CellPadding="2" GridLines="Both"></asp:Table>
                         <div>
-                            <asp:Label runat="server" ID="LabelTableNotification" Visible="false"></asp:Label>
+                            <asp:Label runat="server" ID="LabelTableNotification" Visible="false" CssClass="table table-bordered table-fixed-width"></asp:Label>
                         </div>
                     </div>
                     <div>
                         <h3>Manage Classifiables</h3>
                         <asp:Button ID="ButtGLAMClassAddNew" runat="server" Text="Add a New GLAM Object" OnClick="AddNew_Click" Font-Size="Small" />
-                        <asp:Button ID="ButtGLAMClassClassNow" runat="server" Text="Edit GLAM OBjects" OnClick="ClassNow_Click" Font-Size="Small" />
+                        <asp:Button ID="ButtGLAMClassClassNow" runat="server" Text="Edit GLAM Objects" OnClick="ClassNow_Click" Font-Size="Small" />
                         <asp:Button ID="RemoveClass" runat="server" Text="Remove GLAM Objects" OnClick="RemoveClassPage_Click" Font-Size="Small" />
                     </div>
                     <div>
                         <h3>Your Recently Classified</h3>
+                        <asp:Label ID="LabelDescRecClassObj" runat="server" CssClass="p"></asp:Label>
                         <asp:Table ID="TableRecClassObj" runat="server" CssClass="table table-bordered table-fixed-width"></asp:Table>
                         <div>
                             <asp:Label ID="LabelRecClassObj" runat="server" Visible="false"></asp:Label>

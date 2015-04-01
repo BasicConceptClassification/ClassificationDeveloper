@@ -36,12 +36,12 @@ namespace BCCApplication.Account
                 ListBox2.Items.Add(currentUNClassifiable.name);
                 ListBox2.Items.Add(currentUNClassifiable.id);
             }
-           
 
 
 
 
-            ClassifiableCollection classifieds = dbConn.getRecentlyClassified(userEmail);
+
+            ClassifiableCollection classifieds = dbConn.getAllClassified(userEmail);
             int resultLength = classifieds.data.Count;
             for (int i = 0; i < resultLength; i++)
             {

@@ -1,5 +1,5 @@
 ﻿
-<%@ Page Title="EditClassifiable" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="True" Inherits="BCCApplication.Account.EditClassifiable" CodeBehind="EditClassifiable.aspx.cs" %>
+<%@ Page Title="Edit Classifiable" Language="C#" MasterPageFile="~/Site.master" AutoEventWireup="True" Inherits="BCCApplication.Account.EditClassifiable" CodeBehind="EditClassifiable.aspx.cs" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
@@ -44,7 +44,7 @@
 
          <tr>
              <td>
-                    <asp:RadioButtonList ID="EditPerm" runat="server" Font-Size="X-Small" RepeatColumns="2">
+                    <asp:RadioButtonList ID="EditPerm" runat="server" CssClass="radioButtonList" RepeatDirection="Horizontal">
                         <asp:ListItem Value="GLAM" Selected="True"/>
                         <asp:ListItem Value="OwnerOnly"/>
                     </asp:RadioButtonList>

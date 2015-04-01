@@ -17,9 +17,11 @@ namespace BCCApplication.Account
         private string DESCRIPTION = @"<p>Below you can see your notifications, your recently classified GLAM objects, those not classified,
                                         or those that might need some special attention.
                                         You can also Add new GLAM objects to your GLAM or remove any GLAM objects that you have added.</p>";
+        
+        private static int NUM_RECENT_CLASSIFIED = 10;
+        private string YOUR_RECENTLY_CLASSIFIED = String.Format("<p>Here are your {0:D} (at most) recently classified GLAM Objects.</p>", NUM_RECENT_CLASSIFIED);
 
         private string NOTIFICATIONS_NONE = "You have no notifications.";
-
         private string RECENTCLASSIFIED_NONE = "No GLAM objects have been recently classified.";
         private string UNCLASSFIED_NONE = "All your GLAM objects are classified!";
         private string UNCLASSFIED_SPECIAL_NONE = "No GLAM Objects require special attention!";
@@ -29,8 +31,17 @@ namespace BCCApplication.Account
         static string userEmail = ""; 
         static List<Neo4jNotification> notifications = new List<Neo4jNotification>();
 
+        protected void Setup_WebContent()
+        {
+            LabelDescription.Text = DESCRIPTION;
+            LabelDescRecClassObj.Text = YOUR_RECENTLY_CLASSIFIED;
+        }
+
         protected void Page_Load(object sender, EventArgs e)
         {
+            // Get Any modifiable content ready!
+            Setup_WebContent();
+
             // Manager was from register.aspx page
             // Ref: http://blogs.msdn.com/b/webdev/archive/2013/10/16/customizing-profile-information-in-asp-net-identity-in-vs-2013-templates.aspx
             // See "Getting Profile Information"
@@ -38,16 +49,11 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             userEmail = currentUser.Email;
 
-            LabelDescription.Text = DESCRIPTION;
-       
-                GenerateNotifications(dbConn, userEmail);
-
-                GenerateRecentlyClassified(dbConn, userEmail, TableRecClassObj);
-
-                GenerateUnclassified(dbConn, userEmail, TableUnClassList);
-
-                GenerateUnclassifiedSpecial(dbConn, userEmail, TableUnClassAdminCause);
-            
+            // Generate all the tables that appear on the page
+            GenerateNotifications(dbConn, userEmail);
+            GenerateRecentlyClassified(dbConn, userEmail, TableRecClassObj);
+            GenerateUnclassified(dbConn, userEmail, TableUnClassList);
+            GenerateUnclassifiedSpecial(dbConn, userEmail, TableUnClassAdminCause);
         }
 
         /// <summary>

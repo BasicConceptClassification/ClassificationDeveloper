@@ -847,16 +847,25 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Get all the Classifiables that have the status "Unclassified".
-        /// <para>Classifiables returned are not associated with whoever
-        /// added them.</para>
+        /// Get all the Classifiables that have the status "Unclassified" that the Classifier is allowed to
+        /// classify.
         /// </summary>
         /// <returns>A ClassifiableCollection with Classifiables that have
-        /// not been classified. Does not return the owner, who last classified them,
-        /// or its concept string.</returns>
+        /// not been classified.</returns>
         public ClassifiableCollection getAllUnclassified(string classifierEmail)
         {
             return getAllowedClassifiables(classifierEmail, Classifiable.Status.Unclassified.ToString());
+        }
+
+        /// <summary>
+        /// Get all the Classifiables that have the status "Classifiable" that the Classifier is allowed to
+        /// classify.
+        /// </summary>
+        /// <returns>A ClassifiableCollection with Classifiables that have
+        /// been classified.</returns>
+        public ClassifiableCollection getAllClassified(string classifierEmail)
+        {
+            return getAllowedClassifiables(classifierEmail, Classifiable.Status.Classified.ToString());
         }
 
         /// <summary>
