@@ -330,6 +330,13 @@ namespace Neo4j
                         query.classifiable.owner.email = query.ownerEmail;
                         query.classifiable.owner.username = query.ownerName;
                     }
+                    else
+                    {
+                        GLAM tmpG = new GLAM(UNKNOWN_GLAM);
+                        query.classifiable.owner = new Classifier(tmpG);
+                        query.classifiable.owner.email = UNKNOWN_OWNER_EMAIL;
+                        query.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
+                    }
 
                     // If these two are not null...
                     if (query.editorGlam != null && query.editorEmail != null && query.editorName != null)
@@ -339,7 +346,13 @@ namespace Neo4j
                         query.classifiable.classifierLastEdited.email = query.editorEmail;
                         query.classifiable.classifierLastEdited.username = query.editorName;
                     }
-
+                    else
+                    {
+                        GLAM tmpG = new GLAM(UNKNOWN_GLAM);
+                        query.classifiable.classifierLastEdited = new Classifier(tmpG);
+                        query.classifiable.classifierLastEdited.email = UNKNOWN_EDITOR_EMAIL;
+                        query.classifiable.classifierLastEdited.username = UNKNOWN_EDITOR_USERNAME;
+                    }
                     return query.classifiable;
                 }
             }
@@ -496,6 +509,14 @@ namespace Neo4j
                             res.classifiable.owner.email = res.ownerEmail;
                             res.classifiable.owner.username = res.ownerName;
                         }
+                        else
+                        {
+                            GLAM tmpG = new GLAM(UNKNOWN_GLAM);
+                            res.classifiable.owner = new Classifier(tmpG);
+                            res.classifiable.owner.email = UNKNOWN_OWNER_EMAIL;
+                            res.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
+                        }
+
                         // Add Classifiable to the collection
                         rtnColl.data.Add(res.classifiable);
                     }
@@ -828,6 +849,13 @@ namespace Neo4j
                                 res.classifiable.owner.email = res.ownerEmail;
                                 res.classifiable.owner.username = res.ownerName;
                             }
+                            else
+                            {
+                                GLAM tmpG = new GLAM(UNKNOWN_GLAM);
+                                res.classifiable.owner = new Classifier(tmpG);
+                                res.classifiable.owner.email = UNKNOWN_OWNER_EMAIL;
+                                res.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
+                            }
 
                             // If these two are not null...
                             if (res.editorGlam != null && res.editorEmail != null && res.editorName != null)
@@ -836,6 +864,13 @@ namespace Neo4j
                                 res.classifiable.classifierLastEdited = new Classifier(tmpG);
                                 res.classifiable.classifierLastEdited.email = res.editorEmail;
                                 res.classifiable.classifierLastEdited.username = res.editorName;
+                            }
+                            else
+                            {
+                                GLAM tmpG = new GLAM(UNKNOWN_GLAM);
+                                res.classifiable.classifierLastEdited = new Classifier(tmpG);
+                                res.classifiable.classifierLastEdited.email = UNKNOWN_EDITOR_EMAIL;
+                                res.classifiable.classifierLastEdited.username = UNKNOWN_EDITOR_USERNAME;
                             }
 
                             resColl.data.Add(res.classifiable);
