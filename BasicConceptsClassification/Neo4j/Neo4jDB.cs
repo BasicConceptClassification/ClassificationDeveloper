@@ -1210,7 +1210,7 @@ namespace Neo4j
         /// Use the limit and skip parameters to page the results. 
         /// </summary>
         /// <param name="cstring">A Concepttring to search by.</param>
-        /// <param name="optLimit">Default 25. Should be an integer greater than 0.
+        /// <param name="optLimit">Default 0. Should be an integer greater than 0.
         /// Indicate how many results to be returned at max.
         /// Set to 0 if you want all the results with at least one match.</param>
         /// <param name="optSkip">Default 0. Should be a positive integer.
@@ -1219,7 +1219,7 @@ namespace Neo4j
         /// <returns>Returns a ClassifiableCollection where each Classifiable's 
         /// ConceptSring has at least one matching term from </returns>
         public ClassifiableCollection getClassifiablesByConStr(ConceptString conStr,
-            int optLimit = 25, int optSkip = 0, bool ordered = false)
+            int optLimit = 0, int optSkip = 0)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
             {
@@ -1230,7 +1230,7 @@ namespace Neo4j
 
             if (client != null)
             {
-                int limit = 25;
+                int limit = 0;
                 int skip = 0;
 
                 if (optLimit > 0)
@@ -1279,55 +1279,48 @@ namespace Neo4j
                 var query = client.Cypher
                     .Match("(c:Classifiable)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
                     .Where(whereClause)
-                    .With("DISTINCT c, cs, COUNT([t]) AS numMatched")
-                    .Match("(c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t)")
-                    .With("DISTINCT c, COLLECT([t.id, t.rawTerm]) as terms, numMatched");
-
-                if (ordered)
-                {
-                    query = query.OrderBy("numMatched DESC");
-                }
-
-                var results = query.Return((c, terms) => new
+                    .With("DISTINCT c, cs")
+                    .Match("(c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(tActual:Term)")
+                    //.With("DISTINCT c, t")
+                    .Return((c, tActual) => new
                     {
                         classifiable = c.As<Classifiable>(),
-                        terms = terms.As<IEnumerable<string>>(),
+                        terms = tActual.CollectAs<Term>(),
                     })
-                    .Skip(skip)
-                    .Limit(limit)
-                    .Results.ToList();
+                    .Skip(skip);
 
-                if (query != null)
+                if (limit > 0)
+                {
+                    query = query.Limit(limit);
+                }
+
+                System.Diagnostics.Debug.WriteLine(query.Query.DebugQueryText);
+
+                var results = query.Results.ToList();
+
+                if (results != null)
                 {
                     // Build up Classifiables
                     for (int i = 0; i < results.Count; i++)
                     {
                         var res = results.ElementAt(i);
 
-                        // TODO: reorder terms to match concept string,
-                        // other than the simple reversal later...
+                        // TODO: reorder terms to match concept string
                         ConceptString resConStr = new ConceptString
                         {
                             terms = new List<Term>(),
                         };
 
-                        // Get the terms from the concept string
                         foreach (var t in res.terms)
                         {
-                            var tempData = JsonConvert.DeserializeObject<dynamic>(t);
-                            var tmp = new Term
-                            {
-                                id = tempData[0],
-                                rawTerm = tempData[1],
-                            };
-
-                            tmp.subTerms = new List<Term>();
-                            resConStr.terms.Add(tmp);
+                            t.Data.subTerms = new List<Term>();
+                            resConStr.terms.Add(t.Data);
                         }
 
                         // A bit of a hack for now. But it maintains order because of
                         // ...some reason.
                         resConStr.terms.Reverse();
+                        res.classifiable.conceptStr = resConStr;
 
                         Classifiable cTmp = new Classifiable
                         {

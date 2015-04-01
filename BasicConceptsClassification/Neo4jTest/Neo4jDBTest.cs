@@ -1021,17 +1021,7 @@ namespace Neo4jTest
             {
                 rawTerm = "Tool",
             };
-
-            // Make changes and update
-            Term termWood = new Term
-            {
-                rawTerm = "wood",
-            };
-
-            newClassifiable.status = Classifiable.Status.Classified.ToString();
-
             newClassifiable.conceptStr.terms.Add(termTool);
-            newClassifiable.conceptStr.terms.Add(termWood);
 
             Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
 
@@ -1042,75 +1032,6 @@ namespace Neo4jTest
             Assert.AreEqual(newClassifiable.url, updatedClassifiable.url);
             Assert.AreEqual(newClassifiable.perm, updatedClassifiable.perm);
             Assert.AreEqual(newClassifiable.status, updatedClassifiable.status);
-
-            Assert.AreEqual(2, newClassifiable.conceptStr.terms.Count);
-            Assert.AreEqual(newClassifiable.conceptStr.ToString(),
-                            updatedClassifiable.conceptStr.ToString());
-        }
-
-        [TestMethod]
-        public void UpdateClassifiable_EditConStr_Success()
-        {
-            // Only the ConStr is affected; no other properties should be changed.
-            GLAM glam = new GLAM("Updating GLAM");
-
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingUpdateConStrEdit@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
-
-            // Make changes and update
-            Term termTool = new Term
-            {
-                rawTerm = "Tool",
-            };
-
-            // Make changes and update
-            Term termWood = new Term
-            {
-                rawTerm = "wood",
-            };
-
-            // Make changes and update
-            Term termArt= new Term
-            {
-                rawTerm = "Art",
-            };
-
-            ConceptString conStr = new ConceptString
-            {
-                terms = new List<Term> { termTool, termWood },
-            };
-
-            Classifiable newClassifiable = new Classifiable
-            {
-                id = glam.name + "_" + "dummyNameCSEdit",
-                name = "dummyNameCSEdit",
-                url = "dummyURL",
-                perm = Classifiable.Permission.GLAM.ToString(),
-                status = Classifiable.Status.Classified.ToString(),
-                owner = classifier,
-                conceptStr = conStr,
-            };
-
-            // Add the classifiable
-            var conn = new Neo4jDB();
-
-            conn.addClassifier(classifier);
-
-            Classifiable addedClassifiable = conn.addClassifiable(newClassifiable);
-
-            ConceptString conStr2 = new ConceptString
-            {
-                terms = new List<Term> { termArt },
-            };
-
-            newClassifiable.conceptStr = conStr2;
-
-            Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
-
-            // Make checks.
-            Assert.AreEqual(String.Format("{0}_{1}", glam.ToString(), newClassifiable.name),
-                            updatedClassifiable.id);
 
             Assert.AreEqual(1, newClassifiable.conceptStr.terms.Count);
             Assert.AreEqual(newClassifiable.conceptStr.ToString(),
@@ -1523,7 +1444,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetClassifiablesByConceptString_ClassifiablesMatch()
+        public void GetClassifiablesByConceptString_Unordered_ClassifiablesMatch()
         {
             var conn = new Neo4jDB();
 
@@ -1553,7 +1474,6 @@ namespace Neo4jTest
                     termWood, termTool, termFor,
                 },
             };
-
 
             ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr);
 
