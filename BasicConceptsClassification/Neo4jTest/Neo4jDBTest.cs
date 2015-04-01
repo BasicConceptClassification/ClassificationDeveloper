@@ -1028,6 +1028,8 @@ namespace Neo4jTest
                 rawTerm = "wood",
             };
 
+            newClassifiable.status = Classifiable.Status.Classified.ToString();
+
             newClassifiable.conceptStr.terms.Add(termTool);
             newClassifiable.conceptStr.terms.Add(termWood);
 
@@ -1042,6 +1044,75 @@ namespace Neo4jTest
             Assert.AreEqual(newClassifiable.status, updatedClassifiable.status);
 
             Assert.AreEqual(2, newClassifiable.conceptStr.terms.Count);
+            Assert.AreEqual(newClassifiable.conceptStr.ToString(),
+                            updatedClassifiable.conceptStr.ToString());
+        }
+
+        [TestMethod]
+        public void UpdateClassifiable_EditConStr_Success()
+        {
+            // Only the ConStr is affected; no other properties should be changed.
+            GLAM glam = new GLAM("Updating GLAM");
+
+            Classifier classifier = new Classifier(glam);
+            classifier.email = "testingUpdateConStrEdit@BCCNeo4j.com";
+            classifier.username = "usernames are not unique";
+
+            // Make changes and update
+            Term termTool = new Term
+            {
+                rawTerm = "Tool",
+            };
+
+            // Make changes and update
+            Term termWood = new Term
+            {
+                rawTerm = "wood",
+            };
+
+            // Make changes and update
+            Term termArt= new Term
+            {
+                rawTerm = "Art",
+            };
+
+            ConceptString conStr = new ConceptString
+            {
+                terms = new List<Term> { termTool, termWood },
+            };
+
+            Classifiable newClassifiable = new Classifiable
+            {
+                id = glam.name + "_" + "dummyNameCSEdit",
+                name = "dummyNameCSEdit",
+                url = "dummyURL",
+                perm = Classifiable.Permission.GLAM.ToString(),
+                status = Classifiable.Status.Classified.ToString(),
+                owner = classifier,
+                conceptStr = conStr,
+            };
+
+            // Add the classifiable
+            var conn = new Neo4jDB();
+
+            conn.addClassifier(classifier);
+
+            Classifiable addedClassifiable = conn.addClassifiable(newClassifiable);
+
+            ConceptString conStr2 = new ConceptString
+            {
+                terms = new List<Term> { termArt },
+            };
+
+            newClassifiable.conceptStr = conStr2;
+
+            Classifiable updatedClassifiable = conn.updateClassifiable(addedClassifiable, newClassifiable, classifier);
+
+            // Make checks.
+            Assert.AreEqual(String.Format("{0}_{1}", glam.ToString(), newClassifiable.name),
+                            updatedClassifiable.id);
+
+            Assert.AreEqual(1, newClassifiable.conceptStr.terms.Count);
             Assert.AreEqual(newClassifiable.conceptStr.ToString(),
                             updatedClassifiable.conceptStr.ToString());
         }
@@ -1452,81 +1523,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetClassifiablesByConceptString_Ordered_ClassifiablesMatch()
-        {
-            var conn = new Neo4jDB();
-
-            Term termWood = new Term
-            {
-                rawTerm = "wood",
-            };
-
-            Term termTool = new Term
-            {
-                rawTerm = "Tool",
-            };
-
-            Term termFor = new Term
-            {
-                rawTerm = "for",
-            };
-
-            // good where clause: 
-            // WHERE t.rawTerm = "wood" OR t.rawTerm = "for" OR t.rawTerm = "Tool"
-            // but put in ids and not rawTerms, since ids are unique....
-            // Maybe. Unless we want all kinds of say, "Beautiful"
-            ConceptString searchByConStr = new ConceptString
-            {
-                terms = new List<Term> 
-                {
-                    termWood, termTool, termFor,
-                },
-            };
-
-            ClassifiableCollection matchedClassifiables = conn.getClassifiablesByConStr(searchByConStr, ordered: true);
-
-            Assert.IsNotNull(matchedClassifiables);
-
-            // Tests that results are in order of most matches in its own concept string
-            int prevMatchCount = searchByConStr.terms.Count;
-            int currMatchCount = 0;
-            Classifiable prevClassifiable = new Classifiable
-            {
-                name = "first",
-            };
-
-            for (int i = 0; i < matchedClassifiables.data.Count; i++)
-            {
-                var classifiable = matchedClassifiables.data[i];
-
-                foreach (Term t in searchByConStr.terms)
-                {
-                    if (classifiable.conceptStr.ToString().Contains(t.ToString()))
-                    {
-                        currMatchCount += 1;
-                    }
-                }
-
-                Assert.AreNotEqual(0, currMatchCount,
-                    String.Format("Classifiable has {0} matches at index: {1:D} in results",
-                        classifiable.name, i));
-
-                Assert.IsTrue(currMatchCount <= prevMatchCount,
-                              String.Format("Index {4}: Current match: {0:D} for {2}, Previous match: {1:D} for {3}",
-                                currMatchCount,
-                                prevMatchCount,
-                                classifiable.name,
-                                prevClassifiable.name,
-                                i));
-
-                prevMatchCount = currMatchCount;
-                prevClassifiable = classifiable;
-                currMatchCount = 0;
-            }
-        }
-
-        [TestMethod]
-        public void GetClassifiablesByConceptString_Unordered_ClassifiablesMatch()
+        public void GetClassifiablesByConceptString_ClassifiablesMatch()
         {
             var conn = new Neo4jDB();
 

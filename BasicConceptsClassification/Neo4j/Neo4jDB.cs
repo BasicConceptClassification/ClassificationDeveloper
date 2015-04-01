@@ -1065,6 +1065,9 @@ namespace Neo4j
                 // TODO: a way to make sure the editing classifier has permission to edit this Classifiable?
 
                 // Update 1) Set the updated basic information (id, name, url, perm, status)
+                // Update 2) Update who last modified this. Could be done at the end, but got 
+                // moved up here when there was some multiple term editing weirdness. Wanted
+                // to grouo the 'easy' updating stuff together
                 buildQuery = buildQuery
                     .Match("(c:Classifiable {id: {oldId} })<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:GLAM)")
                     .WithParam("oldId", oldClass.id)
@@ -1076,26 +1079,54 @@ namespace Neo4j
                         upUrl = updatedClass.url,
                         upPerm = updatedClass.perm,
                         upStatus = updatedClass.status,
-                    });
+                    })
+                   .With("c")
+                   .Match("(c)<-[rModify:MODIFIED_BY]-(prevClassifier:Classifier)")
+                   .Delete("rModify")
+                   .With("c")
+                   .Match("(recentClassifier:Classifier {email: {modifierEmail} })")
+                   .WithParam("modifierEmail", modifier.email)
+                   .CreateUnique("(c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)")
+                   .Set("rNewModify.lastModified = timestamp()");
 
                 // Update 2) Update the concept string if it's been changed...
                 if (updatedClass.conceptStr.ToString() != oldClass.conceptStr.ToString())
                 {
-                    // Find, remove old, update, add new
-                    // Remove the old
-                    buildQuery = buildQuery
-                            .With("c")
-                            .Match("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
-                            .OptionalMatch("(cs)-[rOldTerms:HAS_TERM]->(:Term)")
-                            .Delete("rOldTerms")
-                            .Set("cs.terms = {newConStr}")
-                            .WithParam("newConStr", updatedClass.conceptStr.ToString());
+                    // We know the ConStr must be updated. The only case where we won't need
+                    // to remove any terms is when there were none in the first place.
+                    // Similarly for adding terms; we only need to do that if the 
+                    // ConStr is not "". Use these bools to make the if/else statements clearer.
+                    bool needToRemoveTerms = (oldClass.conceptStr.ToString() != "");
+                    bool needToAddTerms = (updatedClass.conceptStr.ToString() != "");
 
-                    // If the updated ConStr has actual terms:
-                    if (updatedClass.conceptStr.ToString() != "")
+                    buildQuery = buildQuery
+                        .With("c")
+                        .Match("(c)-[:HAS_CONSTR]->(cs:ConceptString)")
+                        .Set("cs.terms = {newConStr}")
+                        .WithParam("newConStr", updatedClass.conceptStr.ToString());
+
+                    // If the previous concept string had terms to remove, then remove them.
+                    // Otherwise, skip this part
+                    if (needToRemoveTerms)
+                    {
+                        // Find the old terms
+                        buildQuery = buildQuery
+                                .With("c, cs")
+                                .OptionalMatch("(cs)-[rOldTerms:HAS_TERM]->(:Term)")
+                                .With("c, cs, COLLECT(rOldTerms) AS toDeleteLater");
+                    }
+                    else
+                    {
+                        // Even though we're not removing, we need to have the same column names,
+                        // so use  a dummy name holder.
+                        buildQuery = buildQuery.With("c, cs, COLLECT(\"\") AS toDeleteLater");
+                    }
+
+                    // If we need to add new terms
+                    if (needToAddTerms)
                     {
                         buildQuery = buildQuery
-                            .With(@"c, cs, REPLACE({newConStr}, ""("", """") AS trmStr
+                            .With(@"c, cs, toDeleteLater, REPLACE({newConStr}, ""("", """") AS trmStr
                                 UNWIND ( FILTER
                                             ( x in
                                                 SPLIT( trmStr, "")"" )
@@ -1104,23 +1135,18 @@ namespace Neo4j
                                         ) AS t4")
                             .Match("(matchedT:Term {rawTerm: t4})")
                             .Create("(cs)-[:HAS_TERM]->(matchedT)");
+
+                    }
+                    // Finally delete the old terms
+                    if (needToRemoveTerms)
+                    {
+                        buildQuery = buildQuery
+                            .With("c, cs, toDeleteLater UNWIND toDeleteLater AS delOldRel")
+                            .Delete("delOldRel");
                     }
                 }
 
-                // Update 3) update who last modified this
-                // TODO: Uh, not quite sure why there are multiple results being returned,
-                // when multiple terms are being added...maybe has to do with creating the
-                // multiple term links?
-                // But FirstOrDefault fixes it.
                 var results = buildQuery
-                   .With("c")
-                   .Match("(c)<-[rModify:MODIFIED_BY]-(prevClassifier:Classifier)")
-                   .Delete("rModify")
-                   .With("c")
-                   .Match("(recentClassifier:Classifier {email: {modifierEmail} })")
-                   .WithParam("modifierEmail", modifier.email)
-                   .CreateUnique("(c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)")
-                   .Set("rNewModify.lastModified = timestamp()")
                    .With("c.id AS newId")
                    .Return((newId) => new
                    {
@@ -2184,6 +2210,7 @@ namespace Neo4j
                     "testingUpdateSimpleOwner@BCCNeo4j.com",
                     "testingUpdateSimpleAnother@BCCNeo4j.com",
                     "testingUpdateConStrAdd@BCCNeo4j.com",
+                    "testingUpdateConStrEdit@BCCNeo4j.com",
                     "testingUpdateConStrRemove@BCCNeo4j.com",
                     "testingUpdateViolateId@BCCNeo4j.com",
                     "testingUpdatingImproperTerms@BCCNeo4j.com",
