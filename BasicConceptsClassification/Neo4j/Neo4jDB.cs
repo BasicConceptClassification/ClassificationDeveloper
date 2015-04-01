@@ -429,16 +429,11 @@ namespace Neo4j
         /// Given a letter of the alphabet, will return all Classifiables that start
         /// with that letter. Is case insensitive.
         /// </summary>
-        /// <param name="letter"></param>
-        /// <exception cref="ArgumentException">Thrown when letter is not a letter of the alphabet.</exception>
+        /// <param name="letter">If the letter provided is not A-Z or a-z then it will
+        /// fetch all classifiables that do not start with A-Z or a-z.</param>
         /// <returns>ClassifiableCollection that starts with that letter, in alphabetical order.</returns>
         public ClassifiableCollection getClassifiablesByAlphaGroup(char letter)
         {
-            // Check that the argument is a letter.
-            if (!Char.IsLetter(letter))
-            {
-                throw new ArgumentException("This is not a letter of the alphabet.", "letter");
-            }
 
             ClassifiableCollection rtnColl = new ClassifiableCollection
             {
@@ -451,32 +446,38 @@ namespace Neo4j
                 // Query: Optional match for the classifier just in case it somehow ends up as a stray
                 // MATCH (c:Classifiable) 
                 // OPTIONAL MATCH (g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)
-                // Where c.name =~ "{latter.Upper()}.*" OR c.name =~ "{letter.Lower()}.*"
+                // Where c.name =~ "[Aa].*"
                 // RETURN c.name AS name, c, t, g1.name AS ownerG, g2.name AS editorG, 
                 //         owner.email AS ownerE, owner.username AS ownerN
                 // ORDER BY name
 
                 // Need to do the formatting outside of the query for the pattern matching in the query.
-                string upperMatch = String.Format("{0}.*", char.ToUpper(letter));
-                string lowerMatch = String.Format("{0}.*", char.ToLower(letter));
+                string regex = "";
+                if (Char.IsLetter(letter))
+                {
+                    regex = String.Format("[{0}{1}].*", char.ToUpper(letter), char.ToLower(letter));
+                }
+                else
+                {
+                    regex = "[^A-Za-z].*";
+                }
 
                 var query = client.Cypher
                     .Match("(c:Classifiable)")
-                    .Where("c.name =~ {letterUpper}").WithParam("letterUpper", upperMatch)
-                    .OrWhere("c.name =~ {letterLower}").WithParam("letterLower", lowerMatch)
+                    .Where("c.name =~ {re}").WithParam("re", regex)
                     .OptionalMatch("(c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)")
                     .OptionalMatch("(g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)")
                     .With(@"c.name AS name, c, t, g1.name AS ownerG, 
                             owner.email AS ownerE, owner.username AS ownerN")
-                    .OrderBy("name")
-                  .Return((c, t, ownerG, ownerE, ownerN) => new
-                  {
-                      classifiable = c.As<Classifiable>(),
-                      terms = t.CollectAs<Term>(),
-                      ownerGlam = ownerG.As<string>(),
-                      ownerEmail = ownerE.As<string>(),
-                      ownerName = ownerN.As<string>(),
-                  }).Results.ToList();
+                    .Return((c, t, ownerG, ownerE, ownerN) => new
+                    {
+                        classifiable = c.As<Classifiable>(),
+                        terms = t.CollectAs<Term>(),
+                        ownerGlam = ownerG.As<string>(),
+                        ownerEmail = ownerE.As<string>(),
+                        ownerName = ownerN.As<string>(),
+                    }).OrderBy("c.name")
+                    .Results.ToList();
 
 
                 if (query != null)

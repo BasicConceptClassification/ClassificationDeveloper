@@ -253,12 +253,11 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentException),
-            "This is not a letter of the alphabet.")]
         public void GetClassifiablesByAlpha_Number_ThrowsException()
         {
             var conn = new Neo4jDB();
             ClassifiableCollection results = conn.getClassifiablesByAlphaGroup('2');
+            Assert.IsNotNull(results);
         }
 
         [TestMethod]
