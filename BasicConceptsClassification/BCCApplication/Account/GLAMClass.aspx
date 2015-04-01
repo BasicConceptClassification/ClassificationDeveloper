@@ -38,7 +38,7 @@
                     </div>
                     <div>
                         <h3>Notifications</h3>
-                        <asp:Table runat="server" ID="TableNotification" BorderWidth="1" CellPadding="2" GridLines="Both"></asp:Table>
+                        <asp:Table runat="server" ID="TableNotification" CssClass="table table-bordered table-fixed-width"></asp:Table>
                         <div>
                             <asp:Label runat="server" ID="LabelTableNotification" Visible="false" CssClass="table table-bordered table-fixed-width"></asp:Label>
                         </div>

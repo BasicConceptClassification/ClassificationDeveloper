@@ -138,7 +138,7 @@ namespace BCCApplication.Account
         {
             try
             {
-                ClassifiableCollection recentClassifiables = conn.getRecentlyClassified(classifierEmail);
+                ClassifiableCollection recentClassifiables = conn.getRecentlyClassified(classifierEmail, NUM_RECENT_CLASSIFIED);
                 
                 if (recentClassifiables.data.Count > 0)
                 {

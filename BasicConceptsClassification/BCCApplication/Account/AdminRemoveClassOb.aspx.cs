@@ -18,12 +18,14 @@ namespace BCCApplication.Account
         };
 
         private string DESCRIPTION = @"<p>To remove a GLAM object, first select the starting letter of the GLAM object 
-                                        to get a list of all GLAM objects that start with that letter.</p>
+                                        to get a list of all GLAM objects that start with that letter. If you want to get all
+                                        the GLAM Objects that don't start a letter of the alphabet, select the '#' at the
+                                        bottom of the list.</p>
                                         <p>Then click on the GLAM object from the list to view the information about the GLAM object. 
                                         Finally, click the the remove button to remove the GLAM object. </p>
                                         <p>A notification will be sent to the owner of that GLAM object to inform them about the removal.</p>";
 
-        private String ALPHABET = "-ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+        private String ALPHABET = "-ABCDEFGHIJKLMNOPQRSTUVWXYZ#";
 
         private String CLASSIFIABLES_EXIST = "Classifiables";
         private String CLASSIFIABLES_NONE = "No classifiables begin with that letter";
