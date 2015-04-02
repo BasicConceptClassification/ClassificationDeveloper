@@ -48,8 +48,8 @@ namespace BCCApplication.Logic
             };
             IdUserResult = userMgr.Create(appUser, "password");
 
-            // If the new "canEdit" user was successfully created, 
-            // add the "canEdit" user to the "canEdit" role. 
+            // If the new "Admin" user was successfully created, 
+            // add the "Admin" user to the "Admin" role. 
             if (!userMgr.IsInRole(userMgr.FindByName("Admin").Id, ROLE_ADMIN))
             {
                 IdUserResult = userMgr.AddToRole(userMgr.FindByName("Admin").Id, ROLE_ADMIN);
