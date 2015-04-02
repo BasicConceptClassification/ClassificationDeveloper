@@ -24,6 +24,11 @@ namespace BCCApplication.Account
         private string FAIL_RENAME_TERM = "Fail to rename the term.";
         private string FAIL_DEL_TERM = "Fail to delete the term.";
 
+        /// <summary>
+        /// load the page
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
 		protected void Page_Load(object sender, EventArgs e)
         {
 		// Testing purposes, only loading from BccRoot with a small depth
@@ -232,7 +237,7 @@ namespace BCCApplication.Account
         }
         protected void RenameUpdateButton_Click(object sender, EventArgs e)
         {
-            //maynot use it 
+
         }
 
         /// <summary>

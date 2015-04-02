@@ -26,8 +26,6 @@ namespace BCCApplication.Account
         /// <return> nothing will return </returns>
         protected void Page_Load(object sender, EventArgs e)
         {
-            //ListBox2.Items.Clear();
-            //ListBoxClass.Items.Clear();
             var dbConn = new Neo4jDB();
             // Get the logged in user's email
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -70,7 +68,6 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
 
-            // TODO: cleanup. It's a bit...messy.
             var conn = new Neo4jDB();
             GLAM gl = conn.getGlamOfClassifier(userEmail);
 
@@ -78,9 +75,6 @@ namespace BCCApplication.Account
             classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
 
-            // TODO: either make a constructor for ConceptString to take (this)(format) and have it parse
-            // it out so we don't have to see this parsing every single time AND create terms from it?
-            //split the input concept string from (xx)(xx)(xx) to a list without () 
             string trimConceptString = str_c.Trim();
 
             //convert the string list to the term list
@@ -130,7 +124,6 @@ namespace BCCApplication.Account
 
             Classifiable matchedClassifiable = conn.getClassifiableById(gl.name+ "_" + select_string);
 
-
             //check is there have any concept string
             string teststr = "";
             
@@ -154,8 +147,6 @@ namespace BCCApplication.Account
             {
                 Label1.Text = FAIL;
             }
-            
-
         }
 
 
@@ -174,7 +165,6 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
 
-            // TODO: cleanup. It's a bit...messy.
             var conn = new Neo4jDB();
             GLAM gl = conn.getGlamOfClassifier(userEmail);
 
@@ -197,7 +187,6 @@ namespace BCCApplication.Account
             
         }
 
-
         /// <summary>
         /// click the update button to pop the choosen elment's detials onto textbox
         /// </summary>
@@ -214,7 +203,6 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
 
-            // TODO: cleanup. It's a bit...messy.
             var conn = new Neo4jDB();
             GLAM gl = conn.getGlamOfClassifier(userEmail);
 
@@ -236,9 +224,6 @@ namespace BCCApplication.Account
             }
             
         }
-
-
-
 
     }
 }
