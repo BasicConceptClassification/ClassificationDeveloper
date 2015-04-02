@@ -31,6 +31,10 @@
     <ErrorReport>prompt</ErrorReport>
     <WarningLevel>4</WarningLevel>
     <Prefer32Bit>false</Prefer32Bit>
+    <PublishDatabaseSettings>
+      <Objects>
+      </Objects>
+    </PublishDatabaseSettings>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <DebugType>pdbonly</DebugType>
@@ -182,6 +186,7 @@
     <Content Include="Account\AccessDenied.aspx" />
     <Content Include="Account\AdminPage.aspx" />
     <Content Include="Account\AdminRemoveClassOb.aspx" />
+    <Content Include="Account\AdminViewAllUsers.aspx" />
     <Content Include="Account\ClassOb.aspx" />
     <Content Include="Account\EditClassifiable.aspx" />
     <Content Include="Account\GLAMClass.aspx" />
@@ -357,6 +362,13 @@
     <Compile Include="Account\AdminRemoveClassOb.aspx.designer.cs">
       <DependentUpon>AdminRemoveClassOb.aspx</DependentUpon>
     </Compile>
+    <Compile Include="Account\AdminViewAllUsers.aspx.cs">
+      <DependentUpon>AdminViewAllUsers.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AdminViewAllUsers.aspx.designer.cs">
+      <DependentUpon>AdminViewAllUsers.aspx</DependentUpon>
+    </Compile>
     <Compile Include="Account\ClassOb.aspx.cs">
       <DependentUpon>ClassOb.aspx</DependentUpon>
       <SubType>ASPXCodeBehind</SubType>
@@ -398,7 +410,9 @@
     <Content Include="Search.aspx" />
     <Content Include="SearchResults.aspx" />
     <Content Include="ViewSwitcher.ascx" />
-    <Content Include="Web.config" />
+    <Content Include="Web.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <Content Include="Scripts\jquery-2.1.3.min.map" />
