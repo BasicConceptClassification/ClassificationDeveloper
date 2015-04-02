@@ -38,6 +38,14 @@ public partial class SearchResults : System.Web.UI.Page
     static Label ObName;
     static int counter_once = 1;
 
+    
+    /// <summary>
+    /// load the page of it is get accessed by the search page will display the searching detial on text box
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
+    /// <return> won't return any thing </return>
+
     protected void Page_Load(object sender, EventArgs e)
     {
         
@@ -68,6 +76,11 @@ public partial class SearchResults : System.Web.UI.Page
 
     }
 
+    /// <summary>
+    /// when we click the search button and will display the results
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void btnclick_Click(object sender, EventArgs e)
     {
         obj_results.Clear();
@@ -122,6 +135,8 @@ public partial class SearchResults : System.Web.UI.Page
               name = currentClassifiable.name;
               url = currentClassifiable.url;
               concept = currentClassifiable.conceptStr.ToString();
+
+              //remove the ( ) things
               terms_term = currentClassifiable.conceptStr.ToListstring();
               List<string> check_list = new List<string>();
               foreach (string things in terms_term)
@@ -236,6 +251,11 @@ public partial class SearchResults : System.Web.UI.Page
 
     }
 
+    /// <summary>
+    /// when click the sort by relev button it will sort the searching result as the relevent terms.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void relev_sort_Click(object sender, EventArgs e)
     {
         int ind = 0;
@@ -276,6 +296,11 @@ public partial class SearchResults : System.Web.UI.Page
         }
     }
 
+    /// <summary>
+    /// when click the sort by name button it will sort the searching result as the name.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void name_sort_Click(object sender, EventArgs e)
     {
         int ind = 0;
@@ -316,6 +341,11 @@ public partial class SearchResults : System.Web.UI.Page
         }
     }
 
+    /// <summary>
+    /// when click the sort by order of term button it will sort the searching result as the order of relevent terms.
+    /// </summary>
+    /// <param name="sender"></param>
+    /// <param name="e"></param>
     protected void order_sort_Click(object sender, EventArgs e)
     {
         int ind = 0;
