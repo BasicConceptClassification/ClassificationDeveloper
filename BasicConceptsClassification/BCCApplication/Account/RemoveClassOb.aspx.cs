@@ -52,7 +52,7 @@ namespace BCCApplication.Account
                 classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
                 classifier.email = userEmail;
 
-                classifiables = dbConn.getOwnedClassifiables(classifier);
+                classifiables = dbConn.getOwnedClassifiables(classifier.email);
             }
             catch (Exception ex)
             {

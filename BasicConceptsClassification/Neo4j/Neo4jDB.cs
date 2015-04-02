@@ -31,6 +31,7 @@ namespace Neo4j
         protected internal const string REL_SUBTERMOF_LABEL = "SUBTERM_OF";
 
         // For getRecentlyClassified, etc, if for some reason they don't exist...
+        // TODO: refactor Classifier so that they need GLAM, Username and Email.
         protected internal const string UNKNOWN_GLAM = "Unknown GLAM";
         protected internal const string UNKNOWN_OWNER_EMAIL = "Unknown Owner Email";
         protected internal const string UNKNOWN_OWNER_USERNAME = "Unknown Owner Username";
@@ -105,21 +106,21 @@ namespace Neo4j
         /// <summary>
         /// Get Classifier by email.
         /// </summary>
-        /// <param name="email">Classifier's email</param>
-        /// <returns>Classifier if exists, else null.</returns>
-        public Classifier getClassifier(String email)
+        /// <param name="classifierEmail">Classifier's email</param>
+        /// <returns>A Classifier with their GLAM, email and username if exists, else null. </returns>
+        public Classifier getClassifier(string classifierEmail)
         {
             this.open();
             if (client != null)
             {
                 // Query
-                // MATCH (c:Classifier {email: {email} })
-                // RETURN c
+                // MATCH (c:Classifier {email: {email} })-[:ASSOCIATED_WITH]->(g:GLAM)
+                // RETURN c.email as classifierEmail, c.username as classifierName, g.name as glamName
                 try
                 {
                     var query = client.Cypher
                         .Match("(c:Classifier {email: {email} })-[:ASSOCIATED_WITH]->(g:GLAM)")
-                        .WithParam("email", email)
+                        .WithParam("email", classifierEmail)
                         .With("c.email AS cEmail, c.username as cName, g.name AS gName")
                         .Return((cEmail, cName, gName) => new
                         {
@@ -150,7 +151,7 @@ namespace Neo4j
         /// Delete a Classifier from the GraphDB.
         /// <para>Mostly for unit testing puposes. Will only delete if has no Classifiables.</para>
         /// </summary>
-        public void deleteClassifier(Classifier classifierToDel)
+        public void deleteClassifier(string classifierEmail)
         {
             this.open();
             if (client != null)
@@ -161,17 +162,17 @@ namespace Neo4j
                 client.Cypher
                     .Match("(o:Classifier{email: {em} })")
                     .OptionalMatch("(o)-[r:ASSOCIATED_WITH]->(:GLAM)")
-                    .WithParam("em", classifierToDel.email)
+                    .WithParam("em", classifierEmail)
                     .Delete("o,r")
                     .ExecuteWithoutResults();
             }
         }
 
         /// <summary>
-        /// Might need.
+        /// Might need. Returns the GLAM of the classifier.
         /// </summary>
         /// <param name="classifierEmail"></param>
-        public GLAM getGlamOfClassifier(String classifierEmail)
+        public GLAM getGlamOfClassifier(string classifierEmail)
         {
             this.open();
             if (client != null)
@@ -240,20 +241,20 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// For Testing.
+        /// Removes the given GLAM, but only if it has no Classifiers.
+        /// <para>For Testing originally. Might need for front end.</para>
         /// </summary>
-        /// <param name="glam"></param>
-        public void deleteGlam(GLAM glam)
+        /// <param name="glamName"></param>
+        public void deleteGlam(string glamName)
         {
             this.open();
             if (client != null)
             {
-                // MATCH (o:Classifier {email: {em} })
-                // OPTIONAL MATCH (o)-[r:ASSOCIATED_WITH]->(:GLAM)
+                // MATCH (o)-[r:ASSOCIATED_WITH]->(:GLAM)
                 // DELETE o,r
                 client.Cypher
                     .Match("(g:GLAM{name: {name} })")
-                    .WithParam("name", glam.name)
+                    .WithParam("name", glamName)
                     .Delete("g")
                     .ExecuteWithoutResults();
             }
@@ -262,7 +263,7 @@ namespace Neo4j
         /// <summary>
         /// Gets a Classifiables by id
         /// </summary>
-        /// <param name="id">The id of the Classifiable</param>
+        /// <param name="id">The id of the Classifiable.</param>
         /// <returns>A Classifiable with the given id.</returns>
         public Classifiable getClassifiableById(string id)
         {
@@ -285,12 +286,13 @@ namespace Neo4j
                     .Match("(g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)")
                     .OptionalMatch("(cs)-[:HAS_TERM]->(t:Term)")
                     .OptionalMatch("(g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)")
-                    .With(@"c, t, g1.name AS ownerG, g2.name AS editorG, 
+                    .With(@"c, cs.terms as order, t, g1.name AS ownerG, g2.name AS editorG, 
                             owner.email AS ownerE, owner.username AS ownerN,
                             lastEditor.email AS editorE, lastEditor.username AS editorN")
-                    .Return((c, t, ownerG, ownerE, ownerN, editorG, editorE, editorN) => new
+                    .Return((c, order, t, ownerG, ownerE, ownerN, editorG, editorE, editorN) => new
                     {
                         classifiable = c.As<Classifiable>(),
+                        csOrder = order.As<string>(),
                         terms = t.CollectAs<Term>(),
                         ownerGlam = ownerG.As<string>(),
                         ownerEmail = ownerE.As<string>(),
@@ -308,21 +310,25 @@ namespace Neo4j
                         terms = new List<Term>(),
                     };
 
-                    // Thanks muchy to the example:
+                    // Thanks muchly to the example:
                     // https://github.com/neo4j-contrib/developer-resources/blob/gh-pages/language-guides/dotnet/neo4jclient/Neo4jDotNetDemo/Controllers/MovieController.cs
-
                     foreach (var t in query.terms)
                     {
                         t.Data.subTerms = new List<Term>();
                         resConStr.terms.Add(t.Data);
                     }
 
-                    // A bit of a hack for now. But it maintains order because of
-                    // ...some reason.
-                    //resConStr.terms.Reverse();
+                    // Sometimes the terms are retrieved in reverse order. So compare to the
+                    // order it's suppose to be and if it's incorrect, reverse them.
+                    if (query.csOrder != resConStr.ToString())
+                    {
+                        resConStr.terms.Reverse();
+                    }
                     query.classifiable.conceptStr = resConStr;
 
                     // If these are not null...
+                    // TODO: refactor(?) Classifier to have the constructor take these parameters 
+                    // and set defaults there...
                     if (query.ownerGlam != null && query.ownerEmail != null && query.ownerName != null)
                     {
                         GLAM tmpG = new GLAM(query.ownerGlam);
@@ -338,7 +344,7 @@ namespace Neo4j
                         query.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
                     }
 
-                    // If these two are not null...
+                    // If these are not null...
                     if (query.editorGlam != null && query.editorEmail != null && query.editorName != null)
                     {
                         GLAM tmpG = new GLAM(query.editorGlam);
@@ -429,12 +435,13 @@ namespace Neo4j
         /// Given a letter of the alphabet, will return all Classifiables that start
         /// with that letter. Is case insensitive.
         /// </summary>
-        /// <param name="letter">If the letter provided is not A-Z or a-z then it will
+        /// <param name="letter">Grabs all Classifiables that start with the provided letter, 
+        /// regardless of case.
+        /// If the letter provided and it is not A-Z or a-z then it will
         /// fetch all classifiables that do not start with A-Z or a-z.</param>
         /// <returns>ClassifiableCollection that starts with that letter, in alphabetical order.</returns>
         public ClassifiableCollection getClassifiablesByAlphaGroup(char letter)
         {
-
             ClassifiableCollection rtnColl = new ClassifiableCollection
             {
                 data = new List<Classifiable>(),
@@ -443,14 +450,6 @@ namespace Neo4j
             this.open();
             if (client != null)
             {
-                // Query: Optional match for the classifier just in case it somehow ends up as a stray
-                // MATCH (c:Classifiable) 
-                // OPTIONAL MATCH (g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)
-                // Where c.name =~ "[Aa].*"
-                // RETURN c.name AS name, c, t, g1.name AS ownerG, g2.name AS editorG, 
-                //         owner.email AS ownerE, owner.username AS ownerN
-                // ORDER BY name
-
                 // Need to do the formatting outside of the query for the pattern matching in the query.
                 string regex = "";
                 if (Char.IsLetter(letter))
@@ -462,6 +461,14 @@ namespace Neo4j
                     regex = "[^A-Za-z].*";
                 }
 
+                // Query: Optional match for the classifier just in case it somehow ends up as a stray
+                // MATCH (c:Classifiable) 
+                // Where c.name =~ "[Aa].*"
+                // OPTIONAL MATCH (c)-[:HAS_CONSTR]->(cs:ConceptString)-[:HAS_TERM]->(t:Term)
+                // OPTIONAL MATCH (g1:GLAM)<-[:ASSOCIATED_WITH]-(owner:Classifier)-[:OWNS]->(c)
+                // RETURN c.name AS name, c, t, g1.name AS ownerG, g2.name AS editorG, 
+                //         owner.email AS ownerE, owner.username AS ownerN
+                // ORDER BY name
                 var query = client.Cypher
                     .Match("(c:Classifiable)")
                     .Where("c.name =~ {re}").WithParam("re", regex)
@@ -478,7 +485,6 @@ namespace Neo4j
                         ownerName = ownerN.As<string>(),
                     }).OrderBy("c.name")
                     .Results.ToList();
-
 
                 if (query != null)
                 {
@@ -531,7 +537,7 @@ namespace Neo4j
         /// </summary>
         /// <param name="owner">The owner of the Classifiables</param>
         /// <returns>ClassifiableCollection of the Classifier's Classifiables.</returns>
-        public ClassifiableCollection getOwnedClassifiables(Classifier owner)
+        public ClassifiableCollection getOwnedClassifiables(string ownerEmail)
         {
             ClassifiableCollection resColl = new ClassifiableCollection
            {
@@ -543,13 +549,13 @@ namespace Neo4j
             {
                 // Query 
                 // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
-                // WHERE o.email = "testingRecent@BCCNeo4j.com"
+                // WHERE o.email = {email}
                 // OPTIONAL MATCH (c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t:Term)
-                // RETURN c AS classifiable
+                // RETURN c AS classifiable, t AS terms
                 // ORDER BY c.name
                 var query = client.Cypher
                     .Match("(c:Classifiable)<-[:OWNS]-(owner:Classifier)")
-                    .Where("owner.email = {email}").WithParam("email", owner.email)
+                    .Where("owner.email = {email}").WithParam("email", ownerEmail)
                     .OptionalMatch("(c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(t:Term)")
                     .Return((c, t) => new
                     {
@@ -572,9 +578,6 @@ namespace Neo4j
                             {
                                 terms = new List<Term>(),
                             };
-
-                            // Thanks muchy to the example:
-                            // https://github.com/neo4j-contrib/developer-resources/blob/gh-pages/language-guides/dotnet/neo4jclient/Neo4jDotNetDemo/Controllers/MovieController.cs
 
                             foreach (var t in res.terms)
                             {
@@ -719,7 +722,7 @@ namespace Neo4j
         /// Gets any classifiables that the Classifier is allow to classify.
         /// </summary>
         /// <param name="classifierEmail"></param>
-        /// <param name="filterByStatus">Can be set to Classified, Unclassified, to narrow down
+        /// <param name="filterByStatus">Can be set to any of Classifiable.Status to narrow down
         /// the results.</param>
         /// <returns></returns>
         public ClassifiableCollection getAllowedClassifiables(string classifierEmail, string filterByStatus = "All")
@@ -729,33 +732,48 @@ namespace Neo4j
                 data = new List<Classifiable>(),
             };
 
-            bool filter = true;
-            if (filterByStatus != Classifiable.Status.Classified.ToString() &&
-                 filterByStatus != Classifiable.Status.Unclassified.ToString())
+            // Check to see if we're filtering by any of these statuses. If not, then
+            // fetch all Classifiables with any status.
+            bool filter = false;
+
+            if (filterByStatus == Classifiable.Status.Classified.ToString()     ||
+                filterByStatus == Classifiable.Status.Unclassified.ToString()   ||
+                filterByStatus == Classifiable.Status.AdminModified.ToString()  )
             {
-                filter = false;
+                filter = true;
             }
 
             this.open();
             if (client != null)
             {
                 // Query 
-                // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)
+                // MATCH (c:Classifiable)<-[:OWNS]-(o:Classifier)-[:ASSOCIATED_WITH]->(g1:GLAM)
                 // WHERE o.email = {email}
                 //     AND c.status = {filterByStatus}
-                // RETURN c AS classifiable
+                // OPTIONAL MATCH (c)-[:HAS_CONSTR]->(cs:ConceptString)
+                // Optional Match (cs)-[:HAS_TERM]->(t:Term)
+                // Optional Match (g2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor:Classifier)-[:MODIFIED_BY]->(c)
+                // RETURN   c AS classifiable, t AS terms, 
+                //          g1.name AS ownerGlam, o.email AS ownerEmail, o.username AS ownerName,
+                //          g2.name AS editorGlam, lastEditor.email AS editorEmail, lastEditor.username AS editorName
                 // UNION
-                // OPTIONAL MATCH (c2:Classifiable)<-[:OWNS]-(:Classifier)-[:ASSOCIATED_WITH]->(g:Glam)
-                // WHERE g.name = "US National Parks Service"
-                // AND c2.perm = "GLAM"
-                //     AND c2.status = {filterByStatus}
-                // RETURN c2 AS classifiable
+                // MATCH (c2:Classifiable)<-[:OWNS]-(o2:Classifier)-[:ASSOCIATED_WITH]->(g1_2:GLAM)<-[:ASSOCIATED_WITH]-(oAgain:Classifier)
+                // WHERE oAgain.email = {email}
+                //  AND c2.perm = {anyonePerm}
+                //  AND o2.email <> {email}
+                //  AND c2.status = {filterByStatus}
+                // Optional Match (c2)-[:HAS_CONSTR]->(cs2:ConceptString)
+                // Optional Match (cs2)-[:HAS_TERM]->(t2:Term)
+                // Optional Match (g2_2:GLAM)<-[:ASSOCIATED_WITH]-(lastEditor2:Classifier)-[:MODIFIED_BY]->(c2)
+                // RETURN   c2 AS classifiable, t2 as terms, 
+                //          g1_2.name AS ownerGlam, oAgain.email AS ownerEmail, oAgain.username AS ownerName,
+                //          g2_2.name AS editorGlam, lastEditor2.email AS editorEmail, lastEditor2.username AS editorName
                 var query = client.Cypher
                     .Match("(c:Classifiable)<-[:OWNS]-(o:Classifier)-[:ASSOCIATED_WITH]->(g1:GLAM)")
                     .Where("o.email = {email}").WithParam("email", classifierEmail);
 
                 // If we're filtering by status, do it here
-                if (filter == true)
+                if (filter)
                 {
                     query = query.AndWhere("c.status = {status}").WithParam("status", filterByStatus);
                 }
@@ -786,7 +804,7 @@ namespace Neo4j
                     .AndWhere("c2.perm = {anyonePerm}").WithParam("anyonePerm", Classifiable.Permission.GLAM)
                     .AndWhere("o2.email <> {email}");
 
-                if (filter == true)
+                if (filter)
                 {
                     query = query.AndWhere("c2.status = {status}");
                 }
@@ -813,7 +831,6 @@ namespace Neo4j
                     })
                     .Results.ToList();
 
-
                 if (queryRes != null)
                 {
                     foreach (var res in queryRes)
@@ -827,9 +844,6 @@ namespace Neo4j
                             {
                                 terms = new List<Term>(),
                             };
-
-                            // Thanks muchy to the example:
-                            // https://github.com/neo4j-contrib/developer-resources/blob/gh-pages/language-guides/dotnet/neo4jclient/Neo4jDotNetDemo/Controllers/MovieController.cs
 
                             foreach (var t in res.terms)
                             {
@@ -873,7 +887,6 @@ namespace Neo4j
                                 res.classifiable.classifierLastEdited.email = UNKNOWN_EDITOR_EMAIL;
                                 res.classifiable.classifierLastEdited.username = UNKNOWN_EDITOR_USERNAME;
                             }
-
                             resColl.data.Add(res.classifiable);
                         }
                     }
@@ -946,7 +959,6 @@ namespace Neo4j
                 // CREATE (cs)-[:HAS_TERM]->(t)
                 // WITH c.id as cId
                 // RETURN cId
-                // NOTE: Owner isn't returned from the actual DB at this point
 
                 // The query is built and executed in stages to check for proper parameters,
                 // id is unique, etc.
@@ -975,25 +987,9 @@ namespace Neo4j
                     throw new NullReferenceException(@"Classifiable information missing or Classifier email was not set", e);
                 }
 
-                // Just throw the exceptions as they happen...?
                 buildQuery = buildQuery
-                    .Merge("(o:Classifier{email:{em}})")
-                    .OnCreate()
-                    .Set("o.email ={em}");
-
-                // UNIQUE Id
-                try
-                {
-                    buildQuery = buildQuery
-                        .Create("(c:Classifiable {id:{cId}})");
-                }
-                catch (NeoException ex)
-                {
-                    System.Diagnostics.Debug.WriteLine(ex.NeoMessage);
-                    throw new System.ArgumentException(ex.NeoMessage, "Classifiable.name");
-                }
-
-                buildQuery = buildQuery
+                    .Match("(o:Classifier{email:{em}})")
+                    .Create("(c:Classifiable {id:{cId}})")
                     .Set("c.id = {cId}, c.name = {cName}, c.url = {cUrl}, c.perm = {cPerm}, c.status = {cStatus}")
                     .CreateUnique("(c)<-[:OWNS]-(o)")
                     .CreateUnique("(c)<-[rModify:MODIFIED_BY]-(o)")
@@ -1031,8 +1027,16 @@ namespace Neo4j
                 }
                 catch (NeoException ex)
                 {
-                    System.Diagnostics.Debug.WriteLine(ex.NeoMessage);
-                    throw new System.ArgumentException(ex.NeoMessage, "Classifiable.name");
+                    // This is the NeoException we'll catch and throw a more(?) descriptive
+                    // message. Otherwise...throw the original.
+                    if (ex.Message.Contains("id"))
+                    {
+                        throw new System.ArgumentException(ex.NeoMessage, "Classifiable.name");
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
                 }
             }
             return null;
@@ -1100,14 +1104,10 @@ namespace Neo4j
                 // CREATE UNIQUE (c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)
                 // SET rNewModify.lastModified = timestamp()
                 // RETURN c.id AS cId
-                // NOTE: Owner isn't returned from the actual DB at this point
 
                 // The query is built and executed in stages to check for proper parameters,
                 // id is unique, etc.
                 var buildQuery = client.Cypher;
-
-                //Check 2?
-                // TODO: a way to make sure the editing classifier has permission to edit this Classifiable?
 
                 // Update 1) Set the updated basic information (id, name, url, perm, status)
                 // Update 2) Update who last modified this. Could be done at the end, but got 
@@ -1282,7 +1282,6 @@ namespace Neo4j
                     .Where(whereClause)
                     .With("DISTINCT c, cs")
                     .Match("(c)-[:HAS_CONSTR]->(cs)-[:HAS_TERM]->(tActual:Term)")
-                    //.With("DISTINCT c, t")
                     .Return((c, tActual) => new
                     {
                         classifiable = c.As<Classifiable>(),
@@ -1294,8 +1293,6 @@ namespace Neo4j
                 {
                     query = query.Limit(limit);
                 }
-
-                System.Diagnostics.Debug.WriteLine(query.Query.DebugQueryText);
 
                 var results = query.Results.ToList();
 
@@ -1351,6 +1348,8 @@ namespace Neo4j
 
                 if (client != null)
                 {
+                    // TODO: hopefully no term will be left blank...
+                    // Maybe condition on AddTerm?
                     var query = client.Cypher
                         .Match("(t:Term)")
                         .Where("t.rawTerm = \"\"");
