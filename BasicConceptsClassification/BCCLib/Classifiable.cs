@@ -7,20 +7,33 @@ namespace BCCLib
 {
     public class Classifiable
     {
+        /// <summary>
+        /// A set of permissions to describe which Classifiers can edit the classifiable.
+        /// GLAM means any Classifiers who are in the same GLAM as the owner can edit it.
+        /// OnlyOnly means that only the owner can edit the Classifiable.
+        /// </summary>
         public enum Permission
         {
             GLAM,
             OwnerOnly,
         };
 
+        /// <summary>
+        /// A set of statuses to describe the state of the classifiable.
+        /// Classified means if there is a Concept String and nothing is 'wrong' with it.
+        /// Unclassified means if there is no Concept String.
+        /// AdminModified means that there may or may not be a Concept String, but the
+        /// admin may have modified it in some way.
+        /// </summary>
         public enum Status
         {
             Classified,
             Unclassified,
+            AdminModified,
         };
 
         /// <summary>
-        /// A unique Id of a Classifiable.
+        /// A unique Id of a Classifiable. Format is [GlamOfOwner]_[ClassifiableName].
         /// </summary>
         public string id
         {
@@ -29,7 +42,7 @@ namespace BCCLib
         }
 
         /// <summary>
-        /// Name of a Classifiable. Not unique.
+        /// Name of a Classifiable. Must be unique to the GLAM it is in.
         /// </summary>
         public string name
         {
@@ -56,7 +69,7 @@ namespace BCCLib
         }
 
         /// <summary>
-        /// A Classifier that has added the Classifiable.
+        /// The Classifier that has added the Classifiable.
         /// </summary>
         public Classifier owner
         {
@@ -74,10 +87,8 @@ namespace BCCLib
         }
 
         /// <summary>
-        /// To set/check permissions of a Classifiable.
-        /// <para>
-        /// Would like these to be enums once pulling that format from the DB is better?
-        /// </para>
+        /// Permissions of a Classifiable. Either only the one who added the classifiable
+        /// can edit it or anyone in that Classifiable's GLAM can edit it.
         /// </summary>
         public string perm
         {
@@ -86,10 +97,8 @@ namespace BCCLib
         }
 
         /// <summary>
-        /// Status of whether a Classifiable is classified or not.
-        /// <para>
-        /// Would like these to be enums once pulling that format from the DB is better?
-        /// </para>
+        /// Status of whether a Classifiable is classified, not classified, or has been modified
+        /// by the admin.
         /// </summary>
         public string status
         {
