@@ -211,43 +211,8 @@ public partial class SearchResults : System.Web.UI.Page
               dis_results.Add(new objects(name, terms_term, counter, concept, url, scores));
           }
 
-          var sort_result = from element in obj_results orderby element.counter select element;
-          int ind = 0;
-
-          foreach (objects things in sort_result.Reverse())
-          {
-
-              ObName = new Label();
-
-              // Set this label to diaply the name of the Classifiable
-              ObName.ID = "ObName_" + ind;
-              ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
-
-              SearchReCon.Controls.Add(new LiteralControl("<strong>"));
-              SearchReCon.Controls.Add(ObName);
-              SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
-
-              // Create label for the concept string
-              Label NTag = new Label();
-              NTag.ID = "Ob_" + ind + "_Tag_";
-              NTag.Text = things.concept;
-              SearchReCon.Controls.Add(NTag);
-
-              // Add hyperlink to the url of the Classifiable
-              SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
-
-              HyperLink ObLink = new HyperLink();
-              ObLink.ID = "ObLink_" + ind;
-              ObLink.Target = "_blank";
-              ObLink.Text = things.url;
-              ObLink.NavigateUrl = things.url;
-
-              SearchReCon.Controls.Add(ObLink);
-              SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));//+things.counter.ToString()+
-
-              ind++;
-
-          }
+          string cases = "nothing";
+          display(cases);
 
     }
 
@@ -258,42 +223,8 @@ public partial class SearchResults : System.Web.UI.Page
     /// <param name="e"></param>
     protected void relev_sort_Click(object sender, EventArgs e)
     {
-        int ind = 0;
-        var sort_result = from element in dis_results orderby element.counter select element;
-
-        foreach (objects things in sort_result.Reverse().ToList())
-        {
-
-            Label ObName = new Label();
-
-            // Set this label to diaply the name of the Classifiable
-            ObName.ID = "ObName_" + ind;
-            ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
-
-            SearchReCon.Controls.Add(new LiteralControl("<strong>"));
-            SearchReCon.Controls.Add(ObName);
-            SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
-
-            // Create label for the concept string
-            Label NTag = new Label();
-            NTag.ID = "Ob_" + ind + "_Tag_";
-            NTag.Text = things.concept;
-            SearchReCon.Controls.Add(NTag);
-
-            // Add hyperlink to the url of the Classifiable
-            SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
-
-            HyperLink ObLink = new HyperLink();
-            ObLink.ID = "ObLink_" + ind;
-            ObLink.Target = "_blank";
-            ObLink.Text = things.url;
-            ObLink.NavigateUrl = things.url;
-
-            SearchReCon.Controls.Add(ObLink);
-            SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
-            ind++;
-
-        }
+        string cases = "relev";
+        display(cases);
     }
 
     /// <summary>
@@ -303,42 +234,8 @@ public partial class SearchResults : System.Web.UI.Page
     /// <param name="e"></param>
     protected void name_sort_Click(object sender, EventArgs e)
     {
-        int ind = 0;
-        var sort_result = from element in dis_results orderby element.name select element;
-
-        foreach (objects things in sort_result)
-        {
-
-            Label ObName = new Label();
-
-            // Set this label to diaply the name of the Classifiable
-            ObName.ID = "ObName_" + ind;
-            ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
-
-            SearchReCon.Controls.Add(new LiteralControl("<strong>"));
-            SearchReCon.Controls.Add(ObName);
-            SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
-
-            // Create label for the concept string
-            Label NTag = new Label();
-            NTag.ID = "Ob_" + ind + "_Tag_";
-            NTag.Text = things.concept;
-            SearchReCon.Controls.Add(NTag);
-
-            // Add hyperlink to the url of the Classifiable
-            SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
-
-            HyperLink ObLink = new HyperLink();
-            ObLink.ID = "ObLink_" + ind;
-            ObLink.Target = "_blank";
-            ObLink.Text = things.url;
-            ObLink.NavigateUrl = things.url;
-
-            SearchReCon.Controls.Add(ObLink);
-            SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
-            ind++;
-
-        }
+        string cases = "name";
+        display(cases);
     }
 
     /// <summary>
@@ -348,43 +245,104 @@ public partial class SearchResults : System.Web.UI.Page
     /// <param name="e"></param>
     protected void order_sort_Click(object sender, EventArgs e)
     {
-        int ind = 0;
-        var sort_result = from element in dis_results orderby element.scor select element;
-
-        foreach (objects things in sort_result.Reverse().ToList())
-        {
-
-            Label ObName = new Label();
-
-            // Set this label to diaply the name of the Classifiable
-            ObName.ID = "ObName_" + ind;
-            ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
-
-            SearchReCon.Controls.Add(new LiteralControl("<strong>"));
-            SearchReCon.Controls.Add(ObName);
-            SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
-
-            // Create label for the concept string
-            Label NTag = new Label();
-            NTag.ID = "Ob_" + ind + "_Tag_";
-            NTag.Text = things.concept;
-            SearchReCon.Controls.Add(NTag);
-
-            // Add hyperlink to the url of the Classifiable
-            SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
-
-            HyperLink ObLink = new HyperLink();
-            ObLink.ID = "ObLink_" + ind;
-            ObLink.Target = "_blank";
-            ObLink.Text = things.url;
-            ObLink.NavigateUrl = things.url;
-
-            SearchReCon.Controls.Add(ObLink);
-            SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
-            ind++;
-
-        }
+        string cases = "order";
+        display(cases);
 
     }
 
+    /// <summary>
+    /// for different sort button display in different way
+    /// </summary>
+    /// <param name="cases"></param>
+    protected void display(string cases)
+    {
+        int ind = 0;
+        var sort_result = from element in dis_results orderby element.counter select element;
+        if(cases == "order")
+        {
+             sort_result = from element in dis_results orderby element.scor select element;
+        }
+
+        if (cases == "name")
+        {
+            sort_result = from element in dis_results orderby element.name select element;
+            foreach (objects things in sort_result.ToList())
+            {
+
+                Label ObName = new Label();
+
+                // Set this label to diaply the name of the Classifiable
+                ObName.ID = "ObName_" + ind;
+                ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
+
+                SearchReCon.Controls.Add(new LiteralControl("<strong>"));
+                SearchReCon.Controls.Add(ObName);
+                SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
+
+                // Create label for the concept string
+                Label NTag = new Label();
+                NTag.ID = "Ob_" + ind + "_Tag_";
+                NTag.Text = things.concept;
+                SearchReCon.Controls.Add(NTag);
+
+                // Add hyperlink to the url of the Classifiable
+                SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
+
+                HyperLink ObLink = new HyperLink();
+                ObLink.ID = "ObLink_" + ind;
+                ObLink.Target = "_blank";
+                ObLink.Text = things.url;
+                ObLink.NavigateUrl = things.url;
+
+                SearchReCon.Controls.Add(ObLink);
+                SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
+                ind++;
+
+            }
+        }
+        else
+        {
+            foreach (objects things in sort_result.Reverse().ToList())
+            {
+
+                Label ObName = new Label();
+
+                // Set this label to diaply the name of the Classifiable
+                ObName.ID = "ObName_" + ind;
+                ObName.Text = String.Format("{0:D}. {1}", (ind + 1), things.name);
+
+                SearchReCon.Controls.Add(new LiteralControl("<strong>"));
+                SearchReCon.Controls.Add(ObName);
+                SearchReCon.Controls.Add(new LiteralControl("</strong><br/>"));
+
+                // Create label for the concept string
+                Label NTag = new Label();
+                NTag.ID = "Ob_" + ind + "_Tag_";
+                NTag.Text = things.concept;
+                SearchReCon.Controls.Add(NTag);
+
+                // Add hyperlink to the url of the Classifiable
+                SearchReCon.Controls.Add(new LiteralControl("<br/> Source/Stored at: "));
+
+                HyperLink ObLink = new HyperLink();
+                ObLink.ID = "ObLink_" + ind;
+                ObLink.Target = "_blank";
+                ObLink.Text = things.url;
+                ObLink.NavigateUrl = things.url;
+
+                SearchReCon.Controls.Add(ObLink);
+                SearchReCon.Controls.Add(new LiteralControl("<br/><br/>"));
+                ind++;
+
+            }
+        }
+
+        if (cases == "relev")
+        {
+            sort_result = from element in dis_results orderby element.counter select element;
+        }
+
+        
+    }
+    
 }
