@@ -98,7 +98,6 @@ public partial class SearchResults : System.Web.UI.Page
 
         foreach (String things in new_str)
         {
-            //change to terms
             Term terterma = new Term{rawTerm = things,};
             new_terms.Add(terterma);
         }
@@ -108,9 +107,6 @@ public partial class SearchResults : System.Web.UI.Page
             terms = new_terms,
 
         };
-        // ********************************************* //
-
-        // Searching for the concept string happens on this page?
         var dbConn = new Neo4jDB();
         ClassifiableCollection matchedClassifiables = dbConn.getClassifiablesByConStr(searchByConStr);
 
@@ -129,14 +125,11 @@ public partial class SearchResults : System.Web.UI.Page
               string concept;
               string url;
               int scores = 0;
-
               int set_s1 = 0;
 
               name = currentClassifiable.name;
               url = currentClassifiable.url;
               concept = currentClassifiable.conceptStr.ToString();
-
-              //remove the ( ) things
               terms_term = currentClassifiable.conceptStr.ToListstring();
               List<string> check_list = new List<string>();
               foreach (string things in terms_term)
@@ -145,7 +138,6 @@ public partial class SearchResults : System.Web.UI.Page
                   string new_t_things = newthings.Replace(")", "");
                   check_list.Add(new_t_things);
               }
-
 
               foreach (string items in new_str)
               {
@@ -157,7 +149,6 @@ public partial class SearchResults : System.Web.UI.Page
                       }
                   }
               }
-
 
               List<string> counter_str = new List<string>();
 
@@ -172,7 +163,6 @@ public partial class SearchResults : System.Web.UI.Page
 
                   }
               }
-
 
               foreach (string items in new_str)
               {
@@ -193,11 +183,8 @@ public partial class SearchResults : System.Web.UI.Page
                           {
                               scores = scores + 1;
                           }
-                          
                       }
-                      
                   }
-                  
               }
               
               int decreasecounter = counter;
