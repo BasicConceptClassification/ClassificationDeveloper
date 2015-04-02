@@ -9,9 +9,9 @@ using System.Web.UI.WebControls;
 using System.Net.Mail;
 using System.Net;
 
-namespace BCCApplication
+namespace BCCApplication.Account
 {
-    public partial class ContactForm : System.Web.UI.Page
+    public partial class SuggestTerm : System.Web.UI.Page
     {
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -21,23 +21,19 @@ namespace BCCApplication
         {
             try
             {
-                try { if (txtName.Text.Equals("")) throw new System.ArgumentException("Parameter cannot be null", "original"); }
-                catch { 
-                    lblResult.Text = "Left 'Name parameter' blank!";
-                    return;
-                }
-                try { if (txtEmail.Text.Equals("")) throw new System.ArgumentException("Parameter cannot be null", "original"); }
+                try { if (txtTermName.Text.Equals("")) throw new System.ArgumentException("Parameter cannot be null", "original"); }
                 catch
                 {
-                    lblResult.Text = "Left 'Email parameter' blank!";
+                    lblResult.Text = "Left 'Term Name parameter' blank!";
                     return;
                 }
-                try { if (txtMessage.Text.Equals("")) throw new System.ArgumentException("Parameter cannot be null", "original"); }
+                try { if (txtParentString.Text.Equals("")) throw new System.ArgumentException("Parameter cannot be null", "original"); }
                 catch
                 {
-                    lblResult.Text = "Left 'Message Box' blank!";
+                    lblResult.Text = "Left 'Parent String parameter' blank!";
                     return;
                 }
+
                 //Create the msg object to be sent
                 MailMessage msg = new MailMessage();
                 //Add your email address to the recipients
@@ -46,9 +42,10 @@ namespace BCCApplication
                 MailAddress address = new MailAddress("bcclassification@gmail.com");
                 msg.From = address;
                 //Append their name in the beginning of the subject
-                msg.Subject = ddlSubject.Text + " :  " + txtName.Text;
-                msg.Body = "Email of requester: " + txtEmail.Text + 
-                    "\nMessage: " + txtMessage.Text;
+                msg.Subject = "New Term Request";
+                msg.Body = "There has been a request for the term: " + txtTermName.Text
+                    + "\nAdd at location: " + txtParentString.Text
+                    + "\nFor the reason: " + txtMessage.Text;
 
                 //Configure an SmtpClient to send the mail.
                 SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
@@ -64,14 +61,14 @@ namespace BCCApplication
                 lblResult.Text = "Your message was sent!";
 
                 //Clear the form
-                txtName.Text = "";
-                txtEmail.Text = "";
+                txtTermName.Text = "";
+                txtParentString.Text = "";
                 txtMessage.Text = "";
             }
             catch
             {
                 //If the message failed at some point, let the user know
-               lblResult.Text = "Your message failed to send, please try again.";
+                lblResult.Text = "Your message failed to send, please try again.";
             }
         }
     }
