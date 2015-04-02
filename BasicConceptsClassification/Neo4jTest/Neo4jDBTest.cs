@@ -150,7 +150,7 @@ namespace Neo4jTest
 
             Classifier addedClassifier = conn.addClassifier(classifier);
 
-            conn.deleteClassifier(addedClassifier);
+            conn.deleteClassifier(addedClassifier.email);
 
             // Make sure the classifier no longer exists
             Classifier notFound = conn.getClassifier(addedClassifier.email);
@@ -256,8 +256,7 @@ namespace Neo4jTest
         public void GetClassifiablesByAlpha_Number_ThrowsException()
         {
             var conn = new Neo4jDB();
-            ClassifiableCollection results = conn.getClassifiablesByAlphaGroup('2');
-            Assert.IsNotNull(results);
+            Assert.IsNotNull(conn.getClassifiablesByAlphaGroup('2'));
         }
 
         [TestMethod]
@@ -307,7 +306,7 @@ namespace Neo4jTest
             // Add the second classifiable
             Classifiable result2 = conn.addClassifiable(newClassifiable2);
 
-            ClassifiableCollection resCollection = conn.getOwnedClassifiables(classifier);
+            ClassifiableCollection resCollection = conn.getOwnedClassifiables(classifier.email);
 
             Assert.AreEqual(2, resCollection.data.Count);
         }
