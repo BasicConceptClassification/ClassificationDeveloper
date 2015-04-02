@@ -214,6 +214,7 @@
     <Reference Include="System.Xml.Linq" />
   </ItemGroup>
   <ItemGroup>
+    <Content Include="Account\AdminAddRejTermSuggest.aspx" />
     <Content Include="Account\SuggestTerm.aspx" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -381,6 +382,13 @@
     </Compile>
     <Compile Include="Account\AccessDenied.aspx.designer.cs">
       <DependentUpon>AccessDenied.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\AdminAddRejTermSuggest.aspx.cs">
+      <DependentUpon>AdminAddRejTermSuggest.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\AdminAddRejTermSuggest.aspx.designer.cs">
+      <DependentUpon>AdminAddRejTermSuggest.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\AdminPage.aspx.cs">
       <DependentUpon>AdminPage.aspx</DependentUpon>

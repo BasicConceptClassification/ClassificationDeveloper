@@ -1,13 +1,19 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="SuggestTerm.aspx.cs" Inherits="BCCApplication.Account.SuggestTerm" %>
-
-<asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminAddRejTermSuggest.aspx.cs" Inherits="BCCApplication.Account.AdminAddRejTermSuggest" %>
+<asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <h1>Suggest New Term</h1>
-        * You must fill in all fields
+        <h1>Add/Reject Suggested Terms</h1>
+        <div class ="td">
+            <center>
+                <h2>Suggested Terms:</h2><br />
+                <asp:ListBox ID="ListBoxClass" runat="server" Height="200px" Width="300px"></asp:ListBox>
+                <br />
+                <asp:Button ID="Update_SuggTerm" runat="server" OnClick="Update_Suggest_Term_Click" Text="Update" />
+            </center>
+        </div>
         <table>
             <tr>
                 <td>
-                    *Term Name:</td>
+                    Term Name:</td>
                 <td>
                     <asp:TextBox ID="txtTermName"
                                     runat="server"
@@ -16,7 +22,7 @@
             </tr> 
             <tr>
                 <td>
-                   *Parent Term String:</td>
+                   Parent Term String:</td>
                 <td>
                     <asp:TextBox ID="txtParentString"
                                     runat="server"
@@ -36,8 +42,11 @@
             </tr>
             <tr align="center">
                 <td colspan="2">
-                    <asp:Button ID="btnSubmit" runat="server" Text="Submit"
-                        onclick="btnSubmit_Click" />
+                    <asp:Button ID="btnAccept" runat="server" Text="Accept"
+                        onclick="btnAccept_Click" />
+                    &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <asp:Button ID="btnReject" runat="server" Text="Reject"
+                        onclick="btnReject_Click" />
                 </td>
             </tr>
             <tr>
