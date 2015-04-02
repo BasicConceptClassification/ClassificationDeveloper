@@ -12,10 +12,18 @@ using Microsoft.AspNet.Identity.Owin;
 
 namespace BCCApplication.Account
 {
+    
     public partial class EditClassifiable : System.Web.UI.Page
     {
         static string select_string;
+        private string SUCCESS = "Successfully Edite the classifiable. ";
+        private string FAIL = "Fail to Edite the classifiable. ";
 
+
+        /// <summary>
+        /// when the page load it display the classified and unclassified elements on two lists.
+        /// </summary>
+        /// <return> nothing will return </returns>
         protected void Page_Load(object sender, EventArgs e)
         {
             //ListBox2.Items.Clear();
@@ -27,7 +35,6 @@ namespace BCCApplication.Account
             string userEmail = currentUser.Email;
 
 
-
             ClassifiableCollection unclassifieds = dbConn.getAllUnclassified(userEmail);
             int resultsLength = unclassifieds.data.Count;
             for (int i = 0; i < resultsLength; i++)
@@ -37,46 +44,26 @@ namespace BCCApplication.Account
                 ListBox2.Items.Add(currentUNClassifiable.id);
             }
 
-
-
-
-
             ClassifiableCollection classifieds = dbConn.getAllClassified(userEmail);
             int resultLength = classifieds.data.Count;
             for (int i = 0; i < resultLength; i++)
             {
                 Classifiable currentClassifiable = classifieds.data[i];
                 ListBoxClass.Items.Add(currentClassifiable.name);
-               // ListBox4.Items.Add("-------------------------------------");
-                //ListBox4.Items.Add(classifieds.data[i].id);
-                //ListBox4.Items.Add(classifieds.data[i].name);
-                //ListBox4.Items.Add(classifieds.data[i].owner.ToString());
-                //ListBox4.Items.Add(classifieds.data[i].perm);
-                //ListBox4.Items.Add(classifieds.data[i].status);
-                //classifieds.data[i].conceptStr
-               // List<string> TERMS = classifieds.data[i].conceptStr.ToListstring();
-               // foreach (string things in TERMS)
-                //{
-                //    ListBox4.Items.Add(things);
-               // }
-                //ListBox4.Items.Add(classifieds.data[i].conceptStr.ToString());
-                //ListBox4.Items.Add("-------------------------------------");
             }
-
-            
-            
+        
         }
 
-       
 
+        /// <summary>
+        /// click the Edit button and to edite the current classified or unclassified elements
+        /// </summary>
+        /// <return> nothing will return </returns>
         protected void Edit_Click(object sender, EventArgs e)
         {
             string str_n = TextBox_Name.Text;
             string str_u = TextBox_URL.Text;
             string str_c = TextBox_Concept.Text;
-
-
-
 
             //-----------------------------set the new classifiable------------------------------------
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
@@ -128,6 +115,8 @@ namespace BCCApplication.Account
             else{
                 the_status = Classifiable.Status.Unclassified.ToString();
             }
+
+            //setting the new classifiable
             Classifiable newClassifiable = new Classifiable
             {
                 id = gl.name + "_" + str_n,
@@ -139,31 +128,12 @@ namespace BCCApplication.Account
                 conceptStr = newConceptStr,
             };
 
-
-            //ListBox3.Items.Add(newClassifiable.id);
-            //ListBox3.Items.Add(newClassifiable.name);
-            //ListBox3.Items.Add(newClassifiable.owner.ToString());
-            //ListBox3.Items.Add(newClassifiable.perm);
-           // ListBox3.Items.Add(newClassifiable.status);
-            //ListBox3.Items.Add(newClassifiable.conceptStr.ToString());
-
-            //List<string> TERMS = newClassifiable.conceptStr.ToListstring();
-            //foreach (string things in TERMS)
-            //{
-            //    ListBox3.Items.Add(things);
-           // }
-            
-
-            //-------------------------------------------------------------------------------------------
-
-
-           // var dbConn = new Neo4jDB();
-
-
             Classifiable matchedClassifiable = conn.getClassifiableById(gl.name+ "_" + select_string);
 
-            string teststr = "";
 
+            //check is there have any concept string
+            string teststr = "";
+            
             try
             {
                 teststr = matchedClassifiable.conceptStr.ToString();
@@ -173,14 +143,26 @@ namespace BCCApplication.Account
 
             }
 
-            
-            conn.updateClassifiable(matchedClassifiable, newClassifiable, classifier);
+            //update the edited classifiable
+            //and return the message to user.
+            try
+            {
+                conn.updateClassifiable(matchedClassifiable, newClassifiable, classifier);
+                Label1.Text = SUCCESS;
+            }
+            catch
+            {
+                Label1.Text = FAIL;
+            }
             
 
         }
 
 
-
+        /// <summary>
+        /// click the update button to pop the choosen elment's detials onto textbox
+        /// </summary>
+        /// <return> nothing will return </returns>
         protected void Update_Class_Click(object sender, EventArgs e)
         {
             select_string = "";
@@ -200,13 +182,26 @@ namespace BCCApplication.Account
             classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
 
-
-            Classifiable matchedClassifiable = dbConn.getClassifiableById(gl.name+ "_" + select_string);
-            TextBox_Name.Text = matchedClassifiable.name;
-            TextBox_URL.Text = matchedClassifiable.url;
-            TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
+            //and return the message to user.
+            try
+            {
+                Classifiable matchedClassifiable = dbConn.getClassifiableById(gl.name + "_" + select_string);
+                TextBox_Name.Text = matchedClassifiable.name;
+                TextBox_URL.Text = matchedClassifiable.url;
+                TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
+            }
+            catch
+            {
+                Label1.Text = "Please choose one of the classifiable element in the list.";
+            }
+            
         }
 
+
+        /// <summary>
+        /// click the update button to pop the choosen elment's detials onto textbox
+        /// </summary>
+        /// <return> nothing will return </returns>
         protected void Update_Unclass_Click(object sender, EventArgs e)
         {
             select_string = "";
@@ -227,10 +222,19 @@ namespace BCCApplication.Account
             classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
             classifier.email = userEmail;
 
-            Classifiable matchedClassifiable = dbConn.getClassifiableById(gl.name+ "_" + select_string);
-            TextBox_Name.Text = select_string;
-            TextBox_URL.Text = matchedClassifiable.url;
-            TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
+            //and return the message to user.
+            try
+            {
+                Classifiable matchedClassifiable = dbConn.getClassifiableById(gl.name + "_" + select_string);
+                TextBox_Name.Text = select_string;
+                TextBox_URL.Text = matchedClassifiable.url;
+                TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
+            }
+            catch
+            {
+                Label1.Text = "Please choose one of the unclassifiable element in the list.";
+            }
+            
         }
 
 
