@@ -24,9 +24,9 @@ namespace BCCApplication
                 //Create the msg object to be sent
                 MailMessage msg = new MailMessage();
                 //Add your email address to the recipients
-                msg.To.Add("kimfkramer@gmail.com");
+                msg.To.Add("bcclassification@gmail.com");
                 //Configure the address we are sending the mail from
-                MailAddress address = new MailAddress("kimfkramer@gmail.com");
+                MailAddress address = new MailAddress("bcclassification@gmail.com");
                 msg.From = address;
                 //Append their name in the beginning of the subject
                 msg.Subject = txtName.Text + " :  " + ddlSubject.Text;
@@ -36,7 +36,7 @@ namespace BCCApplication
                 SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
                 client.EnableSsl = true; //only enable this if your provider requires it
                 //Setup credentials to login to our sender email address ("UserName", "Password")
-                NetworkCredential credentials = new NetworkCredential("kimfkramer@gmail.com", "Sesshomaru101");
+                NetworkCredential credentials = new NetworkCredential("bcclassification@gmail.com", "Classification2015");
                 client.Credentials = credentials;
 
                 //Send the msg

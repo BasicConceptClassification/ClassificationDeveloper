@@ -1,0 +1,9 @@
+Google Account
+------------------------------
+First Name: BC
+Last Name: Classification
+Username/email: bcclassification@gmail.com
+Password: Classification2015
+Birthday: October 26, 1992
+Gender: Other
+Location: Canada
