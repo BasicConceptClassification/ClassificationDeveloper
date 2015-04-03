@@ -321,7 +321,7 @@ namespace BCCApplication.Account
                 }
                 catch
                 {
-                    Label4.Text = "The term which you want to delete has sub terms so you can't delete this one"
+                    Label4.Text = "The term which you want to delete has sub terms so you can't delete this one";
                 }
                 
             }
