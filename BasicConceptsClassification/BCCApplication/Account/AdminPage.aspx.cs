@@ -296,7 +296,8 @@ namespace BCCApplication.Account
             var conn = new Neo4jDB();
             Term delete_search_term = conn.getTermByRaw(delete_term);
             string teststring1 = "";
-            //won't let the page crush
+            //won't let the page crush\
+            
             try
             {
                 teststring1 = delete_search_term.ToString();
@@ -309,12 +310,20 @@ namespace BCCApplication.Account
             //return the result to let user know.
             if (teststring1 != "")
             {
-                conn.delTermFORCE(delete_search_term);
-                Label4.Text = SUCCESS_DEL_TERM;
-                // Notify classifiers that a Term was deleted.
-                // TODO: create additional notification to the classifiers whose classifiable's ConStr
-                // were affect by the Term deletion.
-                conn.createNotification(String.Format("Removed Term: {0}", delete_term));
+                try
+                {
+                    conn.delTerm(delete_search_term);
+                    Label4.Text = SUCCESS_DEL_TERM;
+                    // Notify classifiers that a Term was deleted.
+                    // TODO: create additional notification to the classifiers whose classifiable's ConStr
+                    // were affect by the Term deletion.
+                    conn.createNotification(String.Format("Removed Term: {0}", delete_term));
+                }
+                catch
+                {
+                    Label4.Text = "The term which you want to delete has sub terms so you can't delete this one"
+                }
+                
             }
             else
             {
