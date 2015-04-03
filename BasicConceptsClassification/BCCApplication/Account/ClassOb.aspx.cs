@@ -104,9 +104,10 @@ namespace BCCApplication.Account
             var conn = new Neo4jDB();
             GLAM gl = conn.getGlamOfClassifier(userEmail);
 
-            Classifier classifier = new Classifier(gl);
-            classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
-            classifier.email = userEmail;
+
+            string username = Context.GetOwinContext().Authentication.User.Identity.Name;
+            string email = userEmail;
+            Classifier classifier = new Classifier(gl, email, username);
 
             // TODO: either make a constructor for ConceptString to take (this)(format) and have it parse
             // it out so we don't have to see this parsing every single time AND create terms from it?

@@ -43,9 +43,9 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("Test");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "newUser@Test.com";
-            classifier.username = "usernames are not unique";
+            string email = "newUser@Test.com";
+            Classifier classifier = new Classifier(glam, email);
+
             
             var conn = new Neo4jDB();
 
@@ -63,9 +63,8 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("Test");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "userRepeat@Test.com";
-            classifier.username = "usernames are not unique";
+            string email = "userRepeat@Test.com";
+            Classifier classifier = new Classifier(glam, email);
 
             var conn = new Neo4jDB();
 
@@ -82,8 +81,7 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("BCCNeo4jTests");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, null);
 
             var conn = new Neo4jDB();
 
@@ -91,17 +89,17 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(ArgumentNullException), "Classifier's username is not set.")]
         public void AddClassifier_NoUsername_ThrowsException()
         {
             GLAM glam = new GLAM("BCCNeo4jTests");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "nousername@BCCNeo4j.com";
+            string email = "nousername@BCCNeo4j.com";
+            Classifier classifier = new Classifier(glam, email);
 
             var conn = new Neo4jDB();
 
-            Classifier addedClassifier = conn.addClassifier(classifier);   
+            Classifier addedClassifier = conn.addClassifier(classifier);
+            Assert.AreEqual(email, addedClassifier.email);
         }
 
         [TestMethod]
@@ -111,9 +109,8 @@ namespace Neo4jTest
 
             GLAM glam = new GLAM("Test");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "findByEmail@Test.com";
-            classifier.username = "usernames are not unique";
+            string email = "findByEmail@Test.com";
+            Classifier classifier = new Classifier(glam, email);
 
             Classifier added = conn.addClassifier(classifier);
             Assert.IsNotNull(added.username);
@@ -142,9 +139,9 @@ namespace Neo4jTest
         public void DeleteClassifier_Successful()
         {
             GLAM glam = new GLAM("Test");
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "userDeleteMe@Test.com";
-            classifier.username = "usernames are not unique";
+
+            string email = "userDeleteMe@Test.com";
+            Classifier classifier = new Classifier(glam, email);
 
             var conn = new Neo4jDB();
 
@@ -163,9 +160,8 @@ namespace Neo4jTest
             var conn = new Neo4jDB();
             GLAM glam = new GLAM("Fetched GLAM");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingGetGlamOfMe@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            string email = "testingGetGlamOfMe@BCCNeo4j.com";
+            Classifier classifier = new Classifier(glam, email);
 
             conn.addClassifier(classifier);
 
@@ -266,9 +262,8 @@ namespace Neo4jTest
 
             GLAM glam = new GLAM("GettingClassifiables01");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingGetMyClassifiables@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            string classifierEmail = "testingGetMyClassifiables@BCCNeo4j.com";
+            Classifier classifier = new Classifier(glam, classifierEmail);
 
             Term termTool = new Term
             {
@@ -324,9 +319,8 @@ namespace Neo4jTest
 
             GLAM glam = new GLAM("Recently Classified");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingRecent@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            string classifierEmail = "testingRecent@BCCNeo4j.com";
+            Classifier classifier = new Classifier(glam, classifierEmail);
 
             Term termTool = new Term
             {
@@ -396,13 +390,11 @@ namespace Neo4jTest
             //      Recent B: B_1
             GLAM glam = new GLAM("Recent A vs B");
 
-            Classifier classifierA = new Classifier(glam);
-            classifierA.email = "testingRecentA@BCCNeo4j.com";
-            classifierA.username = "usernames are not unique A";
+            string classifierAEmail = "testingRecentA@BCCNeo4j.com";
+            Classifier classifierA = new Classifier(glam, classifierAEmail);
 
-            Classifier classifierB = new Classifier(glam);
-            classifierB.email = "testingRecentB@BCCNeo4j.com";
-            classifierB.username = "usernames are not unique B";
+            string classifierBEmail = "testingRecentB@BCCNeo4j.com";
+            Classifier classifierB = new Classifier(glam, classifierBEmail);
 
             Term termTool = new Term
             {
@@ -490,9 +482,9 @@ namespace Neo4jTest
         public void GetAllUnclassified_YourOwn_Exists()
         {
             GLAM glam = new GLAM("Unclassified My Own");
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingUnclassifiedMyOwn@testing.com";
-            classifier.username = "a username";
+
+            string classifierEmail = "testingUnclassifiedMyOwn@testing.com";
+            Classifier classifier = new Classifier(glam, classifierEmail);
 
             var conn = new Neo4jDB();
 
@@ -527,9 +519,8 @@ namespace Neo4jTest
         public void GetAllUnclassified_NotYours_Exists()
         {
             GLAM glam = new GLAM("US National Parks Service");
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "user2@USNationalParks.com";
-            classifier.username = "usernames are not unique";
+            string classifierEmail = "user2@USNationalParks.com";
+            Classifier classifier = new Classifier(glam, classifierEmail);
 
             var conn = new Neo4jDB();
 
@@ -566,13 +557,11 @@ namespace Neo4jTest
             //      ListLen B: 2
             GLAM glam = new GLAM("Recent Uncclassified YoursandOthers");
 
-            Classifier classifierA = new Classifier(glam);
-            classifierA.email = "testingUnclassedA@BCCNeo4j.com";
-            classifierA.username = "usernames are not unique A";
+            string classifierAEmail = "testingUnclassedA@BCCNeo4j.com";
+            Classifier classifierA = new Classifier(glam, classifierAEmail);
 
-            Classifier classifierB = new Classifier(glam);
-            classifierB.email = "testingUnclassedB@BCCNeo4j.com";
-            classifierB.username = "usernames are not unique B";
+            string classifierBEmail = "testingUnclassedB@BCCNeo4j.com";
+            Classifier classifierB = new Classifier(glam, classifierBEmail);
 
             ConceptString conStr = new ConceptString
             {
@@ -642,8 +631,8 @@ namespace Neo4jTest
         public void GettAllUnclassified_HasNone()
         {
             GLAM glam = new GLAM("NonExisting");
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "userDoesNotExistUnclassified@USNationalParks.com";
+            string classifierEmail = "userDoesNotExistUnclassified@USNationalParks.com";
+            Classifier classifier = new Classifier(glam, classifierEmail);
 
             var conn = new Neo4jDB();
 
@@ -659,9 +648,7 @@ namespace Neo4jTest
 
             GLAM glam = new GLAM("AddingClassifiableSuccess");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingAddClassi@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingAddClassi@BCCNeo4j.com");
 
             Term termTool = new Term
             {
@@ -754,9 +741,7 @@ namespace Neo4jTest
 
             GLAM glam = new GLAM("AddClassifiable But Exists");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingClassiAlreadyExists@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingClassiAlreadyExists@BCCNeo4j.com");
 
             Term termTool = new Term
             {
@@ -800,9 +785,7 @@ namespace Neo4jTest
 
             GLAM glam = new GLAM("AddClassifiable ButBadTerms");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingNoTermsExist@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingNoTermsExist@BCCNeo4j.com");
 
             // This shouldn't be a real term.
             Term termTooool = new Term
@@ -840,9 +823,7 @@ namespace Neo4jTest
 
             GLAM glam = new GLAM("AddingWithNoTerms");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingNoTerms@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingNoTerms@BCCNeo4j.com");
 
             ConceptString conStr = new ConceptString
             {
@@ -873,9 +854,7 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("Updating GLAM");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingUpdateSimple@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingUpdateSimple@BCCNeo4j.com");
 
             ConceptString conStr = new ConceptString
             {
@@ -924,13 +903,9 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("Updating GLAM");
 
-            Classifier ownerClassifier = new Classifier(glam);
-            ownerClassifier.email = "testingUpdateSimpleOwner@BCCNeo4j.com";
-            ownerClassifier.username = "usernames are not unique owner";
+            Classifier ownerClassifier = new Classifier(glam, "testingUpdateSimpleOwner@BCCNeo4j.com");
 
-            Classifier editingClassifier = new Classifier(glam);
-            editingClassifier.email = "testingUpdateSimpleAnother@BCCNeo4j.com";
-            editingClassifier.username = "usernames are not unique editor";
+            Classifier editingClassifier = new Classifier(glam, "testingUpdateSimpleAnother@BCCNeo4j.com");
 
             ConceptString conStr = new ConceptString
             {
@@ -987,9 +962,7 @@ namespace Neo4jTest
             // Only the ConStr is affected; no other properties should be changed.
             GLAM glam = new GLAM("Updating GLAM");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingUpdateConStrAdd@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingUpdateConStrAdd@BCCNeo4j.com");
 
             ConceptString conStr = new ConceptString
             {
@@ -1042,9 +1015,7 @@ namespace Neo4jTest
             // Only the ConStr is affected; no other properties should be changed.
             GLAM glam = new GLAM("Updating GLAM");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingUpdateConStrRemove@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingUpdateConStrRemove@BCCNeo4j.com");
 
             // Make changes and update
             Term termTool = new Term
@@ -1104,9 +1075,7 @@ namespace Neo4jTest
             // Only the ConStr is affected; no other properties should be changed.
             GLAM glam = new GLAM("Updating GLAM");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingUpdateViolateId@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingUpdateViolateId@BCCNeo4j.com");
 
             ConceptString conStr = new ConceptString
             {
@@ -1156,9 +1125,7 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("Updating GLAM");
          
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingUpdatingImproperTerms@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingUpdatingImproperTerms@BCCNeo4j.com");
 
             ConceptString conStr = new ConceptString
             {
@@ -1199,13 +1166,9 @@ namespace Neo4jTest
             // ClassifierB can no longer see that Classifiable
             GLAM glam = new GLAM("Recent Unclassified Update Perm");
 
-            Classifier classifierA = new Classifier(glam);
-            classifierA.email = "testingEditUnclassedOwner@BCCNeo4j.com";
-            classifierA.username = "usernames are not unique";
+            Classifier classifierA = new Classifier(glam, "testingEditUnclassedOwner@BCCNeo4j.com");
 
-            Classifier classifierB = new Classifier(glam);
-            classifierB.email = "testingEditUnclassedAnother@BCCNeo4j.com";
-            classifierB.username = "usernames are not unique";
+            Classifier classifierB = new Classifier(glam, "testingEditUnclassedAnother@BCCNeo4j.com");
 
             ConceptString conStr = new ConceptString
             {
@@ -1259,10 +1222,8 @@ namespace Neo4jTest
             // Recently: A, B
             GLAM glam = new GLAM("Recent Unclassified Update Yours");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingEditRecentOwner@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
-
+            Classifier classifier = new Classifier(glam, "testingEditRecentOwner@BCCNeo4j.com");
+     
             // Make changes and update
             Term termTool = new Term
             {
@@ -1327,9 +1288,7 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("DeletingAClassifiable");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingToDel@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingToDel@BCCNeo4j.com");
 
             Term termWood = new Term
             {
@@ -1372,9 +1331,7 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("DeletingAClassifiable");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingToDelNoTerms@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingToDelNoTerms@BCCNeo4j.com");
 
             ConceptString conStr = new ConceptString
             {
@@ -1409,9 +1366,7 @@ namespace Neo4jTest
         {
             GLAM glam = new GLAM("DeletingAClassifiable");
 
-            Classifier classifier = new Classifier(glam);
-            classifier.email = "testingToDel03@BCCNeo4j.com";
-            classifier.username = "usernames are not unique";
+            Classifier classifier = new Classifier(glam, "testingToDel03@BCCNeo4j.com");
 
             Term termWood = new Term
             {
@@ -1891,9 +1846,7 @@ namespace Neo4jTest
             var conn = new Neo4jDB();
 
             GLAM g = new GLAM("Notifications!");
-            Classifier user = new Classifier(g);
-            user.email = "notifyMeCreate@someplace.com";
-            user.username = "usernames are not unique";
+            Classifier user = new Classifier(g, "notifyMeCreate@someplace.com");
             conn.addClassifier(user);
 
             Assert.AreEqual<int>(1, conn.createNotification("Testing notifications!", user.email));
@@ -1905,11 +1858,8 @@ namespace Neo4jTest
             var conn = new Neo4jDB();
 
             GLAM g = new GLAM("Notifications!");
-            Classifier user = new Classifier(g);
-            user.email = "notifyMeGetSome@someplace.com";
-            user.username = "usernames are not unique";
+            Classifier user = new Classifier(g, "notifyMeGetSome@someplace.com");
             conn.addClassifier(user);
-
             conn.createNotification("Testing GET notifications!", user.email);
 
             List<Neo4jNotification> myNotifications = conn.getNotifications(user.email);
@@ -1925,9 +1875,7 @@ namespace Neo4jTest
             var conn = new Neo4jDB();
 
             GLAM g = new GLAM("Notifications!");
-            Classifier user = new Classifier(g);
-            user.email = "notifyMeGetNone@someplace.com";
-            user.username = "usernames are not unique";
+            Classifier user = new Classifier(g, "notifyMeGetNone@someplace.com");
             conn.addClassifier(user);
 
             List<Neo4jNotification> noNotifications = conn.getNotifications(user.email);
@@ -1941,9 +1889,7 @@ namespace Neo4jTest
             var conn = new Neo4jDB();
 
             GLAM g = new GLAM("Notifications!");
-            Classifier user = new Classifier(g);
-            user.email = "notifyMeRemoveOne@someplace.com";
-            user.username = "usernames are not unique";
+            Classifier user = new Classifier(g, "notifyMeRemoveOne@someplace.com");
             conn.addClassifier(user);
 
             conn.createNotification("Testing RemoveME notifications!", user.email);
@@ -1966,9 +1912,8 @@ namespace Neo4jTest
             var conn = new Neo4jDB();
 
             GLAM g = new GLAM("Notifications!");
-            Classifier user = new Classifier(g);
-            user.email = "notifyMeRemoveAll@someplace.com";
-            user.username = "usernames are not unique";
+            Classifier user = new Classifier(g, "notifyMeRemoveAll@someplace.com");
+         
             conn.addClassifier(user);
 
             conn.createNotification("Testing RemoveMePlease notifications!", user.email);
@@ -1995,14 +1940,12 @@ namespace Neo4jTest
             var conn = new Neo4jDB();
 
             GLAM g = new GLAM("Notifications!");
-            Classifier user1 = new Classifier(g);
-            user1.email = "notifyMeRemoveMine@someplace.com";
-            user1.username = "usernames are not unique";
+            Classifier user1 = new Classifier(g, "notifyMeRemoveMine@someplace.com");
+          
             conn.addClassifier(user1);
 
-            Classifier user2 = new Classifier(g);
-            user2.email = "notifyMeKeepMine@someplace.com";
-            user2.username = "usernames are not unique";
+            Classifier user2 = new Classifier(g, "notifyMeKeepMine@someplace.com");
+
             conn.addClassifier(user2);
 
             string notification = "Testing AnotherUserHasMine notifications!";

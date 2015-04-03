@@ -94,9 +94,7 @@ namespace Neo4j
                 if (query != null)
                 {
                     var rtnGlam = new GLAM(query.glamName);
-                    Classifier rtnClassifier = new Classifier(rtnGlam);
-                    rtnClassifier.email = query.classifierEmail;
-                    rtnClassifier.username = query.classifierName;
+                    Classifier rtnClassifier = new Classifier(rtnGlam, query.classifierEmail, query.classifierName);
                     return rtnClassifier;
                 }
             }
@@ -132,9 +130,7 @@ namespace Neo4j
                     if (query != null)
                     {
                         var rtnGlam = new GLAM(query.glamName);
-                        Classifier rtnClassifier = new Classifier(rtnGlam);
-                        rtnClassifier.email = query.classifierEmail;
-                        rtnClassifier.username = query.classifierName;
+                        Classifier rtnClassifier = new Classifier(rtnGlam, query.classifierEmail, query.classifierName);
                         return rtnClassifier;
                     }
 
@@ -327,37 +323,23 @@ namespace Neo4j
                     query.classifiable.conceptStr = resConStr;
 
                     // If these are not null...
-                    // TODO: refactor(?) Classifier to have the constructor take these parameters 
-                    // and set defaults there...
                     if (query.ownerGlam != null && query.ownerEmail != null && query.ownerName != null)
                     {
-                        GLAM tmpG = new GLAM(query.ownerGlam);
-                        query.classifiable.owner = new Classifier(tmpG);
-                        query.classifiable.owner.email = query.ownerEmail;
-                        query.classifiable.owner.username = query.ownerName;
+                        query.classifiable.owner = new Classifier(new GLAM(query.ownerGlam), query.ownerEmail, query.ownerName);
                     }
                     else
                     {
-                        GLAM tmpG = new GLAM(UNKNOWN_GLAM);
-                        query.classifiable.owner = new Classifier(tmpG);
-                        query.classifiable.owner.email = UNKNOWN_OWNER_EMAIL;
-                        query.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
+                        query.classifiable.owner = new Classifier(new GLAM(UNKNOWN_GLAM), UNKNOWN_OWNER_EMAIL);
                     }
 
                     // If these are not null...
                     if (query.editorGlam != null && query.editorEmail != null && query.editorName != null)
                     {
-                        GLAM tmpG = new GLAM(query.editorGlam);
-                        query.classifiable.classifierLastEdited = new Classifier(tmpG);
-                        query.classifiable.classifierLastEdited.email = query.editorEmail;
-                        query.classifiable.classifierLastEdited.username = query.editorName;
+                        query.classifiable.classifierLastEdited = new Classifier(new GLAM(query.editorGlam), query.editorEmail, query.editorName);
                     }
                     else
                     {
-                        GLAM tmpG = new GLAM(UNKNOWN_GLAM);
-                        query.classifiable.classifierLastEdited = new Classifier(tmpG);
-                        query.classifiable.classifierLastEdited.email = UNKNOWN_EDITOR_EMAIL;
-                        query.classifiable.classifierLastEdited.username = UNKNOWN_EDITOR_USERNAME;
+                        query.classifiable.classifierLastEdited = new Classifier(new GLAM(UNKNOWN_GLAM), UNKNOWN_EDITOR_USERNAME);
                     }
                     return query.classifiable;
                 }
@@ -507,21 +489,14 @@ namespace Neo4j
                         resConStr.terms.Reverse();
                         res.classifiable.conceptStr = resConStr;
 
-                        // Add the owner if the information can be found. Could be possible that some stray
-                        // Classifiable exists
+                        // If these are not null...
                         if (res.ownerGlam != null && res.ownerEmail != null && res.ownerName != null)
                         {
-                            GLAM tmpG = new GLAM(res.ownerGlam);
-                            res.classifiable.owner = new Classifier(tmpG);
-                            res.classifiable.owner.email = res.ownerEmail;
-                            res.classifiable.owner.username = res.ownerName;
+                            res.classifiable.owner = new Classifier(new GLAM(res.ownerGlam), res.ownerEmail, res.ownerName);
                         }
                         else
                         {
-                            GLAM tmpG = new GLAM(UNKNOWN_GLAM);
-                            res.classifiable.owner = new Classifier(tmpG);
-                            res.classifiable.owner.email = UNKNOWN_OWNER_EMAIL;
-                            res.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
+                            res.classifiable.owner = new Classifier(new GLAM(UNKNOWN_GLAM), UNKNOWN_OWNER_EMAIL);
                         }
 
                         // Add Classifiable to the collection
@@ -681,35 +656,22 @@ namespace Neo4j
                             // If these are not null...
                             if (res.ownerGlam != null && res.ownerEmail != null && res.ownerName != null)
                             {
-                                GLAM tmpG = new GLAM(res.ownerGlam);
-                                res.classifiable.owner = new Classifier(tmpG);
-                                res.classifiable.owner.email = res.ownerEmail;
-                                res.classifiable.owner.username = res.ownerName;
+                                res.classifiable.owner = new Classifier(new GLAM(res.ownerGlam), res.ownerEmail, res.ownerName);
                             }
                             else
                             {
-                                GLAM tmpG = new GLAM(UNKNOWN_GLAM);
-                                res.classifiable.owner = new Classifier(tmpG);
-                                res.classifiable.owner.email = UNKNOWN_OWNER_EMAIL;
-                                res.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
+                                res.classifiable.owner = new Classifier(new GLAM(UNKNOWN_GLAM), UNKNOWN_OWNER_EMAIL);
                             }
 
                             // If these two are not null...
                             if (res.editorGlam != null && res.editorEmail != null && res.editorName != null)
                             {
-                                GLAM tmpG = new GLAM(res.editorGlam);
-                                res.classifiable.classifierLastEdited = new Classifier(tmpG);
-                                res.classifiable.classifierLastEdited.email = res.editorEmail;
-                                res.classifiable.classifierLastEdited.username = res.editorName;
+                                res.classifiable.classifierLastEdited = new Classifier(new GLAM(res.editorGlam), res.editorEmail, res.editorName);
                             }
                             else
                             {
-                                GLAM tmpG = new GLAM(UNKNOWN_GLAM);
-                                res.classifiable.classifierLastEdited = new Classifier(tmpG);
-                                res.classifiable.classifierLastEdited.email = UNKNOWN_EDITOR_EMAIL;
-                                res.classifiable.classifierLastEdited.username = UNKNOWN_EDITOR_USERNAME;
+                                res.classifiable.classifierLastEdited = new Classifier(new GLAM(UNKNOWN_GLAM), UNKNOWN_EDITOR_USERNAME);
                             }
-
                             resColl.data.Add(res.classifiable);
                         }
                     }
@@ -859,33 +821,21 @@ namespace Neo4j
                             // If these are not null...
                             if (res.ownerGlam != null && res.ownerEmail != null && res.ownerName != null)
                             {
-                                GLAM tmpG = new GLAM(res.ownerGlam);
-                                res.classifiable.owner = new Classifier(tmpG);
-                                res.classifiable.owner.email = res.ownerEmail;
-                                res.classifiable.owner.username = res.ownerName;
+                                res.classifiable.owner = new Classifier(new GLAM(res.ownerGlam), res.ownerEmail, res.ownerName);
                             }
                             else
                             {
-                                GLAM tmpG = new GLAM(UNKNOWN_GLAM);
-                                res.classifiable.owner = new Classifier(tmpG);
-                                res.classifiable.owner.email = UNKNOWN_OWNER_EMAIL;
-                                res.classifiable.owner.username = UNKNOWN_OWNER_USERNAME;
+                                res.classifiable.owner = new Classifier(new GLAM(UNKNOWN_GLAM), UNKNOWN_OWNER_EMAIL);
                             }
 
                             // If these two are not null...
                             if (res.editorGlam != null && res.editorEmail != null && res.editorName != null)
                             {
-                                GLAM tmpG = new GLAM(res.editorGlam);
-                                res.classifiable.classifierLastEdited = new Classifier(tmpG);
-                                res.classifiable.classifierLastEdited.email = res.editorEmail;
-                                res.classifiable.classifierLastEdited.username = res.editorName;
+                                res.classifiable.classifierLastEdited = new Classifier(new GLAM(res.editorGlam), res.editorEmail, res.editorName);
                             }
                             else
                             {
-                                GLAM tmpG = new GLAM(UNKNOWN_GLAM);
-                                res.classifiable.classifierLastEdited = new Classifier(tmpG);
-                                res.classifiable.classifierLastEdited.email = UNKNOWN_EDITOR_EMAIL;
-                                res.classifiable.classifierLastEdited.username = UNKNOWN_EDITOR_USERNAME;
+                                res.classifiable.classifierLastEdited = new Classifier(new GLAM(UNKNOWN_GLAM), UNKNOWN_EDITOR_USERNAME);
                             }
                             resColl.data.Add(res.classifiable);
                         }
@@ -2213,6 +2163,7 @@ namespace Neo4j
                 List<string> classEmails01 = new List<string>
                 {
                     "newUser@Test.com",
+                    "nousername@BCCNeo4j.com",
                     "userRepeat@Test.com",
                     "findByEmail@Test.com",
                     "userDeleteMe@Test.com",

@@ -161,9 +161,7 @@ namespace BCCApplication.Account
             }
 
             GLAM classifierGlam = new GLAM(glamName);
-            Classifier newClassifier = new Classifier(classifierGlam);
-            newClassifier.email = Email.Text;
-            newClassifier.username = Username.Text;
+            Classifier newClassifier = new Classifier(classifierGlam, Email.Text, Username.Text);
 
             // Need to something more than this?
             try

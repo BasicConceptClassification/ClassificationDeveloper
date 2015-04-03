@@ -46,13 +46,7 @@ namespace BCCApplication.Account
             // in the case that it is.
             try
             {
-                GLAM gl = dbConn.getGlamOfClassifier(userEmail);
-
-                Classifier classifier = new Classifier(gl);
-                classifier.username = Context.GetOwinContext().Authentication.User.Identity.Name;
-                classifier.email = userEmail;
-
-                classifiables = dbConn.getOwnedClassifiables(classifier.email);
+                classifiables = dbConn.getOwnedClassifiables(userEmail);
             }
             catch (Exception ex)
             {
