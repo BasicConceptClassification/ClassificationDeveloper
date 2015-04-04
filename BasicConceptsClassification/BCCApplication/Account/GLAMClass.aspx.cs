@@ -411,5 +411,10 @@ namespace BCCApplication.Account
         {
             Response.Redirect("EditClassifiable.aspx", true);
         }
+
+        protected void SuggestTerms_Click(object sender, EventArgs e)
+        {
+            Response.Redirect("SuggestTerm.aspx", true);
+        }
     }
 }

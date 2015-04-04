@@ -62,7 +62,7 @@
                         <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" />
                     </asp:TreeView>
                  </div>
-                Looking for a term not in the classification? <a href="">Click here to suggest a new term.</a>
+                Looking for a term not in the classification? <a href="SuggestTerm.aspx">Click here to suggest a new term.</a>
             </td>
             <td>
                 <asp:Button ID="AddTOb" runat="server" Text="Add" />

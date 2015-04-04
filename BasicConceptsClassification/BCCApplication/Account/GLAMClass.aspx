@@ -48,6 +48,7 @@
                         <asp:Button ID="ButtGLAMClassAddNew" runat="server" Text="Add a New GLAM Object" OnClick="AddNew_Click" Font-Size="Small" />
                         <asp:Button ID="ButtGLAMClassClassNow" runat="server" Text="Edit GLAM Objects" OnClick="ClassNow_Click" Font-Size="Small" />
                         <asp:Button ID="RemoveClass" runat="server" Text="Remove GLAM Objects" OnClick="RemoveClassPage_Click" Font-Size="Small" />
+                        <asp:Button ID="SuggestTerms" runat="server" Text="Suggest New Terms" OnClick="SuggestTerms_Click" Font-Size="Small" />
                     </div>
                     <div>
                         <h3>Your Recently Classified</h3>
