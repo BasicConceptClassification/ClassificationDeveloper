@@ -45,6 +45,7 @@ namespace BCCApplication.Logic
             var appUser = new ApplicationUser
             {
                 UserName = "Admin",
+                Email = "bcclassification@gmail.com",
             };
             IdUserResult = userMgr.Create(appUser, "password");
 

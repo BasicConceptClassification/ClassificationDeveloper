@@ -49,6 +49,15 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Creates or sets the Admin user
+        /// </summary>
+        public void updateAdmin(string email, string username)
+        {
+            // fetch the label :Admin and create/update the email and username
+            // currently assumes there is only one
+        }
+
+        /// <summary>
         /// Add a new Classifier. Will create a new GLAM if the one provided 
         /// does not currently exist.
         /// </summary>
