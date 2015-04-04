@@ -1,13 +1,13 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminAddRejTermSuggest.aspx.cs" Inherits="BCCApplication.Account.AdminAddRejTermSuggest" %>
+﻿<%@ Page Title="Add/Reject Suggested Terms" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminAddRejTermSuggest.aspx.cs" Inherits="BCCApplication.Account.AdminAddRejTermSuggest" %>
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <h1>Add/Reject Suggested Terms</h1>
+        <h1><%: Title %></h1>
         <div class ="td">
             <center>
                 <h2>Suggested Terms:</h2><br />
                 <asp:ListBox ID="ListBoxClass" runat="server" Height="200px" Width="300px"></asp:ListBox>
                 <br />
-                <asp:Button ID="Update_SuggTerm" runat="server" OnClick="Update_Suggest_Term_Click" Text="Update" />
+                <asp:Button ID="Update_SuggTerm" runat="server" OnClick="Update_SuggTerm_Click" Text="Update" />
             </center>
         </div>
         <table>

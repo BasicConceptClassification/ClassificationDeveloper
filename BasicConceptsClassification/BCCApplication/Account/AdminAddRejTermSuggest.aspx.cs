@@ -21,5 +21,10 @@ namespace BCCApplication.Account
         {
 
         }
+
+        protected void Update_SuggTerm_Click(object sender, EventArgs e)
+        {
+
+        }
     }
 }

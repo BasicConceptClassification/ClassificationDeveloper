@@ -5,6 +5,8 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+using Neo4j;
+
 //used for getting mail stuff done
 using System.Net.Mail;
 using System.Net;
@@ -59,6 +61,17 @@ namespace BCCApplication.Account
 
                 //Display some feedback to the user to let them know it was sent
                 lblResult.Text = "Your message was sent!";
+
+                try
+                {
+                    // TODO: not hard code this!!!
+                    var conn = new Neo4jDB();
+                    conn.createNotification(msg.Body, "bcclassification@gmail.com");
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
 
                 //Clear the form
                 txtTermName.Text = "";

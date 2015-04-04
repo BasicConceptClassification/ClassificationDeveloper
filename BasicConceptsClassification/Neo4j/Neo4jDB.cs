@@ -1978,9 +1978,10 @@ namespace Neo4j
 
                 if (notification != null && classifierEmail == "")
                 {
+                    // Classifier or Admin can have a notification
                     return client
                         .Cypher
-                        .Match("(a:Classifier), (b:Notification{msg:{PARAM1},time:{PARAM2}})")
+                        .Match("(a :Classifier), (b:Notification{msg:{PARAM1},time:{PARAM2}})")
                         .WithParam("PARAM1", notification.msg)
                         .WithParam("PARAM2", notification.time)
                         .Create("(a)-[r:HAS_NOTIFICATION]->(b)")
@@ -1989,9 +1990,11 @@ namespace Neo4j
                 }
                 else if (notification != null && classifierEmail != "")
                 {
+                    System.Diagnostics.Debug.WriteLine(classifierEmail);
                     return client
                          .Cypher
-                         .Match("(a:Classifier{email:{PARAM0}}), (b:Notification{msg:{PARAM1},time:{PARAM2}})")
+                         .Match("(a {email:{PARAM0}}), (b:Notification{msg:{PARAM1},time:{PARAM2}})")
+                         .Where("a:Classifier").OrWhere("a:Admin")
                          .WithParam("PARAM0", classifierEmail)
                          .WithParam("PARAM1", notification.msg)
                          .WithParam("PARAM2", notification.time)
@@ -2025,8 +2028,9 @@ namespace Neo4j
                 // WHERE c.email = {email}
                 // RETURN n.msg AS message, n.time as TIME
                 var notificationQ = client.Cypher
-                    .Match("(n:Notification)<-[:HAS_NOTIFICATION]-(c:Classifier)")
-                    .Where("c.email = {email}").WithParam("email", email)
+                    .Match("(n:Notification)<-[:HAS_NOTIFICATION]-(c{email: {email}})")
+                    .WithParam("email", email)
+                    .Where("c:Classifier").OrWhere("c:Admin")
                     .With("n.msg AS message, n.time AS time")
                     .Return((message, time) => new
                     {
@@ -2092,9 +2096,11 @@ namespace Neo4j
                 // MATCH (n)<-[remaining:HAS_NOTIFCATION]-()
                 // RETURN COUNT(remaining)
                 client.Cypher
-                    .Match("(n:Notification)<-[r:HAS_NOTIFICATION]-(c:Classifier)")
-                    .Where("c.email = {email}").WithParam("email", email)
-                    .AndWhere("n.msg = {nMessage}").WithParam("nMessage", notification.msg)
+                    .Match("(c{email: {email}})")
+                    .WithParam("email", email)
+                    .Where("c:Classifier").OrWhere("c:Admin")
+                    .Match("(n:Notification)<-[r:HAS_NOTIFICATION]-(c)")
+                    .Where("n.msg = {nMessage}").WithParam("nMessage", notification.msg)
                     .AndWhere("n.time = ToInt({nTime})").WithParam("nTime", notification.time)
                     .Delete("r").ExecuteWithoutResults();
                     

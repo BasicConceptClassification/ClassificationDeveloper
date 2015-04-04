@@ -1,9 +1,9 @@
-﻿<%@ Page Title="" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="SuggestTerm.aspx.cs" Inherits="BCCApplication.Account.SuggestTerm" %>
+﻿<%@ Page Title="Suggest New Term" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="SuggestTerm.aspx.cs" Inherits="BCCApplication.Account.SuggestTerm" %>
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
     <div>
-        <h1>Suggest New Term</h1>
-        * You must fill in all fields
+        <h1><%: Title %></h1>
+        <p>* You must fill in all fields</p>
         <table>
             <tr>
                 <td>
