@@ -13,13 +13,13 @@ namespace BCCApplication.Account {
     public partial class EditClassifiable {
         
         /// <summary>
-        /// EditClassifiable1 control.
+        /// LabelDescription control.
         /// </summary>
         /// <remarks>
         /// Auto-generated field.
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
-        protected global::System.Web.UI.HtmlControls.HtmlGenericControl EditClassifiable1;
+        protected global::System.Web.UI.WebControls.Label LabelDescription;
         
         /// <summary>
         /// TextBox_Name control.
@@ -40,6 +40,15 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.TextBox TextBox_URL;
         
         /// <summary>
+        /// EditPerm control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RadioButtonList EditPerm;
+        
+        /// <summary>
         /// TextBox_Concept control.
         /// </summary>
         /// <remarks>
@@ -56,15 +65,6 @@ namespace BCCApplication.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Label Label1;
-        
-        /// <summary>
-        /// EditPerm control.
-        /// </summary>
-        /// <remarks>
-        /// Auto-generated field.
-        /// To modify move field declaration from designer file to code-behind file.
-        /// </remarks>
-        protected global::System.Web.UI.WebControls.RadioButtonList EditPerm;
         
         /// <summary>
         /// Edit control.

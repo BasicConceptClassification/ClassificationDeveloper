@@ -29,7 +29,7 @@
         <tr>
             <td>
                 <div>
-                    <asp:Label runat="server" AssociatedControlID="EditPerm" CssClass="control-label">Edit Permissions</asp:Label>    
+                    <asp:Label runat="server" AssociatedControlID="EditPerm" CssClass="control-label">Set Permissions</asp:Label>    
                     <asp:RadioButtonList ID="EditPerm" runat="server" CssClass="radioButtonList" RepeatDirection="Horizontal">
                         <asp:ListItem Value="GLAM" Selected="True"/>
                         <asp:ListItem Value="OwnerOnly"/>
