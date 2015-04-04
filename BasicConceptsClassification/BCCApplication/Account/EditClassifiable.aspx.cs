@@ -15,10 +15,25 @@ namespace BCCApplication.Account
     
     public partial class EditClassifiable : System.Web.UI.Page
     {
-        static string select_string;
-        private string SUCCESS = "Successfully Edite the classifiable. ";
-        private string FAIL = "Fail to Edite the classifiable. ";
+        private string DESCRIPTION = @"<p>To edit any of GLAM Objects you have permission to classify, first select them from one of
+                                        the two lists below: those that are classified, and those that are not classified, and then click
+                                        The button below the list to get their information. Then once their information is shown in the boxes
+                                        above the lists, then you can edit any of the GLAM Object's information. Once you are done,
+                                        click the Edit button.</p>";
 
+        static string select_string;
+        private string SUCCESS = "Successfully edited the classifiable.";
+        private string FAIL = "Failed to edit the classifiable. ";
+        private string ERROR_SERVER = "Sorry, there was an error with the server!";
+
+        private static ClassifiableCollection unclassifieds = new ClassifiableCollection
+        {
+            data = new List<Classifiable>(),
+        };
+        private static ClassifiableCollection classifieds = new ClassifiableCollection
+        {
+            data = new List<Classifiable>(),
+        };
 
         /// <summary>
         /// when the page load it display the classified and unclassified elements on two lists.
@@ -26,32 +41,65 @@ namespace BCCApplication.Account
         /// <return> nothing will return </returns>
         protected void Page_Load(object sender, EventArgs e)
         {
-            var dbConn = new Neo4jDB();
-            // Get the logged in user's email
-            var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
-            var currentUser = manager.FindById(User.Identity.GetUserId());
-            string userEmail = currentUser.Email;
-
-
-            ClassifiableCollection unclassifieds = dbConn.getAllUnclassified(userEmail);
-            int resultsLength = unclassifieds.data.Count;
-            for (int i = 0; i < resultsLength; i++)
+            if (!Page.IsPostBack)
             {
-                Classifiable currentUNClassifiable = unclassifieds.data[i];
-                ListBox2.Items.Add(currentUNClassifiable.name);
-                ListBox2.Items.Add(currentUNClassifiable.id);
-            }
+                LabelDescription.Text = DESCRIPTION;
 
-            ClassifiableCollection classifieds = dbConn.getAllClassified(userEmail);
-            int resultLength = classifieds.data.Count;
-            for (int i = 0; i < resultLength; i++)
-            {
-                Classifiable currentClassifiable = classifieds.data[i];
-                ListBoxClass.Items.Add(currentClassifiable.name);
+                // Get the logged in user's email
+                var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
+                var currentUser = manager.FindById(User.Identity.GetUserId());
+                string userEmail = currentUser.Email;
+
+                var dbConn = new Neo4jDB();
+                
+                GetClassifieds(dbConn, userEmail);
+                GetUnclassifieds(dbConn, userEmail);
             }
-        
         }
 
+        protected void GetUnclassifieds(Neo4jDB dbConn, string classifierEmail)
+        {
+            // Not the greatest, but the page will not crash at least
+            try
+            {
+                ListBox2.Items.Clear();
+                unclassifieds = dbConn.getAllUnclassified(classifierEmail);
+                int resultsLength = unclassifieds.data.Count;
+                for (int i = 0; i < resultsLength; i++)
+                {
+                    Classifiable currentUNClassifiable = unclassifieds.data[i];
+                    ListBox2.Items.Add(currentUNClassifiable.name);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Label1.Text = ERROR_SERVER;
+            }
+        }
+
+        protected void GetClassifieds(Neo4jDB dbConn, string classifierEmail)
+        {
+            System.Diagnostics.Debug.WriteLine("called getClassifieds");
+            // Not the greatest, but the page will not crash at least
+            try
+            {
+                ListBoxClass.Items.Clear();
+                classifieds = dbConn.getAllClassified(classifierEmail);
+                int resultLength = classifieds.data.Count;
+                for (int i = 0; i < resultLength; i++)
+                {
+                    Classifiable currentClassifiable = classifieds.data[i];
+                    ListBoxClass.Items.Add(currentClassifiable.name);
+                }
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                Label1.Text = ERROR_SERVER;
+            }
+        }
+        
 
         /// <summary>
         /// click the Edit button and to edite the current classified or unclassified elements
@@ -117,7 +165,7 @@ namespace BCCApplication.Account
                 id = gl.name + "_" + str_n,
                 name = str_n,
                 url = str_u,
-                perm = Classifiable.Permission.GLAM.ToString(),
+                perm =  EditPerm.SelectedValue,
                 status = the_status,
                 owner = classifier,
                 conceptStr = newConceptStr,
@@ -143,6 +191,9 @@ namespace BCCApplication.Account
             {
                 conn.updateClassifiable(matchedClassifiable, newClassifiable, classifier);
                 Label1.Text = SUCCESS;
+                // Update these two lists
+                GetUnclassifieds(conn, userEmail);
+                GetClassifieds(conn, userEmail);
             }
             catch
             {
@@ -157,6 +208,9 @@ namespace BCCApplication.Account
         /// <return> nothing will return </returns>
         protected void Update_Class_Click(object sender, EventArgs e)
         {
+            // Clear the notification text
+            Label1.Text = "";
+
             select_string = "";
             select_string = ListBoxClass.SelectedItem.ToString();
             TextBox_Name.Text = select_string;
@@ -166,23 +220,22 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
 
-            var conn = new Neo4jDB();
-            GLAM gl = conn.getGlamOfClassifier(userEmail);
-
-            string username = Context.GetOwinContext().Authentication.User.Identity.Name;
-            Classifier classifier = new Classifier(gl, userEmail, username);
-
             //and return the message to user.
             try
             {
-                Classifiable matchedClassifiable = dbConn.getClassifiableById(gl.name + "_" + select_string);
+                // Use the ids that were grabbed earlier
+                Classifiable matchedClassifiable = dbConn.getClassifiableById(classifieds.data[ListBoxClass.SelectedIndex].id);
                 TextBox_Name.Text = matchedClassifiable.name;
                 TextBox_URL.Text = matchedClassifiable.url;
                 TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
+                EditPerm.SelectedValue = matchedClassifiable.perm.ToString();
             }
             catch
             {
                 Label1.Text = "Please choose one of the classifiable element in the list.";
+                // Refresh lists just in case they changed
+                GetUnclassifieds(dbConn, userEmail);
+                GetClassifieds(dbConn, userEmail);
             }
             
         }
@@ -193,6 +246,9 @@ namespace BCCApplication.Account
         /// <return> nothing will return </returns>
         protected void Update_Unclass_Click(object sender, EventArgs e)
         {
+            // Clear the notification text
+            Label1.Text = "";
+
             select_string = "";
             //var selected = list
             select_string = ListBox2.SelectedItem.ToString();
@@ -204,22 +260,23 @@ namespace BCCApplication.Account
             string userEmail = currentUser.Email;
 
             var conn = new Neo4jDB();
-            GLAM gl = conn.getGlamOfClassifier(userEmail);
-
-            string username = Context.GetOwinContext().Authentication.User.Identity.Name;
-            Classifier classifier = new Classifier(gl, userEmail, username);
 
             //and return the message to user.
             try
             {
-                Classifiable matchedClassifiable = dbConn.getClassifiableById(gl.name + "_" + select_string);
+                // Use the ids that were grabbed earlier
+                Classifiable matchedClassifiable = dbConn.getClassifiableById(unclassifieds.data[ListBox2.SelectedIndex].id);
                 TextBox_Name.Text = select_string;
                 TextBox_URL.Text = matchedClassifiable.url;
                 TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();
+                EditPerm.SelectedValue = matchedClassifiable.perm.ToString();
             }
             catch
             {
-                Label1.Text = "Please choose one of the unclassifiable element in the list.";
+                Label1.Text = "Please choose one of the classifiable element in the list.";
+                // Refresh lists just in case they changed
+                GetUnclassifieds(dbConn, userEmail);
+                GetClassifieds(dbConn, userEmail);
             }
             
         }
