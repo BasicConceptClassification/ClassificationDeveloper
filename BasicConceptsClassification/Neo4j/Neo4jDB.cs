@@ -49,12 +49,32 @@ namespace Neo4j
         }
 
         /// <summary>
-        /// Creates or sets the Admin user
+        /// Creates or sets the Admin user.
         /// </summary>
         public void updateAdmin(string email, string username)
         {
+            // Argument checking. Throw an exception if there's a problem
+            if (email == null || email == "")
+            {
+                throw new ArgumentNullException("Admin's email is not set.", "email");
+            }
+            if (username == null || username == "")
+            {
+                throw new ArgumentNullException("Admin's username is not set.", "username");
+            }
             // fetch the label :Admin and create/update the email and username
             // currently assumes there is only one
+            this.open();
+            if (client != null)
+            {
+                client.Cypher.Merge("(a:Admin)")
+                    .OnCreate().Set("a.email = {email}")
+                    .OnCreate().Set("a.username = {username}")
+                    .OnMatch().Set("a.email = {email}")
+                    .OnMatch().Set("a.username = {username}")
+                    .WithParam("username", username).WithParam("email", email)
+                    .ExecuteWithoutResults();
+            }
         }
 
         /// <summary>

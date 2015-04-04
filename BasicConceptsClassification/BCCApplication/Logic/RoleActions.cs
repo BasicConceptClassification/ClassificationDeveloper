@@ -5,6 +5,8 @@ using System.Web;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.EntityFramework;
 
+using Neo4j;
+
 namespace BCCApplication.Logic
 {
     internal class RoleActions
@@ -54,6 +56,17 @@ namespace BCCApplication.Logic
             if (!userMgr.IsInRole(userMgr.FindByName("Admin").Id, ROLE_ADMIN))
             {
                 IdUserResult = userMgr.AddToRole(userMgr.FindByName("Admin").Id, ROLE_ADMIN);
+            }
+
+            // Not quite sure this should go here, but here is the Neo4j Sync
+            try
+            {
+                var conn = new Neo4jDB();
+                conn.updateAdmin(appUser.Email, appUser.UserName);
+            }
+            catch (ArgumentNullException ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
     }
