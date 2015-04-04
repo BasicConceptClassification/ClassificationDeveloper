@@ -8,4 +8,9 @@
     <div>
         <asp:Label ID="LabelDescription" runat="server"></asp:Label>
     </div>
+    <div>
+        <asp:Label ID="LabelClassifiedExamples" runat="server"></asp:Label>
+        <asp:BulletedList runat="server" id="BulletLExamples" CssClass="bulletList-basic">
+        </asp:BulletedList>
+    </div>
 </asp:Content>

@@ -588,6 +588,11 @@ tr.pager td {
     text-overflow: ellipsis;
 }
 
+.bulletList-basic li {
+    list-style:circle;
+    cursor: default;
+}
+
 
 /********************
 *   Mobile Styles   *
