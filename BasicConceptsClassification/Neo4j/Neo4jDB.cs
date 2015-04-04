@@ -1990,7 +1990,6 @@ namespace Neo4j
                 }
                 else if (notification != null && classifierEmail != "")
                 {
-                    System.Diagnostics.Debug.WriteLine(classifierEmail);
                     return client
                          .Cypher
                          .Match("(a {email:{PARAM0}}), (b:Notification{msg:{PARAM1},time:{PARAM2}})")

@@ -66,7 +66,9 @@ namespace BCCApplication.Account
                 {
                     // TODO: not hard code this!!!
                     var conn = new Neo4jDB();
-                    conn.createNotification(msg.Body, "bcclassification@gmail.com");
+                    conn.createNotification(
+                        String.Format("{0}|{1}|{2}", txtTermName.Text, txtParentString.Text, txtMessage.Text), 
+                        "bcclassification@gmail.com");
                 }
                 catch (Exception ex)
                 {

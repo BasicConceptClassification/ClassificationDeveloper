@@ -17,7 +17,8 @@
                 <td>
                     <asp:TextBox ID="txtTermName"
                                     runat="server"
-                                    Columns="50"></asp:TextBox>
+                                    Columns="50"
+                                    ReadOnly="true"></asp:TextBox>
                 </td>
             </tr> 
             <tr>
@@ -26,7 +27,8 @@
                 <td>
                     <asp:TextBox ID="txtParentString"
                                     runat="server"
-                                    Columns="50"></asp:TextBox>
+                                    Columns="50"
+                                    ReadOnly="true"></asp:TextBox>
                 </td>
             </tr>
             <tr>
@@ -37,15 +39,17 @@
                                     runat="server"
                                     Columns="40"
                                     Rows="6"
-                                    TextMode="MultiLine"></asp:TextBox>
+                                    TextMode="MultiLine"
+                                    ReadOnly="true"></asp:TextBox>
+                    <asp:HiddenField ID="curNoticationIndex" runat="server" />
                 </td>
             </tr>
             <tr align="center">
                 <td colspan="2">
-                    <asp:Button ID="btnAccept" runat="server" Text="Accept"
+                    <asp:Button ID="btnAccept" runat="server" Text="Accept and Remove Notification"
                         onclick="btnAccept_Click" />
                     &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                    <asp:Button ID="btnReject" runat="server" Text="Reject"
+                    <asp:Button ID="btnReject" runat="server" Text="Reject and Remove Notification"
                         onclick="btnReject_Click" />
                 </td>
             </tr>
