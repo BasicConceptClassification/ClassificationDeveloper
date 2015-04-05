@@ -579,11 +579,33 @@ tr.pager td {
 /* Table modification: When table cells overflow, cut off with ellipsis (..) 
     ref: http://www.bootply.com/9njmoY2CmS# */
 .table-fixed-width {
-    table-layout:fixed
+    table-layout:fixed;
 }
 
 .table-fixed-width td {
     white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.table-3-4 {
+    width:100%;
+    max-width:100%;
+}
+
+.table-3-4.cols1 {
+    /*style for 1st column*/
+    width: 80%;
+    max-width: 80%;
+}
+
+.table-3-4.cols2 {
+    /*style for 2nd column*/
+    width: 20%;
+    max-width: 20%;
+}
+
+.table-3-4 td {
     overflow: hidden;
     text-overflow: ellipsis;
 }
