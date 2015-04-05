@@ -5,6 +5,7 @@ using System.Web;
 using System.Web.UI;
 using System.Web.UI.WebControls;
 
+using BCCLib;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Neo4j;
@@ -15,17 +16,35 @@ namespace BCCApplication.Account
     {
         protected static List<Neo4jNotification> notifications = new List<Neo4jNotification>();
 
+        protected const string DESCRIPTION = @"<p>If you have any suggested terms, you can view them below.</p>
+                                                <p>In order to accept or reject a suggested term, you must first select a term
+                                                from the list below and click <em>View Information</em>. Once the information is
+                                                displayed below, then you can choose to accept or reject the suggested term.</p>
+                                                <p>If a new term is added, all Classifiers will be notified.</p>";
+
         protected static char SEPARATOR_CHAR = '|';
 
-        protected const string ERROR_PARSE = "Could not parse out individual parts. See reason.";
+        protected const string SUGGESTIONS_NONE = "You have no suggested terms to look at.";
+
+        protected const string SUCCESS_ACCEPT = "Successfully Added the Suggested Term.";
+        protected const string SUCCESS_REJECT = "Rejected Suggested Term.";
+        protected const string ERROR_PARSE = "Could not parse out individual parts.";
         protected const string ERROR_PARSE_INSTRUCTIONS = @"There was a paring error. If you wish to add the term to the BCC, 
-                                                        you will have to reject this suggestion and add it manually.";
+                                                        you will have to reject this suggestion and add it manually.
+                                                        Please review your email notification for the exact information about this suggestion.";
         protected const string ERROR_SERVER = "Sorry, error with the server!";
+
+        protected const string ERROR_NOT_SELECTED = "Please select a term.";
+
+        protected const string ERROR_FIND_PARENT = "Could not find the parent term. You may have to remove the notification and add it manually.";
+        protected const string ERROR_ADD = "Could not add the term to the BCC. You may have to remove the notification and add it manually.";
+        protected const string ERROR_ADD_DUPLICATE = "This Term already exists in the BCC.";
 
         protected void Page_Load(object sender, EventArgs e)
         {
             if(!Page.IsPostBack)
             {
+                LabelDescription.Text = DESCRIPTION;
                 GetNotifications();
             }
         }
@@ -35,7 +54,6 @@ namespace BCCApplication.Account
             txtTermName.Text = "";
             txtParentString.Text = "";
             txtMessage.Text = "";
-            lblResult.Text = "";
             curNoticationIndex.Value = "";
         }
 
@@ -50,6 +68,7 @@ namespace BCCApplication.Account
                 var conn = new Neo4jDB();
                 notifications = conn.getNotifications(userEmail);
 
+                // Only display the suggested term listbox if notifications exist
                 if (notifications.Count > 0)
                 {
                     ListBoxClass.Items.Clear();
@@ -61,7 +80,7 @@ namespace BCCApplication.Account
                         // something will still be displayed. Of course, this won't
                         // help the adding or removal because it will still try to parse
                         // by the same separator
-                        if (tokens.Count() > 0)
+                        if (tokens.Count() == 3)
                         {
                             ListBoxClass.Items.Add(tokens[0]);
                         }
@@ -71,6 +90,15 @@ namespace BCCApplication.Account
                         }
                     }
                     ListBoxClass.SelectedIndex = 0;
+                    ListBoxClass.Visible = true;
+                    Update_SuggTerm.Visible = true;
+                    LabelSuggestedTerms.Text = "";
+                }
+                else
+                {
+                    ListBoxClass.Visible = false;
+                    Update_SuggTerm.Visible = false;
+                    LabelSuggestedTerms.Text = SUGGESTIONS_NONE;
                 }
             }
             catch (Exception ex)
@@ -78,16 +106,89 @@ namespace BCCApplication.Account
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }
         }
-
-        protected void btnAccept_Click(object sender, EventArgs e)
+        
+        /// <summary>
+        /// Attempts to add the term in the notification.
+        /// </summary>
+        /// <returns>0 is a successful add, 1 is failure to add.</returns>
+        protected int AddNewTerm()
         {
-            // Try to add term
-            // if term add is successful, then remove notification
-            // Update Notifications List and Clear fields
-            GetNotifications();
-            ClearFields();
+            // If there was an error parse from earlier, don't continue
+            if (txtTermName.Text == ERROR_PARSE)
+            {
+                lblResult.Text = ERROR_PARSE_INSTRUCTIONS;
+                return 1;
+            }
+
+            int indexToAdd = Convert.ToInt32(curNoticationIndex.Value);
+
+            var conn = new Neo4jDB();
+            Term parent = new Term();
+
+            // Try to see if we can find the parent
+            try
+            {
+                parent = conn.getTermByRaw(txtParentString.Text);
+            }
+
+            catch (Exception Ex)
+            {
+                lblResult.Text = ERROR_SERVER;
+                System.Diagnostics.Debug.WriteLine(Ex.Message);
+                return 1;
+            }
+
+            if (parent == null)
+            {
+                lblResult.Text = ERROR_FIND_PARENT;
+                return 1;
+            }
+
+            Term newChildTerm = new Term
+                {
+                    id = txtTermName.Text,
+                    rawTerm = txtTermName.Text,
+                    lower = txtTermName.Text.ToLower(),
+                };
+
+            // Try to see if we can add the term
+            try
+            {
+                conn.addTerm(newChildTerm, parent);
+            }
+            catch (Exception Ex)
+            {
+                if (Ex.Message.Contains("id"))
+                {
+                    lblResult.Text = ERROR_ADD_DUPLICATE;
+                }
+                else
+                {
+                    lblResult.Text = ERROR_ADD;
+                    System.Diagnostics.Debug.WriteLine(Ex.Message);
+                }
+                return 1;
+            }
+
+            // Send a notification to all classifiers
+            try
+            {
+                conn.createNotification(String.Format("Added new Term: {0}", newChildTerm.rawTerm));
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+            }
+
+            lblResult.Text = SUCCESS_ACCEPT;
+            return 0;
         }
-        protected void btnReject_Click(object sender, EventArgs e)
+
+        /// <summary>
+        /// Removes the notification from the list of suggested term notifications.
+        /// </summary>
+        /// <returns>>0 is a successful remove, 1 is failure to remove.</returns>
+        protected int RemoveNotification()
         {
             var manager = Context.GetOwinContext().GetUserManager<ApplicationUserManager>();
             var currentUser = manager.FindById(User.Identity.GetUserId());
@@ -109,8 +210,42 @@ namespace BCCApplication.Account
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
                 lblResult.Text = ERROR_SERVER;
+                return 1;
+            }
+            return 0;
+        }
+
+        protected void btnAccept_Click(object sender, EventArgs e)
+        {
+            if (curNoticationIndex.Value != "")
+            {
+                // Try to add term
+                // if term add is successful, then remove notification
+                if (AddNewTerm() == 0)
+                {
+                    RemoveNotification();
+                }
+            }
+            else
+            {
+                lblResult.Text = ERROR_NOT_SELECTED;
             }
 
+        }
+        protected void btnReject_Click(object sender, EventArgs e)
+        {
+            if (curNoticationIndex.Value != "")
+            {
+                // the result text will be updated to some error inside the function
+                if (RemoveNotification() == 0)
+                {
+                    lblResult.Text = SUCCESS_REJECT;
+                }
+            }
+            else
+            {
+                lblResult.Text = ERROR_NOT_SELECTED;
+            }
         }
 
         /// <summary>
@@ -128,6 +263,7 @@ namespace BCCApplication.Account
                 txtTermName.Text = tokens[0];
                 txtParentString.Text = tokens[1];
                 txtMessage.Text = tokens[2];
+                lblResult.Text = "";
             }
             else
             {
@@ -148,8 +284,13 @@ namespace BCCApplication.Account
         /// <param name="e"></param>
         protected void Update_SuggTerm_Click(object sender, EventArgs e)
         {
-            int selectedIndex = ListBoxClass.SelectedIndex;
-            parseAndSetNotification(notifications[selectedIndex], selectedIndex);
+            // Just in case...
+            if (notifications.Count != 0)
+            {
+                lblResult.Text = "";
+                int selectedIndex = ListBoxClass.SelectedIndex;
+                parseAndSetNotification(notifications[selectedIndex], selectedIndex);
+            }
         }
     }
 }

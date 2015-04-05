@@ -13,6 +13,15 @@ namespace BCCApplication.Account {
     public partial class AdminAddRejTermSuggest {
         
         /// <summary>
+        /// LabelDescription control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LabelDescription;
+        
+        /// <summary>
         /// ListBoxClass control.
         /// </summary>
         /// <remarks>
@@ -29,6 +38,15 @@ namespace BCCApplication.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.Button Update_SuggTerm;
+        
+        /// <summary>
+        /// LabelSuggestedTerms control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LabelSuggestedTerms;
         
         /// <summary>
         /// txtTermName control.

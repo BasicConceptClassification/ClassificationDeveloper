@@ -2,12 +2,16 @@
 <asp:Content ID="Content3" ContentPlaceHolderID="MainContent" runat="server">
     <div>
         <h1><%: Title %></h1>
+        <div>
+            <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+        </div>
         <div class ="td">
             <center>
                 <h2>Suggested Terms:</h2><br />
                 <asp:ListBox ID="ListBoxClass" runat="server" Height="200px" Width="300px"></asp:ListBox>
                 <br />
-                <asp:Button ID="Update_SuggTerm" runat="server" OnClick="Update_SuggTerm_Click" Text="Update" />
+                <asp:Button ID="Update_SuggTerm" runat="server" OnClick="Update_SuggTerm_Click" Text="View Information" />
+                <asp:Label ID="LabelSuggestedTerms" runat="server"></asp:Label>
             </center>
         </div>
         <table>
