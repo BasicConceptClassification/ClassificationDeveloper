@@ -31,6 +31,15 @@ namespace BCCApplication.Account {
         protected global::System.Web.UI.WebControls.TextBox TextBox_Name;
         
         /// <summary>
+        /// ValidatorName control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator ValidatorName;
+        
+        /// <summary>
         /// TextBox_URL control.
         /// </summary>
         /// <remarks>
@@ -38,6 +47,15 @@ namespace BCCApplication.Account {
         /// To modify move field declaration from designer file to code-behind file.
         /// </remarks>
         protected global::System.Web.UI.WebControls.TextBox TextBox_URL;
+        
+        /// <summary>
+        /// ValidatorURL control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.RequiredFieldValidator ValidatorURL;
         
         /// <summary>
         /// EditPerm control.

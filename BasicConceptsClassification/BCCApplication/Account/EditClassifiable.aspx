@@ -14,12 +14,18 @@
                  <div class ="td">
                     <asp:Label runat="server" AssociatedControlID="TextBox_Name" CssClass="control-label">Name</asp:Label>  
                     <asp:TextBox ID="TextBox_Name" runat="server"></asp:TextBox>
+                     <br />
+                     <asp:RequiredFieldValidator ID="ValidatorName" runat="server" ControlToValidate="TextBox_Name" CssClass="text-danger"
+                        ErrorMessage="The name of the object is required." />
                  </div>
              </td>
              <td>
                  <div class ="td">
                      <asp:Label runat="server" AssociatedControlID="TextBox_URL" CssClass="control-label">URL</asp:Label>
                      <asp:TextBox ID="TextBox_URL" runat="server"></asp:TextBox>
+                     <br />
+                     <asp:RequiredFieldValidator ID="ValidatorURL" runat="server" ControlToValidate="TextBox_URL" CssClass="text-danger" 
+                        ErrorMessage="The URL of the object is required." />
                  </div>
              </td>
          </tr>
@@ -48,7 +54,7 @@
              
              <td>
                  <div class ="td">
-                     <asp:Button ID="Edit" runat="server" Text="Edit" OnClick="Edit_Click" />
+                     <asp:Button ID="Edit" runat="server" Text="Edit" OnClick="Edit_Click" CausesValidation="true" />
                  </div>
              </td>
          </tr>
@@ -59,7 +65,7 @@
                          <h2>Classified</h2><br />
                      <asp:ListBox ID="ListBoxClass" runat="server" Height="300px" Width="300px"></asp:ListBox>
                          <br />
-                         <asp:Button ID="Update_Class" runat="server" OnClick="Update_Class_Click" Text="Get Information" />
+                         <asp:Button ID="Update_Class" runat="server" OnClick="Update_Class_Click" Text="Get Information" CausesValidation="false" />
                          </center>
                  </div>
              </td>
@@ -69,7 +75,7 @@
                         <h2> UnClassified</h2><br />
                      <asp:ListBox ID="ListBox2" runat="server" Height="300px" Width="300px"></asp:ListBox>
                          <br />
-                         <asp:Button ID="Update_Unclass" runat="server" OnClick="Update_Unclass_Click" Text="Get Information" />
+                         <asp:Button ID="Update_Unclass" runat="server" OnClick="Update_Unclass_Click" Text="Get Information" CausesValidation="false" />
                      </center>
                  </div>
              </td>
