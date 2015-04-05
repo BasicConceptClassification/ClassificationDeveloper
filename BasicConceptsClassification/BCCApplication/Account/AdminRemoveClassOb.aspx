@@ -31,7 +31,8 @@
                     <asp:ListBox
                         ID="ClassListBox"
                         runat="server"
-                        Rows="6"
+                        CssClass="listbox-aside"
+                        Rows="8"
                         OnSelectedIndexChanged="ClassListBox_SelectedIndexChanged"
                         AutoPostBack="true">
                     </asp:ListBox>
