@@ -1,4 +1,4 @@
-﻿<%@ Page Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminPage.aspx.cs" Inherits="BCCApplication.Account.AdminPage" %>
+﻿<%@ Page Title="Modifying the Classification" Language="C#" MasterPageFile="~/Site.Master" AutoEventWireup="true" CodeBehind="AdminPage.aspx.cs" Inherits="BCCApplication.Account.AdminPage" %>
 
 <asp:Content ContentPlaceHolderID="MainContent" runat="server">
     <%@ Register Assembly="Goldtect.ASTreeView" Namespace="Goldtect" TagPrefix="astv" %>
@@ -119,21 +119,14 @@
         }
 
     </script>
+
+    <div>
+        <h1><%: Title %></h1>
+        <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+    </div>
     <div>
         <div>
-            <table style="width:100%">
-                <tr>
-                    <td colspan="8">
-                        <center>
-                            <h1>The Classification</h1>
-                        </center>
-                    </td>
-                </tr>
-                <tr>
-                    <td colspan="8">
-                        <p>You can edit the Classification by doing the following....</p>
-                    </td>
-                </tr>
+            <table style="width:100%" class="table-top-aligned">
                 <tr>
                     <td rowspan="5" colspan="4"
                         <div>
@@ -247,7 +240,7 @@
                                         <td />
                                         <asp:Label ID="Label2" runat="server" Text="Label"></asp:Label>
                                         <td>
-                                            <asp:Button ID="MoveAddButton" runat="server" Text="ADD" OnClick="MoveAddButton_Click" />
+                                            <asp:Button ID="MoveAddButton" runat="server" Text="MOVE" OnClick="MoveAddButton_Click" />
                                         </td>
                                     </tr>
                                 </table>
@@ -280,7 +273,7 @@
                                         <td />
                                         <asp:Label ID="Label3" runat="server" Text="Label"></asp:Label>
                                         <td>
-                                            <asp:Button ID="RenameAddButton" runat="server" Text="ADD" OnClick="RenameAddButton_Click" />
+                                            <asp:Button ID="RenameAddButton" runat="server" Text="RENAME" OnClick="RenameAddButton_Click" />
                                         </td>
                                     </tr>
                                 </table>

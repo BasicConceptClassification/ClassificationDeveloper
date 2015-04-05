@@ -615,6 +615,10 @@ tr.pager td {
     cursor: default;
 }
 
+.table-top-aligned td
+{
+    vertical-align:top;
+}
 
 /********************
 *   Mobile Styles   *

@@ -14,6 +14,7 @@ namespace BCCApplication.Account
 {
 	public partial class AdminPage : System.Web.UI.Page
 	{
+        private string DESCRIPTION = "<p>You can edit the Classification by Adding, Moving, Renaming or Deleting a Term.</p>";
 
         private string SUCCESS_ADD_TERM = "Successfully added the term.";
         private string SUCCESS_MOVE_TERM = "Successfully move the term.";
@@ -31,11 +32,22 @@ namespace BCCApplication.Account
         /// <param name="e"></param>
 		protected void Page_Load(object sender, EventArgs e)
         {
-		// Testing purposes, only loading from BccRoot with a small depth
-            
-            int expandDepth = 2;
-            DataSet.Nodes.Clear();
+            if (!Page.IsPostBack)
+            {
+                LabelDescription.Text = DESCRIPTION;
+                CreateTree();
+            }
+        }
 
+        /// <summary>
+        /// Creates the Controlled Vocabulary as a Tree.
+        /// </summary>
+        protected void CreateTree()
+        {
+            // Testing purposes, only loading from BccRoot with a small depth
+            int expandDepth = 2;
+            //DataSet.Nodes.Clear();
+            astvMyTree.RootNode.Clear();
 
             // Fetch BCC from the DB
             var dbConn = new Neo4jDB();
@@ -43,16 +55,15 @@ namespace BCCApplication.Account
 
             // Create a starting TreeNode as the root to generate the BCC
             TreeNode currentNode = new TreeNode();
-            ASTreeViewLinkNode asnode = new ASTreeViewLinkNode("","");
+            ASTreeViewLinkNode asnode = new ASTreeViewLinkNode("", "");
             astvMyTree.RootNode.AppendChild(generateASTree(bccRootTerm, asnode));
-            DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
+            //DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
 
             // By default, leave collapsed
             astvMyTree.GetCollapseAllScript();
-            DataSet.CollapseAll();
-            DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
+            //DataSet.CollapseAll();
+            //DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
         }
-
 
         protected void DataSet_SelectedNodeChanged(object sender, EventArgs e)
         {
@@ -157,7 +168,8 @@ namespace BCCApplication.Account
                     Label1.Text = SUCCESS_ADD_TERM;
                     // Notify classifiers that a Term was created.
                     conn.createNotification(String.Format("Added new Term: {0}", new_term.rawTerm));
-
+                    // Regenerate the Controlled Vocabulary to see the changes
+                    CreateTree();
                 }
                 else
                 {
@@ -226,6 +238,8 @@ namespace BCCApplication.Account
             {
                 conn.moveTerm(result_1, result_2);
                 Label2.Text = SUCCESS_MOVE_TERM;
+                // Regenerate the Controlled Vocabulary to see the changes
+                CreateTree();
             }
             else 
             {
@@ -274,6 +288,8 @@ namespace BCCApplication.Account
                 Label3.Text = SUCCESS_RENAME_TERM;
                 // Notify classifiers that a Term was renamed.
                 conn.createNotification(String.Format("Renamed Term: {0} to {1}.", rename_from_string, rename_to_string));
+                // Regenerate the Controlled Vocabulary to see the changes
+                CreateTree();
             }
             catch
             {
@@ -318,6 +334,8 @@ namespace BCCApplication.Account
                     // TODO: create additional notification to the classifiers whose classifiable's ConStr
                     // were affect by the Term deletion.
                     conn.createNotification(String.Format("Removed Term: {0}", delete_term));
+                    // Regenerate the Controlled Vocabulary to see the changes
+                    CreateTree();
                 }
                 catch
                 {
