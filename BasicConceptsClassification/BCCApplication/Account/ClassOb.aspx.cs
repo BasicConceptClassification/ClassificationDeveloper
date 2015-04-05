@@ -28,33 +28,9 @@ namespace BCCApplication.Account
         private string SUCCESS_ADD = "Successfully added: ";
         private string FAIL_UNIQUE = "Failed: Another GLAM Object with that name already exists in your GLAM.";
         private string FAIL_TERMS = "Not all the terms in the concept string are from the controlled vocabulary.";
-        static int counter_once = 1;
 
         protected void Page_Load(object sender, EventArgs e)
         {
-            // TODO: What is this for?
-            if (counter_once == 1)
-            {
-                string getinput_name = "";
-                string getinput_url = "";
-                string getinput_con = "";
-
-                try
-                {
-                    getinput_name = Application["namepass"].ToString();
-                    getinput_url = Application["urlpass"].ToString();
-                    getinput_con = Application["conpass"].ToString();
-                }
-                catch
-                {
-
-                }
-                ObName.Text = getinput_name;
-                ObURL.Text = getinput_url;
-                ObConcept.Text = getinput_con;
-                counter_once--;
-
-            }
             if (!Page.IsPostBack)
             {
                 LabelDescription.Text = DESCRIPTION;
@@ -81,8 +57,7 @@ namespace BCCApplication.Account
                 catch
                 {
                 }
-            }
-             
+            }  
         }
 
         //the control submit button
@@ -100,24 +75,29 @@ namespace BCCApplication.Account
             var currentUser = manager.FindById(User.Identity.GetUserId());
             string userEmail = currentUser.Email;
 
-            // TODO: cleanup. It's a bit...messy.
+            // Get user's information for adding the new classifiable
             var conn = new Neo4jDB();
-            GLAM gl = conn.getGlamOfClassifier(userEmail);
+            GLAM gl = new GLAM("");
 
+            try
+            {
+                gl = conn.getGlamOfClassifier(userEmail);
+            }
+            catch (Exception ex)
+            {
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+                return;
+            }
 
             string username = Context.GetOwinContext().Authentication.User.Identity.Name;
             string email = userEmail;
             Classifier classifier = new Classifier(gl, email, username);
 
-            // TODO: either make a constructor for ConceptString to take (this)(format) and have it parse
-            // it out so we don't have to see this parsing every single time AND create terms from it?
-            //split the input concept string from (xx)(xx)(xx) to a list without () 
+            // Extract the terms from the concept string
             string trimConceptString = inputConcept.Trim();
-
-            //convert the string list to the term list
             List<Term> newTerms = new List<Term>();
             
-            // Only extract terms if there are any terms added
+            // Only extract terms if there are any terms to extract
             if (trimConceptString != "")
             {
                 string sstring = trimConceptString.Replace(")(", ",");
@@ -139,8 +119,7 @@ namespace BCCApplication.Account
                 terms = newTerms,
             };
 
-            // TODO: GET PROPER VALUES:
-            // id - created by "<GLAM_NAME>_<CLASSIFIABLE_NAME>
+            // Create the new Classifiable's information.
             Classifiable newClassifiable = new Classifiable
             {
                 id = classifier.getOrganizationName() + "_" + inputName,
@@ -151,8 +130,8 @@ namespace BCCApplication.Account
                 conceptStr = newConceptStr,
             };
 
-            // Not entirely true but it's better than it was before
-            // TODO: account for other "statuses" of being unclassified.
+            // Simple statuses for now. If there is terms in the concept string, then
+            // it's considered to be Classified. If there are none, then it's Unclassified.
             if (newClassifiable.conceptStr.ToString() == "")
             {
                 newClassifiable.status = Classifiable.Status.Unclassified.ToString();
@@ -162,27 +141,20 @@ namespace BCCApplication.Account
                 newClassifiable.status = Classifiable.Status.Classified.ToString();
             }
 
-            System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_GOT: name: {0}; url: {1}; perm: {2}; conStr: {3}; ownerEmail: {4};", 
-                newClassifiable.name, newClassifiable.url, newClassifiable.perm, newClassifiable.conceptStr.ToString(), newClassifiable.owner.email));
-
             // Try to add the newClassifiable and display an error message depending on the result.
             try
             {
-                System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_TRYING: Attempting to add Classifiable with name {0}", newClassifiable.name));
                 Classifiable result = conn.addClassifiable(newClassifiable);
 
                 if (result != null)
                 {
-                    System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_SUCCESS: Added Classifiable with name {0}", newClassifiable.name));
                     ObAddStatus.Text = String.Format("{0} {1}.", SUCCESS_ADD, result.name);
                 }
 
             }
             catch (ArgumentException ex)
             {
-                // Exceptions: Unique id already exists, null object (not all data filled in)
-                // Do some exception handling based on Exception type ...learn how to do custom exceptions?
-                System.Diagnostics.Debug.WriteLine(String.Format("ClassOb_FAILED: could not add Classifiable with name {0}", newClassifiable.name));
+                // Exceptions: Unique id already exists or null object (not all data filled in)
                 System.Diagnostics.Debug.WriteLine(ex.Message);
 
                 if (ex.ParamName == "Classifiable.name")
@@ -230,10 +202,6 @@ namespace BCCApplication.Account
                 currentNode.ChildNodes.Add(generateBccTree(childTerm, currentNode));
             }
             return currentNode; 
-        }
-             
+        }      
     }
-
-
-
 }

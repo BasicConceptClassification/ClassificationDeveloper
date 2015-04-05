@@ -620,6 +620,18 @@ tr.pager td {
     vertical-align:top;
 }
 
+.listbox-aside 
+{
+    width: inherit;
+    max-width: 200px;
+}
+
+.listbox-aside option
+{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
 /********************
 *   Mobile Styles   *
 ********************/

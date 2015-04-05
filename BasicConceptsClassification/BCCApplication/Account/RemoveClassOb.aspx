@@ -5,7 +5,8 @@
             width: 789px;
         }
         .auto-style2 {
-            width: 366px;
+            width: 250px;
+            max-width: 250px;
         }
         #UnClassList {
             width: 349px;
@@ -26,12 +27,12 @@
             </div>
             <asp:Label ID="Notification" runat="server"></asp:Label>
         </div>
-       <table style="width:100%;" border="1">
+       <table style="width:100%;">
                 <tr>
                     <td class="auto-style2">
                         <h3>Your Classifiables</h3><br />
                         <div>
-                            <asp:ListBox id="ClassListBox" name="D1" size="15" runat="server"></asp:ListBox>
+                            <asp:ListBox id="ClassListBox" name="D1" CssClass="auto-style2 listbox-aside" Rows="8" runat="server"></asp:ListBox>
                         </div>
                         <div>
                             <asp:Button ID="ButtonGetClassifiableInfo" runat="server" Text="Get Information" OnClick="GetClassifiableInfo_Click"/><br />
