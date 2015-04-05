@@ -42,6 +42,7 @@
                                             <asp:LoginStatus runat="server" LogoutAction="Redirect" LogoutText="Log off" LogoutPageUrl="~/" OnLoggingOut="Unnamed_LoggingOut" />
                                             <a id="a1" runat="server" href="~/Account/Register">Add New User</a>
                                             <a id="a3" runat="server" href="~/Account/AdminPage">Modify Terms</a>
+                                            <a id="a4" runat="server" href="~/Account/AdminAddRejTermSuggest">View Suggested Terms</a>
                                             <a id="a2" runat="server" href="~/Account/AdminRemoveClassOb">Remove GLAM Objects</a>
                                         </p>
                                     </ContentTemplate>
