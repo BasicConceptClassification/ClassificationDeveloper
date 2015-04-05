@@ -90,6 +90,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="LocalDataManager.cs" />
     <Compile Include="Neo4jDB.cs" />
     <Compile Include="Neo4jNotification.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
