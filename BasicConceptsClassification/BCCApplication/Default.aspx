@@ -12,8 +12,11 @@
             <asp:Button ID="SearchBtn" runat="server" Text="Jump to Search page" OnClick="SearchBtn_Click" CssClass="btn"/>
         </center>
         <br />
+        
         <div id="listContainer">
-            <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" OnSelectedNodeChanged="DataSet_SelectedNodeChanged">
+            <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" 
+                OnSelectedNodeChanged="DataSet_SelectedNodeChanged"
+                OnTreeNodePopulate="PopulateNode">
                 <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
                 <NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
                 <ParentNodeStyle Font-Bold="False" />

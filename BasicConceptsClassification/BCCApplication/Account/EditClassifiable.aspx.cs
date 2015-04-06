@@ -292,7 +292,6 @@ namespace BCCApplication.Account
                     GetUnclassifieds(dbConn, userEmail);
                     GetClassifieds(dbConn, userEmail);
                 }
-
             }
         }
     }
