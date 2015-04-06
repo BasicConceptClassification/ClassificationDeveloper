@@ -12,7 +12,7 @@
             <asp:Button ID="SearchBtn" runat="server" Text="Jump to Search page" OnClick="SearchBtn_Click" CssClass="btn"/>
         </center>
         <br />
-        
+        <asp:Label ID="LabelNoticationDataSet" runat="server"></asp:Label>
         <div id="listContainer">
             <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" 
                 OnSelectedNodeChanged="DataSet_SelectedNodeChanged"

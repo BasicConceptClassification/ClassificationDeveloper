@@ -52,16 +52,20 @@
                 <asp:Button ID="SubmitObj" runat="server" Text="Submit" OnClick="SubmitObj_Click" AutoPostBack="false"/><br />
             </td>
         </tr>
+    </table>
+    <table class="table-top-aligned" style="width:100%;">
         <tr>
             <td>
+                <asp:Label ID="LabelNoticationDataSet" runat="server"></asp:Label>
                 <div id="listContainer">
-                    <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows" >
+                    <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows"
+                        OnTreeNodePopulate="PopulateNode">
                         <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
                         <NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
                         <ParentNodeStyle Font-Bold="False" />
                         <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" />
                     </asp:TreeView>
-                 </div>
+                </div>
                 Looking for a term not in the classification? <a href="SuggestTerm.aspx">Click here to suggest a new term.</a>
             </td>
             <td>

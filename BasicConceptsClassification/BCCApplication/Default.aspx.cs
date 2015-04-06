@@ -13,7 +13,7 @@ namespace BCCApplication
 {
     public partial class _Default : Page
     {
-        static int CUR_MAX_DEPTH = 0;
+        // How much the tree should be expanded by when it needs to expand.
         static int EXPAND_DEPTH = 2;
 
         private string DESCRIPTION = @"<p>Welcome to the Basic Concepts Classification. Here you can search for items found in the 
@@ -21,35 +21,42 @@ namespace BCCApplication
                                         <p>Use the menu at the top of the to learn more about the Classification, start searching,
                                         or contact the admin to help classify GLAM objects today!</p>";
 
+        private static string ERROR_SERVER = "Sorry, there was an error with the server.";
+
         protected void Page_Load(object sender, EventArgs e)
         {
             if (!Page.IsPostBack)
             {
                 LabelDescription.Text = DESCRIPTION;
-
-                // Testing purposes, only loading from BccRoot with a small depth
-                
-                // If server is down, just don't display anything
-                try
-                { 
-                    // Fetch BCC from the DB
-                    var dbConn = new Neo4jDB();
-                    Term bccRootTerm = dbConn.getBccFromRootWithDepth(EXPAND_DEPTH);
-                    CUR_MAX_DEPTH += EXPAND_DEPTH;
-
-                    DataSet.Nodes.Clear();
-                    // Create a starting TreeNode as the root to generate the BCC
-                    TreeNode currentNode = new TreeNode();
-                    DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
-                    
-                    // By default, leave collapsed
-                    DataSet.CollapseAll();
-                    DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
-                }
-                catch { }
+                GenerateInitialBCCTree();
             }
         }
 
+        protected void GenerateInitialBCCTree()
+        {
+            // If server is down, display an error message
+            try
+            {
+                // Fetch BCC from the DB
+                var dbConn = new Neo4jDB();
+                Term bccRootTerm = dbConn.getBccFromRootWithDepth(EXPAND_DEPTH);
+
+                DataSet.Nodes.Clear();
+                // Create a starting TreeNode as the root to generate the BCC
+                TreeNode currentNode = new TreeNode();
+                DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
+
+                // By default, leave collapsed
+                DataSet.CollapseAll();
+                DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
+                LabelNoticationDataSet.Text = "";
+            }
+            catch (Exception Ex)
+            {
+                System.Diagnostics.Debug.WriteLine(Ex.Message);
+                LabelNoticationDataSet.Text = ERROR_SERVER;
+            }
+        }
 
         /// <summary>
         /// Raised when a node is clicked on
@@ -58,6 +65,7 @@ namespace BCCApplication
         /// <param name="e"></param>
         protected void DataSet_SelectedNodeChanged(object sender, EventArgs e)
         {
+            System.Diagnostics.Debug.WriteLine(DataSet.SelectedNode.Text);
         }
         
         /// <summary>
@@ -101,36 +109,36 @@ namespace BCCApplication
             Response.Redirect("~/SearchResults.aspx", true);
         }
 
-        protected void DataSet_TreeNodeExpanded(object sender, TreeNodeEventArgs e)
-        {
-            System.Diagnostics.Debug.WriteLine("~*~ DataSet Select Node Expanded ~*~");
-            //System.Diagnostics.Debug.WriteLine(DataSet.SelectedNode.Text);
-        }
-
+        /// <summary>
+        /// Populates the DataSet BCC Tree OnDemand.
+        /// </summary>
+        /// <param name="sender"></param>
+        /// <param name="e"></param>
         protected void PopulateNode(Object sender, TreeNodeEventArgs e)
         {
-                    // Populate the first-level nodes.
-                    TreeNode currentNode  = e.Node;
+            TreeNode currentNode = e.Node;
 
-                    Term reference = new Term
-                    {
-                        rawTerm = currentNode.Text,
-                    };
+            Term reference = new Term
+            {
+                rawTerm = currentNode.Text,
+            };
 
-                    var dbConn = new Neo4jDB();
-                    try
-                    {
-                        Term bccRootTerm = dbConn.getBccFromTermWithDepth(reference, 2);
-                        foreach (var t in bccRootTerm.subTerms)
-                        {
-                            // Create a starting TreeNode as the root to generate the BCC
-                            currentNode.ChildNodes.Add(generateBccTree(t, new TreeNode()));
-                        }
-                    }
-                    catch
-                    {
-                    }
-
+            var dbConn = new Neo4jDB();
+            try
+            {
+                Term bccRootTerm = dbConn.getBccFromTermWithDepth(reference, EXPAND_DEPTH);
+                foreach (var term in bccRootTerm.subTerms)
+                {
+                    // Create a starting TreeNode as the root to generate the BCC
+                    currentNode.ChildNodes.Add(generateBccTree(term, new TreeNode()));
+                }
+                LabelNoticationDataSet.Text = "";
+            }
+            catch
+            {
+                // This doesn't show up... but it's here in case it might?
+                LabelNoticationDataSet.Text = ERROR_SERVER;
+            }
         }
     }
 }

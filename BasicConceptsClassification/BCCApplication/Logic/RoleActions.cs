@@ -64,7 +64,7 @@ namespace BCCApplication.Logic
                 var conn = new Neo4jDB();
                 conn.updateAdmin(appUser.Email, appUser.UserName);
             }
-            catch (ArgumentNullException ex)
+            catch (Exception ex)
             {
                 System.Diagnostics.Debug.WriteLine(ex.Message);
             }

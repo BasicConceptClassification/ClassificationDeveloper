@@ -588,6 +588,8 @@ tr.pager td {
     text-overflow: ellipsis;
 }
 
+/* For the notification table, or any others where we only
+    want a tiny column for the button (2nd column) */
 .table-3-4 {
     width:100%;
     max-width:100%;
@@ -610,16 +612,19 @@ tr.pager td {
     text-overflow: ellipsis;
 }
 
+/* Undo the hidden bullets */
 .bulletList-basic li {
     list-style:circle;
     cursor: default;
 }
 
+/* Keep the content of the table cells at the top */
 .table-top-aligned td
 {
     vertical-align:top;
 }
 
+/* Keep those listboxes on the side at a certain size. */
 .listbox-aside 
 {
     width: inherit;
