@@ -215,13 +215,10 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Account\AdminAddRejTermSuggest.aspx" />
-<<<<<<< HEAD
     <Content Include="Account\AjaxItemProvider\AddItemProvider.aspx" />
     <Content Include="Account\AjaxItemProvider\DeleteItemProvider.aspx" />
     <Content Include="Account\AjaxItemProvider\EditItemProvider.aspx" />
-=======
     <Content Include="Account\EditPageContents.aspx" />
->>>>>>> origin/master
     <Content Include="Account\SuggestTerm.aspx" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\themes\base\accordion.css" />
