@@ -44,6 +44,7 @@
                                             <a id="a3" runat="server" href="~/Account/AdminPage">Modify Terms</a>
                                             <a id="a4" runat="server" href="~/Account/AdminAddRejTermSuggest">View Suggested Terms</a>
                                             <a id="a2" runat="server" href="~/Account/AdminRemoveClassOb">Remove GLAM Objects</a>
+                                            <a id="a5" runat="server" href="~/Account/EditPageContents.aspx">Edit Page Contents</a>
                                         </p>
                                     </ContentTemplate>
                                 </asp:RoleGroup>

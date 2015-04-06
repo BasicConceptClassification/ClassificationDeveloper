@@ -4,5 +4,8 @@
     <h2><%: Title %></h2>
     <div>
         <asp:Label ID="LabelDescription" runat="server"></asp:Label>
+        <p>
+            <asp:Label ID="CustomContent" runat="server" />
+        </p>
     </div>
 </asp:Content>

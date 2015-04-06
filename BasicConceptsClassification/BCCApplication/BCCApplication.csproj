@@ -215,9 +215,13 @@
   </ItemGroup>
   <ItemGroup>
     <Content Include="Account\AdminAddRejTermSuggest.aspx" />
+<<<<<<< HEAD
     <Content Include="Account\AjaxItemProvider\AddItemProvider.aspx" />
     <Content Include="Account\AjaxItemProvider\DeleteItemProvider.aspx" />
     <Content Include="Account\AjaxItemProvider\EditItemProvider.aspx" />
+=======
+    <Content Include="Account\EditPageContents.aspx" />
+>>>>>>> origin/master
     <Content Include="Account\SuggestTerm.aspx" />
     <Content Include="Content\bootstrap.css" />
     <Content Include="Content\themes\base\accordion.css" />
@@ -448,6 +452,13 @@
     </Compile>
     <Compile Include="Account\EditClassifiable.aspx.designer.cs">
       <DependentUpon>EditClassifiable.aspx</DependentUpon>
+    </Compile>
+    <Compile Include="Account\EditPageContents.aspx.cs">
+      <DependentUpon>EditPageContents.aspx</DependentUpon>
+      <SubType>ASPXCodeBehind</SubType>
+    </Compile>
+    <Compile Include="Account\EditPageContents.aspx.designer.cs">
+      <DependentUpon>EditPageContents.aspx</DependentUpon>
     </Compile>
     <Compile Include="Account\GLAMClass.aspx.cs">
       <DependentUpon>GLAMClass.aspx</DependentUpon>

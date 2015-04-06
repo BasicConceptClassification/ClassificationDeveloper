@@ -6,6 +6,7 @@ using System.Web.UI;
 using System.Web.UI.WebControls;
 
 using BCCApplication.Logic;
+using Neo4j;
 
 public partial class Help : System.Web.UI.Page
 {
@@ -76,5 +77,8 @@ public partial class Help : System.Web.UI.Page
         }
 
         LabelDescription.Text += VOCABULARY;
+
+        // Load content from the admin files.
+        CustomContent.Text = LocalDataManager.Load(LocalDataManager.BCCContentFile.About);
     }
 }

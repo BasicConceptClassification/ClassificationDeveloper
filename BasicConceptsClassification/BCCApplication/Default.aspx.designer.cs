@@ -49,6 +49,15 @@ namespace BCCApplication {
         protected global::System.Web.UI.WebControls.Button SearchBtn;
         
         /// <summary>
+        /// LabelNoticationDataSet control.
+        /// </summary>
+        /// <remarks>
+        /// Auto-generated field.
+        /// To modify move field declaration from designer file to code-behind file.
+        /// </remarks>
+        protected global::System.Web.UI.WebControls.Label LabelNoticationDataSet;
+        
+        /// <summary>
         /// DataSet control.
         /// </summary>
         /// <remarks>
