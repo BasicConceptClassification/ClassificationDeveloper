@@ -30,10 +30,11 @@ namespace BCCApplication.Account
         private string FAIL = "Failed to edit the classifiable. ";
         private string ERROR_SERVER = "Sorry, there was an error with the server!";
 
-        private static ClassifiableCollection unclassifieds = new ClassifiableCollection
-        {
-            data = new List<Classifiable>(),
-        };
+        private static IEnumerable<Classifiable> unclassifieds;
+        //private static ClassifiableCollection unclassifieds = new ClassifiableCollection
+        //{
+       //     data = new List<Classifiable>(),
+        //};
         private static ClassifiableCollection classifieds = new ClassifiableCollection
         {
             data = new List<Classifiable>(),
@@ -172,11 +173,23 @@ namespace BCCApplication.Account
             try
             {
                 ListBox2.Items.Clear();
-                unclassifieds = dbConn.getAllUnclassified(classifierEmail);
-                int resultsLength = unclassifieds.data.Count;
+                ClassifiableCollection adminModified = dbConn.getAllAdminModified(classifierEmail);
+                ClassifiableCollection justUnclassifieds = dbConn.getAllUnclassified(classifierEmail);
+                
+                // Clean up later if time; for now, appending the admin modified stuff.
+                if (adminModified.data.Count > 0)
+                {
+                    unclassifieds = justUnclassifieds.data.Concat(adminModified.data);
+                }
+                else
+                {
+                    unclassifieds = justUnclassifieds.data;
+                }
+
+                int resultsLength = unclassifieds.Count();
                 for (int i = 0; i < resultsLength; i++)
                 {
-                    Classifiable currentUNClassifiable = unclassifieds.data[i];
+                    Classifiable currentUNClassifiable = unclassifieds.ElementAt(i);
                     ListBox2.Items.Add(currentUNClassifiable.name);
                 }
                 if (resultsLength > 0) ListBox2.SelectedIndex = 0;
@@ -360,7 +373,7 @@ namespace BCCApplication.Account
         {
             // Clear the notification text
             Label1.Text = "";
-            if (unclassifieds.data.Count > 0)
+            if (unclassifieds.Count() > 0)
             {
                 select_string = "";
                 //var selected = list
@@ -378,7 +391,7 @@ namespace BCCApplication.Account
                 try
                 {
                     // Use the ids that were grabbed earlier
-                    Classifiable matchedClassifiable = dbConn.getClassifiableById(unclassifieds.data[ListBox2.SelectedIndex].id);
+                    Classifiable matchedClassifiable = dbConn.getClassifiableById(unclassifieds.ElementAt(ListBox2.SelectedIndex).id);
                     TextBox_Name.Text = select_string;
                     TextBox_URL.Text = matchedClassifiable.url;
                     TextBox_Concept.Text = matchedClassifiable.conceptStr.ToString();

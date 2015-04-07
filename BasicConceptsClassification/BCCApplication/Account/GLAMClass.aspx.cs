@@ -297,11 +297,7 @@ namespace BCCApplication.Account
         {
             try
             {
-                // ClassifiableCollection classifiables = conn.getAllUnclassifiedSpecial(classifierEmail);
-                ClassifiableCollection classifiables = new ClassifiableCollection
-                {
-                    data = new List<Classifiable>(),
-                };
+                ClassifiableCollection classifiables = conn.getAllAdminModified(classifierEmail);
 
                 if (classifiables.data.Count > 0)
                 {
@@ -340,8 +336,7 @@ namespace BCCApplication.Account
 
                         // Concept String
                         tCell = new TableCell();
-                        //tCell.Text = unclassified.conceptStr.ToString();
-                        tCell.Text = "Coming Soon!";
+                        tCell.Text = unclassified.conceptStr.ToString();
                         tRow.Cells.Add(tCell);
 
                         // Url
@@ -351,8 +346,7 @@ namespace BCCApplication.Account
 
                         // Last Modified By
                         tCell = new TableCell();
-                        //tCell.Text = unclassified.classifierLastModified.username;
-                        tCell.Text = " Also Coming Soon!";
+                        tCell.Text = unclassified.classifierLastEdited.username;
                         tRow.Cells.Add(tCell);
 
                         ClassifableTable.Rows.Add(tRow);
