@@ -10,7 +10,7 @@
     <script type="text/javascript">
         function nodeSelectHandler(elem) {
             var selectedNode = elem.parentNode.getAttribute("TreeNodeValue");
-            document.getElementById("<%=TextBox2.ClientID %>").value += selectedNode;
+            document.getElementById("<%=TextBox2.ClientID %>").value += "("+selectedNode+")";
         }
     </script>
     <div>
