@@ -25,7 +25,21 @@ namespace BCCApplication
 
         private string DESC_CLASSIFIED_EX = "<h3>Here are some examples of GLAM objects classified using the BCC</h3>";
 
-        private string EXAMPLE_CLASSIFIABLE = "Adze Blade";
+        // Examples that the client wanted. Could be modifiable by edit content?
+        private List<string> EXAMPLE_CLASSIFIABLE = new List<string> 
+        { 
+            "Hamons Court [Neon Sign]",
+            "Towne of Boston",
+            "16-Pound Bar Shot",
+            "Clephane horn",
+            "Venus with a mirror",
+            "Pan reclining",
+            "The Maas at Dordrecht",
+            "Woman holding a balance",
+        };
+
+        // Contains the classifiables to show as an example
+        private ClassifiableCollection exampleClassifiables = new ClassifiableCollection { data = new List<Classifiable>(), };
 
         protected void Page_Load(object sender, EventArgs e)
         {
@@ -34,28 +48,44 @@ namespace BCCApplication
 
             // Load some examples
             LabelClassifiedExamples.Text = DESC_CLASSIFIED_EX;
+            
+            var conn = new Neo4jDB();
 
-            ClassifiableCollection examples = new ClassifiableCollection { data = new List<Classifiable>() };
-            try
+            foreach (var classifiableName in EXAMPLE_CLASSIFIABLE)
             {
-                var conn = new Neo4jDB();
+                Classifiable tmp = null;
 
-                examples = conn.getClassifiablesByName(EXAMPLE_CLASSIFIABLE);
-            }
-            catch (Exception ex)
-            { 
-                System.Diagnostics.Debug.WriteLine(ex.Message);
+                // Try to get some results. If some have the same name, multiples can be returned. Only grab the first
+                try
+                {
+                    ClassifiableCollection tmpColl = conn.getClassifiablesByName(classifiableName);
+                    if (tmpColl.data.Count > 0) tmp = tmpColl.data[0];
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
+
+                // Only add if we got a result. Otherwise it's just skipped.
+                if (tmp != null)
+                {
+                    exampleClassifiables.data.Add(tmp);
+                }
             }
 
-            if (examples.data.Count > 0)
+            // If we find any results, display them. If none are found, then display an error message.
+            if (exampleClassifiables.data.Count > 0)
             {
-                string classifiableExample = String.Format("{0} is classified by: {1}",
-                    examples.data[0].name, examples.data[0].conceptStr.ToString());
-                BulletLExamples.Items.Add(classifiableExample);
+                foreach (var GLAMObj in exampleClassifiables.data)
+                {
+                    string classifiableExample = String.Format("{0} is classified by: {1}",
+                        GLAMObj.name, GLAMObj.conceptStr.ToString());
+                    BulletLExamples.Items.Add(classifiableExample);
+                }
             }
             else 
             {
-                BulletLExamples.Items.Add(String.Format("Server could not find the GLAM Object called {0}.", EXAMPLE_CLASSIFIABLE));
+                BulletLExamples.Items.Add("Server could not find any of the example GLAM Objects.");
             }
         }
     }
