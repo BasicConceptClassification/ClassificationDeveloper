@@ -2,6 +2,17 @@
 
 
 <asp:Content ID="BodyContent" ContentPlaceHolderID="MainContent" runat="server">
+    <%@ Register Assembly="Goldtect.ASTreeView" Namespace="Goldtect" TagPrefix="astv" %>
+    <link rel="stylesheet" href="../Scripts/astreeview/astreeview.css" type="text/css" />
+    <link rel="stylesheet" href="../Scripts/astreeview/contextmenu.css" type="text/css" />
+    <script src="../Scripts/astreeview/astreeview.min.js" type="text/javascript"></script>
+    <script src="../Scripts/astreeview/contextmenu.min.js" type="text/javascript"></script>
+    <script type="text/javascript">
+        function nodeSelectHandler(elem) {
+            var selectedNode = elem.parentNode.getAttribute("TreeNodeValue");
+            document.getElementById("<%=TextBox2.ClientID %>").value += selectedNode;
+        }
+    </script>
     <div>
         <h2><%: Title %></h2>
         <div>
@@ -16,14 +27,20 @@
     <br />
     <div>
         <asp:Label ID="LabelNoticationDataSet" runat="server"></asp:Label>
-        <div id="listContainer">
-            <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows"
-                OnTreeNodePopulate="PopulateNode">
-                <HoverNodeStyle Font-Underline="True" ForeColor="#5555DD" />
-                <NodeStyle Font-Names="Tahoma" Font-Size="10pt" ForeColor="Black" HorizontalPadding="5px" NodeSpacing="0px" VerticalPadding="0px" />
-                <ParentNodeStyle Font-Bold="False" />
-                <SelectedNodeStyle Font-Underline="True" ForeColor="#5555DD" HorizontalPadding="0px" VerticalPadding="0px" />
-            </asp:TreeView>
-        </div>
+        <astv:ASTreeView ID="astvMyTree"
+            runat="server"
+            BasePath="~/Scripts/astreeview/"
+            DataTableRootNodeValue="0"
+            EnableRoot="true"
+            EnableNodeSelection="true"
+            EnableCheckbox="false"
+            EnableDragDrop="false"
+            EnableTreeLines="true"
+            EnableNodeIcon="true"
+            EnableCustomizedNodeIcon="false"
+            EnableDebugMode="false"
+            EnableContextMenuAdd="false"
+            EnableParentNodeExpand="true"
+            OnNodeSelectedScript="nodeSelectHandler(elem);" />
     </div>
 </asp:Content>
