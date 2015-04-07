@@ -96,8 +96,6 @@ namespace BCCApplication.Account
         /// <param name="e"></param>
         protected void AlphabetDDL_SelectedIndexChanged(object sender, EventArgs e)
         {
-            System.Diagnostics.Debug.WriteLine(ALPHABET[AlphabetDDL.SelectedIndex]);
-
             int selectedLetterIndex = AlphabetDDL.SelectedIndex;
 
             // 0th index is the char '-', so don't do anything.
@@ -158,8 +156,6 @@ namespace BCCApplication.Account
 
                     // TODO: FIX. Don't query the DB again for owner's email?
                     Classifier owner = dbConn.getClassifiableById(toRemove.id).owner;
-
-                    System.Diagnostics.Debug.WriteLine("AdminRemoveClassOb_Removing: {0}; Owner: {1}", toRemove.id, owner.email);
 
                     dbConn.deleteClassifiable(toRemove);
                     dbConn.createNotification(

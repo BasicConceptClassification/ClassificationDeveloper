@@ -897,6 +897,17 @@ namespace Neo4j
         }
 
         /// <summary>
+        /// Get all the Classifiables that have the status "AdminModified" that the Classifier is allowed to
+        /// classify.
+        /// </summary>
+        /// <returns>A ClassifiableCollection with Classifiables that have
+        /// been modified by the admin.</returns>
+        public ClassifiableCollection getAllAdminModified(string classifierEmail)
+        {
+            return getAllowedClassifiables(classifierEmail, Classifiable.Status.AdminModified.ToString());
+        }
+
+        /// <summary>
         /// Add a new Classifiable to the database. Returns null if 
         /// </summary>
         /// <exception cref="System.NullReferenceException">Thrown when there is insufficient
