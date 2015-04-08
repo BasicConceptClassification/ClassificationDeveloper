@@ -1902,24 +1902,29 @@ namespace Neo4j
 
             if (client != null)
             {
+                System.Diagnostics.Debug.WriteLine("in delTermPREVIEW");
                 AffectedNodes result = new AffectedNodes();
 
-                List<ConceptString> theStrings = client
+                List<string> theStrings = client
                     .Cypher
                     .Match("(a:Term{id:{PARAM_ID}})<-[:HAS_TERM]-(b:ConceptString)")
                     .WithParam("PARAM_ID", t.id)
-                    .Return(() => Return.As<ConceptString>("b"))
+                    .With("b.terms as constr")
+                    .Return(() => Return.As<string>("constr"))
                     .Results.ToList();
 
-                foreach (ConceptString aString in theStrings)
+                System.Diagnostics.Debug.WriteLine(theStrings.Count);
+
+                foreach (string aString in theStrings)
                 {
+                    System.Diagnostics.Debug.WriteLine(String.Format("Content: {0}",aString));
                     // TODO: doesn't work! :P
                     result.stringsAffected.Add(aString);
 
                     List<Classifiable> theClassifiables = client
                         .Cypher
                         .Match("(a:ConceptString{terms:{PARAM_STR}})<-[:HAS_CONSTR]-(b:Classifiable)")
-                        .WithParam("PARAM_STR", aString.terms)
+                        .WithParam("PARAM_STR", aString)
                         .Return(() => Return.As<Classifiable>("b"))
                         .Results.ToList();
 
@@ -2346,7 +2351,7 @@ namespace Neo4j
         /// </summary>
         public class AffectedNodes
         {
-            public List<ConceptString> stringsAffected
+            public List<string> stringsAffected
             {
                 get;
                 set;
@@ -2359,7 +2364,7 @@ namespace Neo4j
 
             public AffectedNodes()
             {
-                stringsAffected = new List<ConceptString>();
+                stringsAffected = new List<string>();
                 classifiablesAffected = new List<Classifiable>();
             }
         }
