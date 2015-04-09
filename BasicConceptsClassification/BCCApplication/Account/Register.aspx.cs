@@ -133,7 +133,9 @@ namespace BCCApplication.Account
                         AddNeo4jClassifierData();
 
                     }
-                    signInManager.PasswordSignIn(Username.Text, Password.Text, true, false);
+
+                    if(!User.Identity.IsAuthenticated && User.IsInRole(RoleActions.ROLE_ADMIN))
+                        signInManager.PasswordSignIn(Username.Text, Password.Text, true, false);
 
                     IdentityHelper.RedirectToReturnUrl(Request.QueryString["ReturnUrl"], Response);
 
