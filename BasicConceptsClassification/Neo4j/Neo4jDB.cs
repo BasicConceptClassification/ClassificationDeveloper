@@ -946,12 +946,10 @@ namespace Neo4j
                 {
                     resultMessage += " {" + s + ") ";
                 }
-                System.Diagnostics.Debug.WriteLine(resultMessage);
+
                 string message = String.Format("The following Terms are not in the BCC: {0}", resultMessage);
 
-                throw new System.ArgumentException(
-                    message,
-                    "Classifiable.conceptStr");
+                throw new System.ArgumentException(message, "Classifiable.conceptStr");
             }
 
             this.open();
@@ -1097,11 +1095,37 @@ namespace Neo4j
         /// and concept string (no owner information).</returns>
         public Classifiable updateClassifiable(Classifiable oldClass, Classifiable updatedClass, Classifier modifier)
         {
+            List<Term> existingTerms = getTermsExist(updatedClass.conceptStr.terms);
             // Check 1: Check if there are proper terms
-            // TODO: Ummm decide on something else maybe?
-            if (countNumTermsExist(updatedClass.conceptStr.terms) < updatedClass.conceptStr.terms.Count)
+            if (existingTerms.Count < updatedClass.conceptStr.terms.Count)
             {
-                throw new ArgumentException("Some Terms are not in the Classification!", "updatedClass.conceptStr");
+                List<string> existing = new List<string>();
+                List<string> requesting = new List<string>();
+
+                foreach (var t in existingTerms)
+                {
+                    existing.Add(t.rawTerm);
+                }
+                foreach (var t in updatedClass.conceptStr.terms)
+                {
+                    requesting.Add(t.rawTerm);
+                }
+
+                // Create the query. Note that method syntax must be used here.
+                IEnumerable<string> differenceQuery =
+                  requesting.Except(existing);
+
+                string resultMessage = "";
+
+                // Execute the query.
+                foreach (string s in differenceQuery)
+                {
+                    resultMessage += " {" + s + ") ";
+                }
+                System.Diagnostics.Debug.WriteLine(resultMessage);
+                string message = String.Format("The following Terms are not in the BCC: {0}", resultMessage);
+
+                throw new System.ArgumentException(message, "Classifiable.conceptStr");
             }
 
             // Try to update
@@ -1209,16 +1233,32 @@ namespace Neo4j
                     }
                 }
 
-                var results = buildQuery
-                   .With("c.id AS newId")
-                   .Return((newId) => new
-                   {
-                       cId = newId.As<string>(),
-                   }).Results.FirstOrDefault();
-
-                if (results != null)
+                try
                 {
-                    return getClassifiableById(results.cId);
+                    var results = buildQuery
+                       .With("c.id AS newId")
+                       .Return((newId) => new
+                       {
+                           cId = newId.As<string>(),
+                       }).Results.FirstOrDefault();
+
+                    if (results != null)
+                    {
+                        return getClassifiableById(results.cId);
+                    }
+                }
+                catch (NeoException ex)
+                {
+                    // This is the NeoException we'll catch and throw a more(?) descriptive
+                    // message. Otherwise...throw the original.
+                    if (ex.Message.Contains("id"))
+                    {
+                        throw new System.ArgumentException(ex.NeoMessage, "Classifiable.name");
+                    }
+                    else
+                    {
+                        throw ex;
+                    }
                 }
             }
             return null;

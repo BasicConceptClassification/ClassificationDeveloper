@@ -28,7 +28,8 @@ namespace BCCApplication.Account
         static string select_string;
         private string SUCCESS = "Successfully edited the classifiable.";
         private string FAIL = "Failed to edit the classifiable. ";
-        private string ERROR_SERVER = "Sorry, there was an error with the server!";
+        private string FAIL_UNIQUE = "Failed: Another GLAM Object with that name already exists in your GLAM.";
+        protected const string ERROR_SERVER = "Sorry, error with the server!";
 
         private static IEnumerable<Classifiable> unclassifieds;
         //private static ClassifiableCollection unclassifieds = new ClassifiableCollection
@@ -319,9 +320,27 @@ namespace BCCApplication.Account
                 GetClassifieds(conn, userEmail);
                 ClearFields();
             }
-            catch
+            catch (ArgumentException ex)
             {
-                Label1.Text = FAIL;
+                // Exceptions: Unique id already exists or null object (not all data filled in)
+                System.Diagnostics.Debug.WriteLine(ex.Message);
+
+                if (ex.ParamName == "Classifiable.name")
+                {
+                    Label1.Text = FAIL_UNIQUE;
+                }
+                else if (ex.ParamName == "Classifiable.conceptStr")
+                {
+                    // really want the paramter name, but not sure how JUST get the message...
+                    // This error message will print out what terms are missing!
+                    string extractMeOut = "Parameter Name: " + ex.ParamName;
+                    Label1.Text = ex.Message.Substring(0, ex.Message.Length - extractMeOut.Length);
+                }
+                else
+                {
+                    Label1.Text = FAIL;
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
+                }
             }
         }
 
