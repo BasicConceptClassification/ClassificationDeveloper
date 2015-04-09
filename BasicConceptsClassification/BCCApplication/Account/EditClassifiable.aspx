@@ -81,10 +81,7 @@
                 </tr>
             </table>
         </div>
-        <table class="table-top-aligned" style="width:100%;">
-        <tr>
-            <td>
-                <asp:Label ID="LabelNoticationDataSet" runat="server"></asp:Label>
+        <asp:Label ID="LabelNoticationDataSet" runat="server"></asp:Label>
                 <div id="listContainer">
                     <asp:TreeView ID="DataSet" runat="server" ImageSet="Arrows"
                         OnTreeNodePopulate="PopulateNode">
@@ -95,16 +92,5 @@
                     </asp:TreeView>
                 </div>
                 Looking for a term not in the classification? <a href="SuggestTerm.aspx">Click here to suggest a new term.</a>
-            </td>
-            <td>
-                <asp:Button ID="AddTOb" runat="server" Text="Add" />
-                <asp:Button ID="RemoveTOb" runat="server" Text="Remove" />
-                <p>Double click on the term you want to use from the list or click the Add button.<br /><br />
-                    Double click on a term in the Concept String to remove it.<br /><br />
-                    Click and drag terms in the Concept String to change the order.
-                </p>
-            </td>
-        </tr>
-    </table> 
     </div>
 </asp:Content>
