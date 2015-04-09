@@ -49,11 +49,7 @@ public partial class Search : System.Web.UI.Page
         // Create a starting TreeNode as the root to generate the BCC
         ASTreeViewLinkNode asnode = new ASTreeViewLinkNode("", "");
         astvMyTree.RootNode.AppendChild(generateASTree(bccRootTerm, asnode));
-        //DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
-
-        // By default, leave collapsed
-        //DataSet.CollapseAll();
-        //DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
+        astvMyTree.CollapseAll();
     }
 
     /// <summary>
