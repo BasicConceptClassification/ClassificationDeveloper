@@ -10,7 +10,8 @@ namespace Neo4j
     {
         public enum BCCContentFile
         {
-            About
+            About,
+            Contact
         }
 
         public static void Save(string msg, BCCContentFile what)
@@ -43,6 +44,9 @@ namespace Neo4j
             {
                 case BCCContentFile.About:
                     return "about.txt";
+
+                case BCCContentFile.Contact:
+                    return "contact.txt";
 
                 default:
                     return "text.txt";

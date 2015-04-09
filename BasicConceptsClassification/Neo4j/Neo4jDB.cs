@@ -1990,7 +1990,6 @@ namespace Neo4j
 
             if (client != null)
             {
-                System.Diagnostics.Debug.WriteLine("in delTermPREVIEW");
                 AffectedNodes result = new AffectedNodes();
 
                 List<string> theStrings = client
@@ -2005,8 +2004,6 @@ namespace Neo4j
 
                 foreach (string aString in theStrings)
                 {
-                    System.Diagnostics.Debug.WriteLine(String.Format("Content: {0}",aString));
-                    // TODO: doesn't work! :P
                     result.stringsAffected.Add(aString);
 
                     List<Classifiable> theClassifiables = client

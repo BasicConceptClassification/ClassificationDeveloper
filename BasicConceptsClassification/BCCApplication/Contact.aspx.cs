@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Neo4j;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Web;
@@ -9,7 +10,10 @@ public partial class Contact : System.Web.UI.Page
 {
     protected void Page_Load(object sender, EventArgs e)
     {
-
+        if (!IsPostBack)
+        {
+            Content.Text = LocalDataManager.Load(LocalDataManager.BCCContentFile.Contact);
+        }
     }
 
     protected void CForm_Click(object sender, EventArgs e)
