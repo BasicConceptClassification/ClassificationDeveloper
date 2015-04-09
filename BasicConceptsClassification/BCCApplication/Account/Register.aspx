@@ -57,7 +57,7 @@
         <div class="form-group">
             <asp:Label runat="server" ID="LabelGLAMListBox" CssClass="col-md-2 control-label">Choose GLAM</asp:Label>
             <div class="col-md-10">
-                <asp:ListBox runat="server" ID="GLAMListBox"></asp:ListBox>
+                <asp:ListBox runat="server" Rows="10" CssClass="listbox-wide" ID="GLAMListBox"></asp:ListBox>
             </div>
             <div>
                 <asp:CheckBox runat="server" ID="CheckBxCreateNewGLAM" />

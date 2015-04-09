@@ -636,6 +636,20 @@ tr.pager td {
     text-overflow: ellipsis;
 }
 
+/* For wider listboxes */
+.listbox-wide
+{
+    width: inherit;
+    max-width: 400px;
+}
+
+.listbox-wide option
+{
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+
 /********************
 *   Mobile Styles   *
 ********************/
