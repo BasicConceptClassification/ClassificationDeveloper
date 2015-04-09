@@ -59,34 +59,41 @@ namespace BCCApplication.Account.AjaxItemProvider
             //open the Neo4j database
             var conn = new Neo4jDB();
             Term delete_search_term = conn.getTermByRaw(delete_term);
-            string teststring1 = "";
-            //won't let the page crush\
-            
-            try
+            if (conn.validateDeleteTerm(delete_search_term))
             {
-                teststring1 = delete_search_term.ToString();
-            }
-            catch
-            {
+                string teststring1 = "";
+                //won't let the page crush\
 
-            }
-
-            //return the result to let user know.
-            if (teststring1 != "")
-            {
                 try
                 {
-                    conn.delTerm(delete_search_term);
-                    // Notify classifiers that a Term was deleted.
-                    // TODO: create additional notification to the classifiers whose classifiable's ConStr
-                    // were affect by the Term deletion.
-                    conn.createNotification(String.Format("Removed Term: {0}", delete_term));
-                    // Regenerate the Controlled Vocabulary to see the changes
+                    teststring1 = delete_search_term.ToString();
                 }
                 catch
                 {
 
                 }
+
+                //return the result to let user know.
+                if (teststring1 != "")
+                {
+                    try
+                    {
+                        conn.delTerm(delete_search_term);
+                        // Notify classifiers that a Term was deleted.
+                        // TODO: create additional notification to the classifiers whose classifiable's ConStr
+                        // were affect by the Term deletion.
+                        conn.createNotification(String.Format("Removed Term: {0}", delete_term));
+                        // Regenerate the Controlled Vocabulary to see the changes
+                    }
+                    catch
+                    {
+
+                    }
+                }
+            }
+            else
+            {
+                ClientScript.RegisterStartupScript(this.GetType(), "Myalert", "alert('You can not delete parent node');", true);
             }
         }
     }
