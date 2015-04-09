@@ -30,7 +30,6 @@ namespace BCCApplication.Account
 
         private string SUCCESS_ADD = "Successfully added: ";
         private string FAIL_UNIQUE = "Failed: Another GLAM Object with that name already exists in your GLAM.";
-        private string FAIL_TERMS = "Not all the terms in the concept string are from the controlled vocabulary.";
         protected const string ERROR_SERVER = "Sorry, error with the server!";
 
         protected void Page_Load(object sender, EventArgs e)
@@ -239,7 +238,10 @@ namespace BCCApplication.Account
                 }
                 else if (ex.ParamName == "Classifiable.conceptStr")
                 {
-                    ObAddStatus.Text = FAIL_TERMS;
+                    // really want the paramter name, but not sure how JUST get the message...
+                    // This error message will print out what terms are missing!
+                    string extractMeOut = "Parameter Name: " + ex.ParamName;
+                    ObAddStatus.Text = ex.Message.Substring(0, ex.Message.Length - extractMeOut.Length);
                 }
                 else
                 {

@@ -620,14 +620,6 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        public void GetAllUnclassified_OtherTypes()
-        {
-            // We have new status types to worry about; pending, need help(?),
-            // etc. ATM the function only gets those with status of "Unclassified".
-            Assert.Fail();
-        }
-
-        [TestMethod]
         public void GettAllUnclassified_HasNone()
         {
             GLAM glam = new GLAM("NonExisting");
@@ -948,12 +940,6 @@ namespace Neo4jTest
 
             Assert.AreEqual(newClassifiable.conceptStr.ToString(),
                             updatedClassifiable.conceptStr.ToString());
-        }
-
-        [TestMethod]
-        public void UpdateClassifiable_NotAllowed()
-        {
-            Assert.Fail();
         }
 
         [TestMethod]
@@ -1470,55 +1456,6 @@ namespace Neo4jTest
             Assert.AreEqual("Art", term1.rawTerm);
             Assert.IsNotNull(term1.id);
             Assert.IsNotNull(term1.subTerms);
-        }
-
-        [TestMethod]
-        public void GetChildrenOfTerm_RootTerm_Exists()
-        {
-            var conn = new Neo4jDB();
-
-            string rootRaw = "Top Object";
-            int NOT_FOUND = -1;
-
-            // These are the rawTerms that are one depth away from the root.
-            List<string> rootSubTerms = new List<string>
-            {
-                "Art", 
-                "Biological Entities", 
-                "Celestial Objects",
-                "Changes within a thing", 
-                "Culture", 
-                "Economy",
-                "Flora and Fauna", 
-                "Genetic Predisposition", 
-                "Health and population", 
-                "Individual differences",
-                "Mathematical Concepts", 
-                "Molecules and Elements",
-                "Non-human Environment", 
-                "Politics",
-                "Properties, Qualities", 
-                "Rocks", 
-                "Social Structure",
-                "Technology and Science", 
-                "Waves and Particles",
-            };
-
-            Term rootTerm = conn.getTermByRaw(rootRaw);
-
-            rootTerm.subTerms = conn.getChildrenOfTerm(rootTerm);
-
-            // Make sure they're the same length
-            Assert.AreEqual(rootSubTerms.Count, rootTerm.subTerms.Count);
-
-            foreach (string expectedSubTermStr in rootSubTerms)
-            {
-                Term expectedSubTerm = new Term
-                {
-                    rawTerm = expectedSubTermStr,
-                };
-                Assert.AreNotEqual(NOT_FOUND, rootTerm.hasSubTerm(expectedSubTerm));
-            }
         }
 
         [TestMethod]

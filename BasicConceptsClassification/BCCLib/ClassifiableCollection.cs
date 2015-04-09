@@ -12,10 +12,5 @@ namespace BCCLib
             get;
             set;
         }
-
-        public void Sort()
-        {
-
-        }
     }
 }

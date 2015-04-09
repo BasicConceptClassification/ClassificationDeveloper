@@ -919,10 +919,38 @@ namespace Neo4j
         /// <returns>The new Classifiable from the Database for verification.</returns>
         public Classifiable addClassifiable(Classifiable newClassifiable)
         {
+            List<Term> existingTerms = getTermsExist(newClassifiable.conceptStr.terms);
             // Check 1: Check if there are proper terms
-            if (countNumTermsExist(newClassifiable.conceptStr.terms) != newClassifiable.conceptStr.terms.Count)
+            if (existingTerms.Count < newClassifiable.conceptStr.terms.Count)
             {
-                throw new System.ArgumentException("Some Terms are not in the Classification!",
+                List<string> existing = new List<string>();
+                List<string> requesting = new List<string>();
+
+                foreach (var t in existingTerms)
+                {
+                    existing.Add(t.rawTerm);
+                }
+                foreach (var t in newClassifiable.conceptStr.terms)
+                {
+                    requesting.Add(t.rawTerm);
+                }
+                
+                // Create the query. Note that method syntax must be used here.
+                IEnumerable<string> differenceQuery =
+                  requesting.Except(existing);
+
+                string resultMessage = "";
+
+                // Execute the query.
+                foreach (string s in differenceQuery)
+                {
+                    resultMessage += " {" + s + ") ";
+                }
+                System.Diagnostics.Debug.WriteLine(resultMessage);
+                string message = String.Format("The following Terms are not in the BCC: {0}", resultMessage);
+
+                throw new System.ArgumentException(
+                    message,
                     "Classifiable.conceptStr");
             }
 
@@ -1071,7 +1099,7 @@ namespace Neo4j
         {
             // Check 1: Check if there are proper terms
             // TODO: Ummm decide on something else maybe?
-            if (countNumTermsExist(updatedClass.conceptStr.terms) != updatedClass.conceptStr.terms.Count)
+            if (countNumTermsExist(updatedClass.conceptStr.terms) < updatedClass.conceptStr.terms.Count)
             {
                 throw new ArgumentException("Some Terms are not in the Classification!", "updatedClass.conceptStr");
             }
@@ -1325,12 +1353,7 @@ namespace Neo4j
             return resColl;
         }
 
-        /// <summary>
-        /// Given a list of Terms, return the number of terms that are in
-        /// the database.
-        /// </summary>
-        /// <returns>Number of Terms in the database from the given list.</returns>
-        public int countNumTermsExist(List<Term> tList)
+        public List<Term> getTermsExist(List<Term> tList)
         {
             if (tList.Count != 0)
             {
@@ -1351,18 +1374,42 @@ namespace Neo4j
                     }
 
                     var res = query
-                        .With("ToInt(COUNT([t])) AS numMatched")
-                        .Return((numMatched) => new
+                        .Return((t) => new
                         {
-                            counted = numMatched.As<int>(),
+                            terms = t.CollectAs<Term>(),
                         })
-                        .Results.Single();
+                        .Results.FirstOrDefault();
 
-                    if (query != null)
+                    if (res != null)
                     {
-                        return res.counted;
+                        List<Term> rtnList = new List<Term>();
+                        
+                        foreach (var t in res.terms)
+                        {
+                            t.Data.subTerms = new List<Term>();
+                            rtnList.Add(t.Data);
+                        }
+                        return rtnList;
                     }
                 }
+            }
+            return new List<Term>();
+        }
+
+        /// <summary>
+        /// Given a list of Terms, return the number of terms that are in
+        /// the database.
+        /// </summary>
+        /// <returns>Number of Terms in the database from the given list.</returns>
+        public int countNumTermsExist(List<Term> tList)
+        {
+            foreach (var t in tList)
+            {
+                System.Diagnostics.Debug.WriteLine(String.Format("got term: {0}",t.rawTerm));
+            }
+            if (tList.Count != 0)
+            {
+                return getTermsExist(tList).Count;
             }
             return 0;
         }
