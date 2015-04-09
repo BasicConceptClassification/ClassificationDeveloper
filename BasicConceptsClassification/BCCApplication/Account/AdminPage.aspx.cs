@@ -37,7 +37,6 @@ namespace BCCApplication.Account
         protected void CreateTree()
         {
             // Testing purposes, only loading from BccRoot with a small depth
-            //DataSet.Nodes.Clear();
             astvMyTree.RootNode.Clear();
 
             // Fetch BCC from the DB
@@ -47,11 +46,7 @@ namespace BCCApplication.Account
             // Create a starting TreeNode as the root to generate the BCC
             ASTreeViewLinkNode asnode = new ASTreeViewLinkNode("", "");
             astvMyTree.RootNode.AppendChild(generateASTree(bccRootTerm, asnode));
-            //DataSet.Nodes.Add(generateBccTree(bccRootTerm, currentNode));
-
-            // By default, leave collapsed
-            //DataSet.CollapseAll();
-            //DataSet.ShowCheckBoxes = TreeNodeTypes.Leaf;
+            astvMyTree.CollapseAll();
         }
 
         /// <summary>
@@ -121,8 +116,6 @@ namespace BCCApplication.Account
             {
                 conn.moveTerm(result_1, result_2);
             }
-               
-            
         }
 	}
 }

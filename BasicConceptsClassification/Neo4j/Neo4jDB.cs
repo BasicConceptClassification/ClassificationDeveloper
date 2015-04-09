@@ -1171,8 +1171,9 @@ namespace Neo4j
                    .Match("(c)<-[rModify:MODIFIED_BY]-(prevClassifier:Classifier)")
                    .Delete("rModify")
                    .With("c")
-                   .Match("(recentClassifier:Classifier {email: {modifierEmail} })")
+                   .Match("(recentClassifier {email: {modifierEmail} })")
                    .WithParam("modifierEmail", modifier.email)
+                   .Where("recentClassifier:Classifier").OrWhere("recentClassifier:Admin")
                    .CreateUnique("(c)<-[rNewModify:MODIFIED_BY]-(recentClassifier)")
                    .Set("rNewModify.lastModified = timestamp()");
 

@@ -74,18 +74,51 @@ namespace BCCApplication.Account.AjaxItemProvider
             //return the result to let user know.
             if (teststring1 != "")
             {
+                Neo4jDB.AffectedNodes affectedClassifiables = new Neo4jDB.AffectedNodes();
                 try
                 {
-                    conn.delTerm(delete_search_term);
+                    // Commented out for testing this part!
+                    affectedClassifiables = conn.delTerm(delete_search_term);
+                    
                     // Notify classifiers that a Term was deleted.
                     // TODO: create additional notification to the classifiers whose classifiable's ConStr
                     // were affect by the Term deletion.
-                    conn.createNotification(String.Format("Removed Term: {0}", delete_term));
+                    conn.createNotification(String.Format("Removed Term: {0}", delete_search_term));
                     // Regenerate the Controlled Vocabulary to see the changes
                 }
                 catch
                 {
 
+                }
+
+                
+                try 
+                {
+                    if (affectedClassifiables.classifiablesAffected.Count > 0)
+                    {
+                        foreach (var classObj in affectedClassifiables.classifiablesAffected)
+                        {
+                            // get each by id and update
+                            Classifiable toUpdate = conn.getClassifiableById(classObj.id);
+                            Classifiable old = toUpdate;
+                            if (toUpdate != null)
+                            { 
+                                // what if a term appears multiple times?
+                                toUpdate.conceptStr.terms.Remove(delete_search_term);
+                                toUpdate.status = Classifiable.Status.AdminModified.ToString();
+                            }
+                            // go through the string of terms and when equals the one removed, don't add
+                            // then call update
+                            conn.updateClassifiable(old, toUpdate, old.owner);
+                            conn.createNotification(
+                                String.Format("Admin has modified the concept string of {0}",toUpdate.name), 
+                                old.owner.email);
+                        }
+                    }
+                }
+                catch (Exception ex)
+                {
+                    System.Diagnostics.Debug.WriteLine(ex.Message);
                 }
             }
         }
