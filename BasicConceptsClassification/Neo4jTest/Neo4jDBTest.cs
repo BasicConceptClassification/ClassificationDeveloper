@@ -1055,7 +1055,7 @@ namespace Neo4jTest
         }
 
         [TestMethod]
-        [ExpectedException(typeof(NeoException))]
+        [ExpectedException(typeof(ArgumentException))]
         public void UpdateClassifiable_UniqueIdViolation_ThrowException()
         {
             // Only the ConStr is affected; no other properties should be changed.
