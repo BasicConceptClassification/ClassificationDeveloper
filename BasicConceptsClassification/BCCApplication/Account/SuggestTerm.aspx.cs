@@ -154,7 +154,7 @@ namespace BCCApplication.Account
                 SmtpClient client = new SmtpClient("smtp.gmail.com", 587);
                 client.EnableSsl = true; //only enable this if your provider requires it
                 //Setup credentials to login to our sender email address ("UserName", "Password")
-                NetworkCredential credentials = new NetworkCredential("bcclassification@gmail.com", "Classification2015");
+                NetworkCredential credentials = new NetworkCredential("bcclassification@gmail.com", "ZeroPunctuation");
                 client.Credentials = credentials;
 
                 //Send the msg
