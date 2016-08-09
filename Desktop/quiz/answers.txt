@@ -1,0 +1,30 @@
+———————————————————————————————————————————————————
+Task #1:
+You might need go to my github get the code sorry the inconvenient 
+	$ git clone https://github.com/zuoyu/quiz.git
+ Please follow the steps to set up:< Django is verison 1.10>1.in terminal install the virtualenv (Using python2.7)	$ virtualenv .env
+2.active the .env	$ source .env/bin/activate3.do the quiz directory	$ cd quiz4.install the requirement	$ pip install –r requirement.txt5.migrate	$ python manage.py migrate6.create a supper user which is admin	$ python manage.py createsupersuer7.run the server	$ python manage.py runserver8. you will put get a server (http://127.0.0.1:8000/), please go to the admin page to login (http://127.0.0.1:8000/admin/)
+
+9. you will add question in the admin page, and also view the answer in the admin page.
+
+10. after you add 12 questions you can go to (http://127.0.0.1:8000/questions/) that is the page for client to submit the answer.
+
+11. if you want to view the answer you can go back to (http://127.0.0.1:8000/admin/) click answers to see client’s answer and it will have the session hence you can separate different clients for later analysis.
+————————————————————————————————————————
+Task #2:In the model Asset there are two elements asset_file and metadata, this two are the main data usage comes from I think. Hence, the calculate the data usage will be asset_file.size + metadata.size
+
+I think it might have two ways to solve if it applied to a larger scale:
+    1. To cache the calculated data usage all the time and if the user use some new data add to the calculated data usage.
+    2. To change the model, we can add a new attribute in Asset or Client called data_usage to record the data usage.
+
+for any arbitrary data model:
+    1. To change the model, we can add a new attribute in Client called data_usage to record the data usage.
+    2. create a new column in db called data_usage to record.
+——————————————————————————————————————————————————
+Task #3:
+During my research it use the Geographic information system to return the location info (I think) but I don’t know how does it label those geometry data.
+If assume I know how does the data labeled, then I could get those data out and separate them as different categories. No matter what kind of the formatting clients want, it can easily re-format and display to them.
+the challenges might be 
+	1. can’t decode some data info.   
+	2. Some of the part of the data is unreadable, even the client get the data don’t know what is that means. 
+
